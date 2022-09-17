@@ -1,6 +1,17 @@
+import 'package:app_flutter/pages/splash_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+Future<void> main() async {
+  runApp(const SplashPage());
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MyApp());
 }
 
@@ -9,12 +20,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Receba Book',
+    return GetMaterialApp(
+      title: 'App Book',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Receba Book'),
+      home: const MyHomePage(title: 'App Book'),
     );
   }
 }
