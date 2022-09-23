@@ -1,3 +1,4 @@
+import 'package:app_flutter/components/bottom_menu.dart';
 import 'package:app_flutter/components/header.dart';
 import 'package:app_flutter/configs/themes.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const Header(),
+      bottomNavigationBar: const BottomMenu(),
       backgroundColor: dark,
       body: Column(
         children: [

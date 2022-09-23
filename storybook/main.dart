@@ -1,3 +1,4 @@
+import 'package:app_flutter/components/bottom_menu.dart';
 import 'package:app_flutter/components/header.dart';
 import 'package:app_flutter/configs/themes.dart';
 import 'package:app_flutter/pages/home_page.dart';
@@ -37,6 +38,13 @@ class StorybookApp extends StatelessWidget {
             name: 'Components/Header',
             builder: (context) => const Scaffold(
               appBar: Header(),
+            ),
+          ),
+          Story(
+            name: 'Components/BottomMenu',
+            builder: (context) => const Scaffold(
+              backgroundColor: dark,
+              bottomNavigationBar: BottomMenu(),
             ),
           ),
         ],
