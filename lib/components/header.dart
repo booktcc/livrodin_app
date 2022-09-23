@@ -17,12 +17,22 @@ class _HeaderState extends State<Header> {
     return AppBar(
       toolbarHeight: 52,
       centerTitle: true,
-      title: const Text(
-        "LIVRODIN",
-        style: TextStyle(
-          fontSize: 18,
-          letterSpacing: 18 * 0.29,
-          fontWeight: FontWeight.w600,
+      title: RichText(
+        text: const TextSpan(
+          style: TextStyle(
+            fontSize: 18,
+            letterSpacing: 18 * 0.29,
+            fontWeight: FontWeight.w600,
+          ),
+          children: [
+            TextSpan(text: "LIVROD"),
+            TextSpan(
+              text: "IN",
+              style: TextStyle(
+                color: red,
+              ),
+            ),
+          ],
         ),
       ),
       backgroundColor: dark,
