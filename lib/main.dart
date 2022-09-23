@@ -1,3 +1,4 @@
+import 'package:app_flutter/configs/themes.dart';
 import 'package:app_flutter/pages/splash_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -23,10 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'App Book',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-        fontFamily: "Avenir",
-      ),
+      theme: themeData,
       home: const SplashPage(redirect: true),
     );
   }
