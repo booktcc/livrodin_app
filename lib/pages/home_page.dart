@@ -1,3 +1,6 @@
+import 'package:app_flutter/components/bottom_menu.dart';
+import 'package:app_flutter/components/header.dart';
+import 'package:app_flutter/configs/themes.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -8,36 +11,53 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Home page"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+      appBar: const Header(),
+      bottomNavigationBar: const BottomMenu(),
+      backgroundColor: dark,
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 241,
+            width: double.infinity,
+          ),
+          Flexible(
+            child: Container(
+              width: double.infinity,
+              // border rounded top
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+                color: Colors.white,
+              ),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Container(
+                        color: Colors.red,
+                        height: 100,
+                      ),
+                      Container(
+                        color: Colors.blue,
+                        height: 500,
+                      ),
+                      Container(
+                        color: Colors.yellow,
+                        height: 400,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+          )
+        ],
       ),
     );
   }
