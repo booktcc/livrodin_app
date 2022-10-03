@@ -1,19 +1,22 @@
 import 'package:app_flutter/configs/themes.dart';
+import 'package:app_flutter/controllers/auth_controller.dart';
+import 'package:app_flutter/controllers/login_controller.dart';
+import 'package:app_flutter/pages/home_page.dart';
+import 'package:app_flutter/pages/login_page.dart';
 import 'package:app_flutter/pages/splash_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get.dart';
 
 import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const SplashPage());
+  // runApp(const SplashPage());
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
   runApp(const MyApp());
 }
 
@@ -23,9 +26,26 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'App Book',
       theme: themeData,
       home: const SplashPage(redirect: true),
+      getPages: [
+        GetPage(
+          name: '/login',
+          page: () => const LoginPage(),
+          binding: BindingsBuilder(() {
+            Get.put(LoginController());
+          }),
+        ),
+        GetPage(
+          name: '/home',
+          page: () => const HomePage(),
+        ),
+      ],
+      initialBinding: BindingsBuilder(() {
+        Get.put(AuthController());
+      }),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:app_flutter/components/bottom_menu.dart';
 import 'package:app_flutter/components/header.dart';
 import 'package:app_flutter/configs/themes.dart';
 import 'package:app_flutter/pages/home_page.dart';
+import 'package:app_flutter/pages/login_page.dart';
 import 'package:app_flutter/pages/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
@@ -33,6 +34,10 @@ class StorybookApp extends StatelessWidget {
           Story(
             name: 'Pages/HomePage',
             builder: (context) => const HomePage(),
+          ),
+          Story(
+            name: 'Pages/LoginPage',
+            builder: (context) => const LoginPage(),
           ),
           Story(
             name: 'Components/Header',
