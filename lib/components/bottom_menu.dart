@@ -1,6 +1,5 @@
 import 'package:app_flutter/configs/themes.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class BottomMenu extends StatefulWidget {
   const BottomMenu({super.key});
@@ -12,10 +11,6 @@ class BottomMenu extends StatefulWidget {
 class _BottomMenuState extends State<BottomMenu> {
   @override
   Widget build(BuildContext context) {
-    String currentRoute = Get.currentRoute;
-
-    print(currentRoute);
-
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -23,10 +18,18 @@ class _BottomMenuState extends State<BottomMenu> {
           width: double.infinity,
           height: 80,
           decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(
-                Radius.circular(20),
-              )),
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Color.fromRGBO(0, 0, 0, 0.05),
+                blurRadius: 20,
+              ),
+            ],
+          ),
         ),
         Container(
           width: double.infinity,
@@ -43,48 +46,74 @@ class _BottomMenuState extends State<BottomMenu> {
                   children: [
                     Row(
                       children: [
-                        IconButton(
-                          icon: const Icon(
-                            Icons.home,
-                            color: grey,
+                        SizedBox(
+                          width: 28,
+                          height: 28,
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.home,
+                              color: grey,
+                            ),
+                            onPressed: () {},
+                            iconSize: 28,
+                            padding: const EdgeInsets.all(0),
+                            isSelected: true,
+                            selectedIcon:
+                                const Icon(Icons.home, color: Colors.black),
                           ),
-                          onPressed: () {},
-                          iconSize: 28,
-                          padding: const EdgeInsets.all(0),
-                          isSelected: true,
-                          selectedIcon:
-                              const Icon(Icons.home, color: Colors.black),
                         ),
                         const SizedBox(
                           width: 30,
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.category),
-                          onPressed: () {},
-                          iconSize: 28,
-                          color: grey,
-                          padding: const EdgeInsets.all(0),
+                        SizedBox(
+                          width: 28,
+                          height: 28,
+                          child: IconButton(
+                            icon: const Icon(Icons.category),
+                            onPressed: () {},
+                            iconSize: 28,
+                            color: grey,
+                            padding: const EdgeInsets.all(0),
+                          ),
                         ),
                       ],
                     ),
                     Row(
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.chat),
-                          onPressed: () {},
-                          iconSize: 28,
-                          color: grey,
-                          padding: const EdgeInsets.all(0),
+                        SizedBox(
+                          width: 28,
+                          height: 28,
+                          child: IconButton(
+                            icon: const Icon(Icons.chat),
+                            onPressed: () {},
+                            iconSize: 28,
+                            color: grey,
+                            padding: const EdgeInsets.all(0),
+                          ),
                         ),
                         const SizedBox(
                           width: 30,
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.person),
-                          onPressed: () {},
-                          iconSize: 28,
-                          color: grey,
-                          padding: const EdgeInsets.all(0),
+                        Container(
+                          width: 28,
+                          height: 28,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.black,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(0, 0, 0, 0.25),
+                                offset: Offset(0.0, 4.0),
+                                blurRadius: 4.0,
+                              ),
+                            ],
+                          ),
+                          child: const CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                "https://avatars.githubusercontent.com/u/47704204?v=4"),
+                            radius: 14,
+                            backgroundColor: grey,
+                          ),
                         ),
                       ],
                     ),
@@ -102,6 +131,13 @@ class _BottomMenuState extends State<BottomMenu> {
             borderRadius: BorderRadius.all(
               Radius.circular(90),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Color.fromRGBO(235, 28, 36, 0.13),
+                offset: Offset(0.0, 10.0),
+                blurRadius: 15.0,
+              ),
+            ],
           ),
           // move a bit to top
           transform: Matrix4.translationValues(0, -16, 0),

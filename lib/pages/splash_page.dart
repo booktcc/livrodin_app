@@ -7,31 +7,30 @@ import 'package:get/get.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({super.key, this.redirect = false});
-  final bool redirect;
+  const SplashPage({super.key});
 
   @override
   State<SplashPage> createState() => _SplashPageState();
 }
 
 class _SplashPageState extends State<SplashPage> {
+  var authController = Get.find<AuthController>();
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.redirect) {
-        var pageToRedirect = const LoginPage();
-        Navigator.pushReplacement(
-          context,
-          PageTransition(
-            type: PageTransitionType.fade,
-            child: pageToRedirect,
-            childCurrent: widget,
-            duration: const Duration(seconds: 1),
-            curve: Curves.easeOut,
-          ),
-        );
-      }
+      var pageToRedirect =
+          authController.isLogged.value ? const HomePage() : const LoginPage();
+      Navigator.pushReplacement(
+        context,
+        PageTransition(
+          type: PageTransitionType.fade,
+          child: pageToRedirect,
+          childCurrent: widget,
+          duration: const Duration(seconds: 1),
+          curve: Curves.easeOut,
+        ),
+      );
     });
   }
 

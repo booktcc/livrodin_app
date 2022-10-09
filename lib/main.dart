@@ -12,7 +12,6 @@ import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // runApp(const SplashPage());
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -29,8 +28,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'App Book',
       theme: themeData,
-      home: const SplashPage(redirect: true),
+      initialRoute: '/',
       getPages: [
+        GetPage(
+          name: '/',
+          page: () => const SplashPage(),
+        ),
         GetPage(
           name: '/login',
           page: () => const LoginPage(),
@@ -44,7 +47,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       initialBinding: BindingsBuilder(() {
-        Get.put(AuthController());
+        Get.put(AuthController(), permanent: true);
       }),
     );
   }

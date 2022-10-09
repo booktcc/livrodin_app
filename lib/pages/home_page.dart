@@ -16,6 +16,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: const Header(),
       bottomNavigationBar: const BottomMenu(),
+      extendBody: true,
       backgroundColor: dark,
       body: Column(
         children: [
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
               ),
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(0),
                   child: Column(
                     children: [
                       Container(
