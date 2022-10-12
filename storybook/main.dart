@@ -1,4 +1,5 @@
 import 'package:app_flutter/components/bottom_menu.dart';
+import 'package:app_flutter/components/button_action.dart';
 import 'package:app_flutter/components/button_option.dart';
 import 'package:app_flutter/components/cards/book_card.dart';
 import 'package:app_flutter/components/cards/genrer_card.dart';
@@ -93,6 +94,19 @@ class _StorybookAppState extends State<StorybookApp> {
             builder: (context) => const Scaffold(
               backgroundColor: lightGrey,
               body: Center(child: GenrerCard()),
+            ),
+          ),
+          Story(
+            name: 'Components/ButtonAction',
+            builder: (context) => Scaffold(
+              backgroundColor: lightGrey,
+              body: Center(
+                child: ButtonAction(
+                  onPressed: () {},
+                  icon: Icons.swap_horizontal_circle_rounded,
+                  label: 'Trocar',
+                ),
+              ),
             ),
           ),
         ],
