@@ -1,4 +1,5 @@
 import 'package:app_flutter/components/bottom_menu.dart';
+import 'package:app_flutter/components/button_action.dart';
 import 'package:app_flutter/components/button_option.dart';
 import 'package:app_flutter/components/cards/book_card.dart';
 import 'package:app_flutter/components/cards/genrer_card.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
 import 'components/profile_icon.stories.dart';
+import 'components/toggle_offer_status.stories.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,9 +20,14 @@ Future<void> main() async {
   runApp(const StorybookApp());
 }
 
-class StorybookApp extends StatelessWidget {
+class StorybookApp extends StatefulWidget {
   const StorybookApp({super.key});
 
+  @override
+  State<StorybookApp> createState() => _StorybookAppState();
+}
+
+class _StorybookAppState extends State<StorybookApp> {
   @override
   Widget build(BuildContext context) => Storybook(
         wrapperBuilder: (context, child) => SafeArea(
@@ -78,6 +85,12 @@ class StorybookApp extends StatelessWidget {
             ),
           ),
           Story(
+            name: 'Components/ToggleOfferStatus',
+            builder: (context) {
+              return const ToggleOfferStatusStories();
+            },
+          ),
+          Story(
             name: 'Components/GenrerCard',
             builder: (context) => const Scaffold(
               backgroundColor: lightGrey,
@@ -87,6 +100,19 @@ class StorybookApp extends StatelessWidget {
           Story(
             name: 'Components/ProfileIcon',
             builder: (context) => const ProfileIconStories(),
+          ),
+          Story(
+            name: 'Components/ButtonAction',
+            builder: (context) => Scaffold(
+              backgroundColor: lightGrey,
+              body: Center(
+                child: ButtonAction(
+                  onPressed: () {},
+                  icon: Icons.swap_horizontal_circle_rounded,
+                  label: 'Trocar',
+                ),
+              ),
+            ),
           ),
         ],
       );
