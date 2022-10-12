@@ -16,7 +16,7 @@ class ProfileIcon extends StatefulWidget {
   final ProfileSize size;
   const ProfileIcon({
     super.key,
-    this.image = "https://avatars.githubusercontent.com/u/47704204?v=4",
+    this.image,
     this.size = ProfileSize.xl,
   });
 
