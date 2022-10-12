@@ -11,6 +11,7 @@ import 'package:app_flutter/pages/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
+import 'components/profile_icon.stories.dart';
 import 'components/toggle_offer_status.stories.dart';
 
 Future<void> main() async {
@@ -95,6 +96,10 @@ class _StorybookAppState extends State<StorybookApp> {
               backgroundColor: lightGrey,
               body: Center(child: GenrerCard()),
             ),
+          ),
+          Story(
+            name: 'Components/ProfileIcon',
+            builder: (context) => const ProfileIconStories(),
           ),
           Story(
             name: 'Components/ButtonAction',
