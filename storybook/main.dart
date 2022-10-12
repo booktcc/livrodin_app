@@ -10,15 +10,22 @@ import 'package:app_flutter/pages/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
+import 'components/toggle_offer_status.stories.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(const StorybookApp());
 }
 
-class StorybookApp extends StatelessWidget {
+class StorybookApp extends StatefulWidget {
   const StorybookApp({super.key});
 
+  @override
+  State<StorybookApp> createState() => _StorybookAppState();
+}
+
+class _StorybookAppState extends State<StorybookApp> {
   @override
   Widget build(BuildContext context) => Storybook(
         wrapperBuilder: (context, child) => SafeArea(
@@ -74,6 +81,12 @@ class StorybookApp extends StatelessWidget {
               backgroundColor: lightGrey,
               body: Center(child: BookCard()),
             ),
+          ),
+          Story(
+            name: 'Components/ToggleOfferStatus',
+            builder: (context) {
+              return const ToggleOfferStatusStories();
+            },
           ),
           Story(
             name: 'Components/GenrerCard',
