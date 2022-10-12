@@ -11,6 +11,7 @@ import 'package:app_flutter/pages/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
+import 'components/filter_option.stories.dart';
 import 'components/toggle_offer_status.stories.dart';
 
 Future<void> main() async {
@@ -108,6 +109,10 @@ class _StorybookAppState extends State<StorybookApp> {
                 ),
               ),
             ),
+          ),
+          Story(
+            name: 'Components/FilterOption',
+            builder: (context) => const FilterOptionStories(),
           ),
         ],
       );
