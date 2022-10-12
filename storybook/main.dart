@@ -1,6 +1,7 @@
 import 'package:app_flutter/components/bottom_menu.dart';
 import 'package:app_flutter/components/button_option.dart';
 import 'package:app_flutter/components/cards/book_card.dart';
+import 'package:app_flutter/components/cards/genrer_card.dart';
 import 'package:app_flutter/components/header.dart';
 import 'package:app_flutter/configs/themes.dart';
 import 'package:app_flutter/pages/home_page.dart';
@@ -72,6 +73,13 @@ class StorybookApp extends StatelessWidget {
             builder: (context) => const Scaffold(
               backgroundColor: lightGrey,
               body: Center(child: BookCard()),
+            ),
+          ),
+          Story(
+            name: 'Components/GenrerCard',
+            builder: (context) => const Scaffold(
+              backgroundColor: lightGrey,
+              body: Center(child: GenrerCard()),
             ),
           ),
         ],
