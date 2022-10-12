@@ -10,6 +10,8 @@ import 'package:app_flutter/pages/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
+import 'components/profile_icon.stories.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -81,6 +83,10 @@ class StorybookApp extends StatelessWidget {
               backgroundColor: lightGrey,
               body: Center(child: GenrerCard()),
             ),
+          ),
+          Story(
+            name: 'Components/ProfileIcon',
+            builder: (context) => const ProfileIconStories(),
           ),
         ],
       );
