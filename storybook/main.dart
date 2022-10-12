@@ -1,4 +1,5 @@
 import 'package:app_flutter/components/bottom_menu.dart';
+import 'package:app_flutter/components/button_option.dart';
 import 'package:app_flutter/components/cards/book_card.dart';
 import 'package:app_flutter/components/header.dart';
 import 'package:app_flutter/configs/themes.dart';
@@ -58,6 +59,19 @@ class _StorybookAppState extends State<StorybookApp> {
             builder: (context) => const Scaffold(
               backgroundColor: dark,
               bottomNavigationBar: BottomMenu(),
+            ),
+          ),
+          Story(
+            name: 'Components/ButtonOption',
+            builder: (context) => Scaffold(
+              backgroundColor: lightGrey,
+              body: Center(
+                child: ButtonOption(
+                  iconData: Icons.home,
+                  text: 'Home',
+                  onPressed: () {},
+                ),
+              ),
             ),
           ),
           Story(
