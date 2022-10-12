@@ -1,4 +1,5 @@
 import 'package:app_flutter/components/bottom_menu.dart';
+import 'package:app_flutter/components/button_option.dart';
 import 'package:app_flutter/components/header.dart';
 import 'package:app_flutter/configs/themes.dart';
 import 'package:app_flutter/pages/home_page.dart';
@@ -50,6 +51,19 @@ class StorybookApp extends StatelessWidget {
             builder: (context) => const Scaffold(
               backgroundColor: dark,
               bottomNavigationBar: BottomMenu(),
+            ),
+          ),
+          Story(
+            name: 'Components/ButtonOption',
+            builder: (context) => Scaffold(
+              backgroundColor: lightGrey,
+              body: Center(
+                child: ButtonOption(
+                  iconData: Icons.home,
+                  text: 'Home',
+                  onPressed: () {},
+                ),
+              ),
             ),
           ),
         ],
