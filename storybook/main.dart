@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
 import 'components/filter_option.stories.dart';
+import 'components/layout.stories.dart';
 import 'components/profile_icon.stories.dart';
 import 'components/profile_info.stories.dart';
 import 'components/toggle_offer_status.stories.dart';
@@ -34,13 +35,11 @@ class StorybookApp extends StatefulWidget {
 class _StorybookAppState extends State<StorybookApp> {
   @override
   Widget build(BuildContext context) => Storybook(
-        wrapperBuilder: (context, child) => SafeArea(
-          child: MaterialApp(
-            title: 'Livrodin',
-            theme: themeData,
-            home: child,
-            debugShowCheckedModeBanner: false,
-          ),
+        wrapperBuilder: (context, child) => MaterialApp(
+          title: 'Livrodin',
+          theme: themeData,
+          home: child,
+          debugShowCheckedModeBanner: false,
         ),
         stories: [
           Story(
@@ -150,6 +149,12 @@ class _StorybookAppState extends State<StorybookApp> {
                 ),
               ),
             ),
+          ),
+          Story(
+            name: 'Components/Layout',
+            builder: (context) {
+              return const LayoutStories();
+            },
           ),
         ],
       );

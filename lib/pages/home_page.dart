@@ -1,6 +1,4 @@
-import 'package:app_flutter/components/bottom_menu.dart';
-import 'package:app_flutter/components/header.dart';
-import 'package:app_flutter/configs/themes.dart';
+import 'package:app_flutter/components/layout.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,48 +11,22 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const Header(),
-      bottomNavigationBar: const BottomMenu(),
-      extendBody: true,
-      backgroundColor: dark,
-      body: Column(
+    return Layout(
+      showBottomMenu: true,
+      child: Column(
         children: [
           const SizedBox(
             height: 241,
-            width: double.infinity,
           ),
           Flexible(
             child: Container(
               width: double.infinity,
-              // border rounded top
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
                 ),
                 color: Colors.white,
-              ),
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(0),
-                  child: Column(
-                    children: [
-                      Container(
-                        color: Colors.red,
-                        height: 100,
-                      ),
-                      Container(
-                        color: Colors.blue,
-                        height: 500,
-                      ),
-                      Container(
-                        color: Colors.yellow,
-                        height: 400,
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ),
           )
