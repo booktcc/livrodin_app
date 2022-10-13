@@ -2,19 +2,27 @@ import 'package:app_flutter/configs/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class Header extends StatefulWidget with PreferredSizeWidget {
+class HeaderProps {
   final List<Widget>? actions;
   final Widget? leading;
   final bool showBackButton;
   final bool showLogo;
   final String? title;
-  const Header({
-    super.key,
+
+  HeaderProps({
     this.actions,
     this.leading,
     this.showBackButton = false,
     this.showLogo = false,
     this.title,
+  });
+}
+
+class Header extends StatefulWidget with PreferredSizeWidget {
+  final HeaderProps props;
+  const Header({
+    super.key,
+    required this.props,
   });
 
   @override
@@ -27,18 +35,19 @@ class Header extends StatefulWidget with PreferredSizeWidget {
 class _HeaderState extends State<Header> {
   @override
   Widget build(BuildContext context) {
+    HeaderProps props = widget.props;
     return AppBar(
       toolbarHeight: 52,
-      centerTitle: widget.showLogo || widget.title == null,
-      title: widget.title != null
+      centerTitle: props.showLogo || props.title == null,
+      title: props.title != null
           ? Text(
-              widget.title!,
+              props.title!,
               style: const TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 18,
               ),
             )
-          : widget.showLogo
+          : props.showLogo
               ? RichText(
                   text: const TextSpan(
                     style: TextStyle(
@@ -63,19 +72,19 @@ class _HeaderState extends State<Header> {
         Padding(
           padding: const EdgeInsets.only(right: 8),
           child: Row(
-            children: widget.actions ?? [],
+            children: props.actions ?? [],
           ),
         ),
       ],
       leading: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (widget.showBackButton)
+          if (props.showBackButton)
             IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => Get.back(),
             ),
-          if (widget.leading != null) widget.leading!,
+          if (props.leading != null) props.leading!,
         ],
       ),
     );

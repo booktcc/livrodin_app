@@ -6,12 +6,19 @@ import 'package:flutter/material.dart';
 class Layout extends StatelessWidget {
   final bool showBottomMenu;
   final Widget child;
-  const Layout({super.key, this.showBottomMenu = false, required this.child});
+  final HeaderProps headerProps;
+  const Layout(
+      {super.key,
+      this.showBottomMenu = false,
+      required this.child,
+      required this.headerProps});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const Header(),
+      appBar: Header(
+        props: headerProps,
+      ),
       backgroundColor: dark,
       bottomNavigationBar: showBottomMenu ? const BottomMenu() : null,
       extendBody: true,

@@ -1,3 +1,4 @@
+import 'package:app_flutter/components/header.dart';
 import 'package:app_flutter/components/layout.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,23 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Layout(
-      showBottomMenu: true,
+      headerProps: HeaderProps(
+        showLogo: true,
+        leading: IconButton(
+          icon: const Icon(Icons.settings),
+          onPressed: () {},
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {},
+          ),
+        ],
+      ),
       child: Column(
         children: [
           const SizedBox(

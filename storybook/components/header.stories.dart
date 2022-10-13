@@ -19,52 +19,60 @@ enum _HeaderStoriesType {
     switch (this) {
       case _HeaderStoriesType.homepage:
         return Header(
-          showLogo: true,
-          leading: IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {},
+          props: HeaderProps(
+            showLogo: true,
+            leading: IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {},
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.notifications),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {},
+              ),
+            ],
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {},
-            ),
-          ],
         );
       case _HeaderStoriesType.profile:
         return Header(
-          title: 'Perfil',
-          showBackButton: true,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.manage_accounts),
-              onPressed: () {},
-            ),
-          ],
+          props: HeaderProps(
+            title: 'Perfil',
+            showBackButton: true,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.manage_accounts),
+                onPressed: () {},
+              ),
+            ],
+          ),
         );
       case _HeaderStoriesType.offer:
-        return const Header(
-          title: 'Doações',
-          showBackButton: true,
+        return Header(
+          props: HeaderProps(
+            title: 'Doações',
+            showBackButton: true,
+          ),
         );
       case _HeaderStoriesType.bookDetails:
         return Header(
-          showLogo: true,
-          showBackButton: true,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {},
-            ),
-          ],
+          props: HeaderProps(
+            showLogo: true,
+            showBackButton: true,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.notifications),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {},
+              ),
+            ],
+          ),
         );
     }
   }
