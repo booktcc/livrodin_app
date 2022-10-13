@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
 import 'components/profile_icon.stories.dart';
+import 'components/profile_info.stories.dart';
 import 'components/toggle_offer_status.stories.dart';
 
 Future<void> main() async {
@@ -114,6 +115,9 @@ class _StorybookAppState extends State<StorybookApp> {
               ),
             ),
           ),
+          Story(
+              name: 'Components/ProfileInfo',
+              builder: (context) => const ProfileInfoStories()),
         ],
       );
 }
