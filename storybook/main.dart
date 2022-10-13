@@ -4,7 +4,6 @@ import 'package:app_flutter/components/button_option.dart';
 import 'package:app_flutter/components/button_option_badge.dart';
 import 'package:app_flutter/components/cards/book_card.dart';
 import 'package:app_flutter/components/cards/genrer_card.dart';
-import 'package:app_flutter/components/header.dart';
 import 'package:app_flutter/components/transaction_painel.dart';
 import 'package:app_flutter/configs/themes.dart';
 import 'package:app_flutter/pages/home_page.dart';
@@ -15,6 +14,7 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 
 import 'components/filter_option.stories.dart';
 import 'components/layout.stories.dart';
+import 'components/header.stories.dart';
 import 'components/profile_icon.stories.dart';
 import 'components/profile_info.stories.dart';
 import 'components/toggle_offer_status.stories.dart';
@@ -56,9 +56,7 @@ class _StorybookAppState extends State<StorybookApp> {
           ),
           Story(
             name: 'Components/Header',
-            builder: (context) => const Scaffold(
-              appBar: Header(),
-            ),
+            builder: (context) => const HeaderStories(),
           ),
           Story(
             name: 'Components/BottomMenu',
