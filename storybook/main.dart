@@ -1,4 +1,5 @@
 import 'package:app_flutter/components/bottom_menu.dart';
+import 'package:app_flutter/components/bottom_profile.dart';
 import 'package:app_flutter/components/button_action.dart';
 import 'package:app_flutter/components/button_option.dart';
 import 'package:app_flutter/components/button_option_badge.dart';
@@ -144,6 +145,15 @@ class _StorybookAppState extends State<StorybookApp> {
                   iconData: Icons.book_rounded,
                   text: 'Pedidos Recebidos',
                 ),
+              ),
+            ),
+          ),
+          Story(
+            name: 'Components/BottomProfile',
+            builder: (context) => Scaffold(
+              backgroundColor: lightGrey,
+              body: Center(
+                child: BottomProfile(),
               ),
             ),
           ),
