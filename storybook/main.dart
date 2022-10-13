@@ -1,9 +1,11 @@
 import 'package:app_flutter/components/bottom_menu.dart';
 import 'package:app_flutter/components/button_action.dart';
 import 'package:app_flutter/components/button_option.dart';
+import 'package:app_flutter/components/button_option_badge.dart';
 import 'package:app_flutter/components/cards/book_card.dart';
 import 'package:app_flutter/components/cards/genrer_card.dart';
 import 'package:app_flutter/components/header.dart';
+import 'package:app_flutter/components/transaction_painel.dart';
 import 'package:app_flutter/configs/themes.dart';
 import 'package:app_flutter/pages/home_page.dart';
 import 'package:app_flutter/pages/login_page.dart';
@@ -121,8 +123,34 @@ class _StorybookAppState extends State<StorybookApp> {
             builder: (context) => const FilterOptionStories(),
           ),
           Story(
-              name: 'Components/ProfileInfo',
-              builder: (context) => const ProfileInfoStories()),
+            name: 'Components/ProfileInfo',
+            builder: (context) => const ProfileInfoStories(),
+          ),
+          Story(
+            name: 'Components/TansactionPainel',
+            builder: (context) => const Scaffold(
+              backgroundColor: lightGrey,
+              body: Center(
+                child: TransactionPainel(
+                  icon: Icons.swap_horizontal_circle_rounded,
+                  title: 'Trocas',
+                ),
+              ),
+            ),
+          ),
+          Story(
+            name: 'Components/ButtonOptionBadge',
+            builder: (context) => Scaffold(
+              backgroundColor: lightGrey,
+              body: Center(
+                child: ButtonOptionBadge(
+                  onPressed: () {},
+                  iconData: Icons.book_rounded,
+                  text: 'Pedidos Recebidos',
+                ),
+              ),
+            ),
+          ),
         ],
       );
 }
