@@ -1,4 +1,5 @@
 import 'package:app_flutter/components/bottom_menu.dart';
+import 'package:app_flutter/components/bottom_profile.dart';
 import 'package:app_flutter/components/button_action.dart';
 import 'package:app_flutter/components/button_option.dart';
 import 'package:app_flutter/components/button_option_badge.dart';
@@ -153,6 +154,15 @@ class _StorybookAppState extends State<StorybookApp> {
             builder: (context) {
               return const LayoutStories();
             },
+          ),
+          Story(
+            name: 'Components/BottomProfile',
+            builder: (context) => const Scaffold(
+              backgroundColor: lightGrey,
+              body: Center(
+                child: BottomProfile(),
+              ),
+            ),
           ),
         ],
       );
