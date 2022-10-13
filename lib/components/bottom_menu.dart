@@ -1,3 +1,4 @@
+import 'package:app_flutter/components/profile_icon.dart';
 import 'package:app_flutter/configs/themes.dart';
 import 'package:flutter/material.dart';
 
@@ -94,27 +95,9 @@ class _BottomMenuState extends State<BottomMenu> {
                         const SizedBox(
                           width: 30,
                         ),
-                        Container(
-                          width: 28,
-                          height: 28,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.black,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.25),
-                                offset: Offset(0.0, 4.0),
-                                blurRadius: 4.0,
-                              ),
-                            ],
-                          ),
-                          child: const CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                "https://avatars.githubusercontent.com/u/47704204?v=4"),
-                            radius: 14,
-                            backgroundColor: grey,
-                          ),
-                        ),
+                        const ProfileIcon(
+                          size: ProfileSize.sm,
+                        )
                       ],
                     ),
                   ],
