@@ -39,6 +39,7 @@ dependencies:
   cloud_firestore: ^3.4.8
   firebase_storage: ^10.3.8
   page_transition: ^2.0.9
+  badges: ^2.0.3
 
 dev_dependencies:
   flutter_test:
