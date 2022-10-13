@@ -15,7 +15,7 @@ class _BottomMenuState extends State<BottomMenu> {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Container(
+        Ink(
           width: double.infinity,
           height: 80,
           decoration: const BoxDecoration(
@@ -32,9 +32,8 @@ class _BottomMenuState extends State<BottomMenu> {
             ],
           ),
         ),
-        Container(
+        Ink(
           width: double.infinity,
-          transform: Matrix4.translationValues(0, -2, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -106,33 +105,35 @@ class _BottomMenuState extends State<BottomMenu> {
             ],
           ),
         ),
-        Container(
-          width: 66,
-          height: 66,
-          decoration: const BoxDecoration(
-            color: red,
-            borderRadius: BorderRadius.all(
-              Radius.circular(90),
+        Positioned(
+          top: -16,
+          child: Ink(
+            width: 66,
+            height: 66,
+            decoration: const BoxDecoration(
+              color: red,
+              borderRadius: BorderRadius.all(
+                Radius.circular(90),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Color.fromRGBO(235, 28, 36, 0.13),
+                  offset: Offset(0.0, 10.0),
+                  blurRadius: 15.0,
+                ),
+              ],
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Color.fromRGBO(235, 28, 36, 0.13),
-                offset: Offset(0.0, 10.0),
-                blurRadius: 15.0,
+            // move a bit to top
+            child: Center(
+              child: IconButton(
+                iconSize: 28,
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.menu_book,
+                  color: Colors.white,
+                ),
+                padding: const EdgeInsets.all(6),
               ),
-            ],
-          ),
-          // move a bit to top
-          transform: Matrix4.translationValues(0, -16, 0),
-          child: Center(
-            child: IconButton(
-              iconSize: 28,
-              onPressed: () {},
-              icon: const Icon(
-                Icons.menu_book,
-                color: Colors.white,
-              ),
-              padding: const EdgeInsets.all(6),
             ),
           ),
         ),
