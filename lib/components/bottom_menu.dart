@@ -94,8 +94,12 @@ class _BottomMenuState extends State<BottomMenu> {
                         const SizedBox(
                           width: 30,
                         ),
-                        const ProfileIcon(
-                          size: ProfileSize.sm,
+                        IconButton(
+                          onPressed: () {},
+                          icon: const ProfileIcon(
+                            size: ProfileSize.sm,
+                          ),
+                          iconSize: 28,
                         )
                       ],
                     ),

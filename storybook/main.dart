@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
 import 'components/filter_option.stories.dart';
+import 'components/layout.stories.dart';
 import 'components/header.stories.dart';
 import 'components/profile_icon.stories.dart';
 import 'components/profile_info.stories.dart';
@@ -149,8 +150,14 @@ class _StorybookAppState extends State<StorybookApp> {
             ),
           ),
           Story(
+            name: 'Components/Layout',
+            builder: (context) {
+              return const LayoutStories();
+            },
+          ),
+          Story(
             name: 'Components/BottomProfile',
-            builder: (context) => Scaffold(
+            builder: (context) => const Scaffold(
               backgroundColor: lightGrey,
               body: Center(
                 child: BottomProfile(),
