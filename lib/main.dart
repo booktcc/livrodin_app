@@ -1,6 +1,8 @@
 import 'package:app_flutter/configs/themes.dart';
 import 'package:app_flutter/controllers/auth_controller.dart';
+import 'package:app_flutter/controllers/book_controller.dart';
 import 'package:app_flutter/controllers/login_controller.dart';
+import 'package:app_flutter/pages/book_availability_page.dart';
 import 'package:app_flutter/pages/home_page.dart';
 import 'package:app_flutter/pages/login_page.dart';
 import 'package:app_flutter/pages/splash_page.dart';
@@ -44,6 +46,13 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/home',
           page: () => const HomePage(),
+        ),
+        GetPage(
+          name: '/book_availability',
+          page: () => const BookAvailabilityPage(),
+          binding: BindingsBuilder(() {
+            Get.put(BookController());
+          }),
         ),
       ],
       initialBinding: BindingsBuilder(() {

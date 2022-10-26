@@ -1,6 +1,7 @@
 import 'package:app_flutter/components/header.dart';
 import 'package:app_flutter/components/layout.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -44,6 +45,12 @@ class _HomePageState extends State<HomePage> {
                   topRight: Radius.circular(30),
                 ),
                 color: Colors.white,
+              ),
+              child: ElevatedButton(
+                onPressed: () async {
+                  await Get.toNamed("/book_availability");
+                },
+                child: const Text('Disponibilizar livro'),
               ),
             ),
           )
