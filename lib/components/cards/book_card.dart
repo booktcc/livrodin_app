@@ -9,9 +9,10 @@ class BookCard extends StatelessWidget {
   final Book book;
   final Function(Book)? onTap;
   final double radius = 10;
+
   @override
   Widget build(BuildContext context) {
-    return Ink(
+    return Container(
       width: Get.width * 0.5,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
@@ -19,39 +20,41 @@ class BookCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          InkWell(
-            borderRadius: BorderRadius.circular(radius),
-            onTap: () => onTap?.call(book),
-            child: Ink(
-              width: double.infinity,
-              height: 160,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(radius),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    spreadRadius: 0.1,
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Center(
-                child: LayoutBuilder(builder: (context, constraints) {
-                  return Ink(
-                    height: constraints.maxHeight,
-                    width: (constraints.maxHeight * 240) / 360,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(radius),
-                      image: DecorationImage(
-                        image: NetworkImage(book.capaUrl!),
-                        fit: BoxFit.cover,
-                      ),
+          Material(
+            child: InkWell(
+              borderRadius: BorderRadius.circular(radius),
+              onTap: () => onTap?.call(book),
+              child: Ink(
+                width: double.infinity,
+                height: 160,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(radius),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      spreadRadius: 0.1,
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
                     ),
-                  );
-                }),
+                  ],
+                ),
+                child: Center(
+                  child: LayoutBuilder(builder: (context, constraints) {
+                    return Ink(
+                      height: constraints.maxHeight,
+                      width: (constraints.maxHeight * 240) / 360,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(radius),
+                        image: DecorationImage(
+                          image: NetworkImage(book.capaUrl!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  }),
+                ),
               ),
             ),
           ),
