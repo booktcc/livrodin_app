@@ -38,6 +38,7 @@ class _HeaderState extends State<Header> {
     HeaderProps props = widget.props;
     return AppBar(
       toolbarHeight: 52,
+      elevation: 0,
       centerTitle: props.showLogo || props.title == null,
       title: props.title != null
           ? Text(
