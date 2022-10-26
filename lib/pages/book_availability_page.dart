@@ -32,9 +32,13 @@ class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
         showBackButton: true,
         title: 'Disponibilizar livro',
       ),
-      child: Ink(
+      child: Container(
         decoration: const BoxDecoration(
           color: lightGrey,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(pageRadius),
+            topRight: Radius.circular(pageRadius),
+          ),
         ),
         height: double.infinity,
         width: double.infinity,
@@ -46,9 +50,13 @@ class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
               status: _status,
               onChange: (status) => _status = status,
             ),
-            const SizedBox(height: 24),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.only(
+                right: 10,
+                left: 10,
+                top: 24,
+                bottom: 10,
+              ),
               child: Input(
                 hintText: "Pesquise por título ou ISBN",
                 leftIcon: const Icon(Icons.search, color: Colors.grey),
@@ -64,7 +72,6 @@ class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
                 },
               ),
             ),
-            const SizedBox(height: 24),
             Expanded(
               child: Obx(() {
                 if (_searchStatus.value == SearchStatus.initial) {
@@ -75,6 +82,8 @@ class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
                   );
                 } else if (_searchStatus.value == SearchStatus.complete) {
                   return CustomScrollView(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
                     slivers: [
                       SliverPadding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
