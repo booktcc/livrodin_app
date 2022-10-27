@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BottomMenu extends StatefulWidget {
-  const BottomMenu({super.key, required this.pageController});
+  BottomMenu({
+    super.key,
+    required this.pageController,
+    int initialIndex = 0,
+  }) : _selectefIndex = Rx(initialIndex);
 
   final PageController pageController;
-
+  final Rx<int> _selectefIndex;
   @override
   State<BottomMenu> createState() => _BottomMenuState();
 }
@@ -36,99 +40,122 @@ class _BottomMenuState extends State<BottomMenu> {
             ],
           ),
         ),
-        SizedBox(
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () => widget.pageController.jumpToPage(0),
-                            borderRadius: BorderRadius.circular(90),
-                            child: const SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: Icon(
-                                Icons.home,
-                                size: 28,
-                                color: grey,
+        Obx(() {
+          return SizedBox(
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: widget._selectefIndex.value == 0
+                                  ? null
+                                  : () {
+                                      widget.pageController.jumpToPage(0);
+                                      widget._selectefIndex.value = 0;
+                                    },
+                              borderRadius: BorderRadius.circular(90),
+                              child: SizedBox(
+                                width: 50,
+                                height: 50,
+                                child: Icon(
+                                  Icons.home,
+                                  size: 28,
+                                  color: widget._selectefIndex.value == 0
+                                      ? Colors.black
+                                      : grey,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () => widget.pageController.jumpToPage(1),
-                            borderRadius: BorderRadius.circular(90),
-                            child: const SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: Icon(
-                                Icons.category,
-                                size: 28,
-                                color: grey,
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: widget._selectefIndex.value == 1
+                                  ? null
+                                  : () {
+                                      widget.pageController.jumpToPage(1);
+                                      widget._selectefIndex.value = 1;
+                                    },
+                              borderRadius: BorderRadius.circular(90),
+                              child: SizedBox(
+                                width: 50,
+                                height: 50,
+                                child: Icon(
+                                  Icons.category,
+                                  size: 28,
+                                  color: widget._selectefIndex.value == 1
+                                      ? Colors.black
+                                      : grey,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () => widget.pageController.jumpToPage(2),
-                            borderRadius: BorderRadius.circular(90),
-                            child: const SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: Icon(
-                                Icons.notifications_rounded,
-                                size: 28,
-                                color: grey,
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: widget._selectefIndex.value == 2
+                                  ? null
+                                  : () {
+                                      widget.pageController.jumpToPage(2);
+                                      widget._selectefIndex.value = 2;
+                                    },
+                              borderRadius: BorderRadius.circular(90),
+                              child: SizedBox(
+                                width: 50,
+                                height: 50,
+                                child: Icon(
+                                  Icons.notifications_rounded,
+                                  size: 28,
+                                  color: widget._selectefIndex.value == 2
+                                      ? Colors.black
+                                      : grey,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {},
-                            borderRadius: BorderRadius.circular(90),
-                            child: const Padding(
-                              padding: EdgeInsets.all(10),
-                              child: ProfileIcon(
-                                size: ProfileSize.sm,
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {},
+                              borderRadius: BorderRadius.circular(90),
+                              child: const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: ProfileIcon(
+                                  size: ProfileSize.sm,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
+              ],
+            ),
+          );
+        }),
         Positioned(
           top: -16,
           child: Material(

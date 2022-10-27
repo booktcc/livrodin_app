@@ -1,4 +1,3 @@
-import 'package:app_flutter/components/bottom_menu.dart';
 import 'package:app_flutter/components/header.dart';
 import 'package:app_flutter/components/layout.dart';
 import 'package:app_flutter/pages/home_page/genrer.dart';
@@ -7,14 +6,17 @@ import 'package:app_flutter/pages/home_page/notifications.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  HomePage({Key? key, int initialIndex = 0})
+      : _pageController = PageController(initialPage: initialIndex),
+        super(key: key);
+
+  final PageController _pageController;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final PageController _pageController = PageController();
   @override
   Widget build(BuildContext context) {
     return Layout(
@@ -28,10 +30,10 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       showBottomMenu: true,
-      pageController: _pageController,
+      pageController: widget._pageController,
       child: PageView(
         physics: const NeverScrollableScrollPhysics(),
-        controller: _pageController,
+        controller: widget._pageController,
         children: const [
           Home(),
           Genrer(),

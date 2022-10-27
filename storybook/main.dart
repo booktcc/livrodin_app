@@ -50,7 +50,7 @@ class _StorybookAppState extends State<StorybookApp> {
           ),
           Story(
             name: 'Pages/HomePage',
-            builder: (context) => const HomePage(),
+            builder: (context) => HomePage(),
           ),
           Story(
             name: 'Pages/LoginPage',

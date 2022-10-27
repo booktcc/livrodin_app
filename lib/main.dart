@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/home',
-          page: () => const HomePage(),
+          page: () => HomePage(),
         ),
         GetPage(
           name: '/book_availability',
