@@ -5,6 +5,7 @@ import 'package:app_flutter/controllers/login_controller.dart';
 import 'package:app_flutter/pages/book_availability_page.dart';
 import 'package:app_flutter/pages/home_page.dart';
 import 'package:app_flutter/pages/login_page.dart';
+import 'package:app_flutter/pages/profile_page.dart';
 import 'package:app_flutter/pages/splash_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,10 @@ class MyApp extends StatelessWidget {
           binding: BindingsBuilder(() {
             Get.put(BookController());
           }),
+        ),
+        GetPage(
+          name: '/profile',
+          page: () => ProfilePage(),
         ),
       ],
       initialBinding: BindingsBuilder(() {

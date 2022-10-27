@@ -27,8 +27,8 @@ class BottomProfile extends StatelessWidget {
             ButtonOptionProfile(
               label: "Lista de Interesse",
               icon: Icons.book_rounded,
-              topLeftRadius: 10,
-              topRightRadius: 10,
+              topLeftRadius: 20,
+              topRightRadius: 20,
               onPressed: () {},
             ),
             ButtonOptionProfile(
@@ -39,8 +39,8 @@ class BottomProfile extends StatelessWidget {
             ButtonOptionProfile(
               label: "Livros Avaliados",
               icon: Icons.stars_rounded,
-              bottomLeftRadius: 10,
-              bottomRightRadius: 10,
+              bottomLeftRadius: 20,
+              bottomRightRadius: 20,
               onPressed: () {},
             ),
           ],

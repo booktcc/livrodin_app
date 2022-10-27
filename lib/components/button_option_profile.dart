@@ -22,7 +22,8 @@ class ButtonOptionProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRect(
+    return Material(
+      color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(topLeftRadius),
@@ -33,6 +34,15 @@ class ButtonOptionProfile extends StatelessWidget {
         onTap: () {},
         child: Ink(
           height: 60,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(topLeftRadius),
+              topRight: Radius.circular(topRightRadius),
+              bottomLeft: Radius.circular(bottomLeftRadius),
+              bottomRight: Radius.circular(bottomRightRadius),
+            ),
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 5),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
