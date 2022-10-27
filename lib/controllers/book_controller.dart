@@ -1,4 +1,5 @@
 import 'package:app_flutter/components/toggle_offer_status.dart';
+import 'package:app_flutter/services/book_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
@@ -7,6 +8,7 @@ import 'auth_controller.dart';
 
 class BookController extends GetxController {
   var authController = Get.find<AuthController>();
+  var bookService = BookService();
 
   Future<bool?> makeBookAvailable(Book book, OfferStatus offerStatus) async {
     try {
@@ -27,25 +29,11 @@ class BookController extends GetxController {
 
   Future<List<Book>> searchBook(String q) async {
     try {
-      // TODO: Implement searchBook
-
-      return [
-        Book(
-          isbn13: "978-85-7522-510-0",
-          title: "Harry Potter e a Pedra Filosofal",
-          authors: ["J. K. Rowling"],
-          capaUrl:
-              "https://books.google.com.br/books/publisher/content?id=GjgQCwAAQBAJ&hl=pt-BR&pg=PP1&img=1&zoom=3&bul=1&sig=ACfU3U32CKE-XFfMvnbcz1qW0PS46Lg-Ew&w=1280",
-        ),
-        Book(
-          isbn13: "978-85-7522-510-0",
-          title: "Harry Potter e a Pedra Filosofal",
-          authors: ["J. K. Rowling"],
-          capaUrl:
-              "https://books.google.com.br/books/publisher/content?id=GjgQCwAAQBAJ&hl=pt-BR&pg=PP1&img=1&zoom=3&bul=1&sig=ACfU3U32CKE-XFfMvnbcz1qW0PS46Lg-Ew&w=1280",
-        ),
-      ];
+      var result = await bookService.searchBooks(q);
+      print(result);
+      return result;
     } catch (e) {
+      printError(info: e.toString());
       return [];
     }
   }
