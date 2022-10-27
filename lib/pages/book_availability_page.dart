@@ -73,50 +73,52 @@ class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
               ),
             ),
             Expanded(
-              child: Obx(() {
-                if (_searchStatus.value == SearchStatus.initial) {
-                  return const SizedBox();
-                } else if (_searchStatus.value == SearchStatus.loading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (_searchStatus.value == SearchStatus.complete) {
-                  return CustomScrollView(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    slivers: [
-                      SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        sliver: SliverGrid(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-                            childAspectRatio: 0.8,
-                          ),
-                          delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                              return BookCard(
-                                book: _searchedBooks[index],
-                                onTap: (book) {
-                                  _bookController.makeBookAvailable(
-                                      book, _status);
-                                },
-                              );
-                            },
-                            childCount: _searchedBooks.length,
+              child: Obx(
+                () {
+                  if (_searchStatus.value == SearchStatus.initial) {
+                    return const SizedBox();
+                  } else if (_searchStatus.value == SearchStatus.loading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (_searchStatus.value == SearchStatus.complete) {
+                    return CustomScrollView(
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      slivers: [
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          sliver: SliverGrid(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
+                              childAspectRatio: 0.8,
+                            ),
+                            delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                                return BookCard(
+                                  book: _searchedBooks[index],
+                                  onTap: (book) {
+                                    _bookController.makeBookAvailable(
+                                        book, _status);
+                                  },
+                                );
+                              },
+                              childCount: _searchedBooks.length,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return const Center(
-                    child: Text("Erro ao pesquisar"),
-                  );
-                }
-              }),
+                      ],
+                    );
+                  } else {
+                    return const Center(
+                      child: Text("Erro ao pesquisar"),
+                    );
+                  }
+                },
+              ),
             ),
           ],
         ),
