@@ -50,7 +50,7 @@ class _StorybookAppState extends State<StorybookApp> {
           ),
           Story(
             name: 'Pages/HomePage',
-            builder: (context) => const HomePage(),
+            builder: (context) => HomePage(),
           ),
           Story(
             name: 'Pages/LoginPage',
@@ -62,9 +62,9 @@ class _StorybookAppState extends State<StorybookApp> {
           ),
           Story(
             name: 'Components/BottomMenu',
-            builder: (context) => const Scaffold(
+            builder: (context) => Scaffold(
               backgroundColor: dark,
-              bottomNavigationBar: BottomMenu(),
+              bottomNavigationBar: BottomMenu(pageController: PageController()),
             ),
           ),
           Story(

@@ -11,7 +11,10 @@ class Layout extends StatelessWidget {
       {super.key,
       this.showBottomMenu = false,
       required this.child,
-      required this.headerProps});
+      required this.headerProps,
+      this.pageController});
+
+  final PageController? pageController;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,11 @@ class Layout extends StatelessWidget {
         props: headerProps,
       ),
       backgroundColor: dark,
-      bottomNavigationBar: showBottomMenu ? const BottomMenu() : null,
+      bottomNavigationBar: showBottomMenu
+          ? BottomMenu(
+              pageController: pageController!,
+            )
+          : null,
       extendBody: true,
       body: child,
     );
