@@ -1,9 +1,12 @@
 import 'package:app_flutter/components/profile_icon.dart';
 import 'package:app_flutter/configs/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class BottomMenu extends StatefulWidget {
-  const BottomMenu({super.key});
+  const BottomMenu({super.key, required this.pageController});
+
+  final PageController pageController;
 
   @override
   State<BottomMenu> createState() => _BottomMenuState();
@@ -13,9 +16,10 @@ class _BottomMenuState extends State<BottomMenu> {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
-        Ink(
+        Container(
           width: double.infinity,
           height: 80,
           decoration: const BoxDecoration(
@@ -32,7 +36,7 @@ class _BottomMenuState extends State<BottomMenu> {
             ],
           ),
         ),
-        Ink(
+        SizedBox(
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -40,67 +44,83 @@ class _BottomMenuState extends State<BottomMenu> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.only(right: 30, left: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        SizedBox(
-                          width: 28,
-                          height: 28,
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.home,
-                              color: grey,
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => widget.pageController.jumpToPage(0),
+                            borderRadius: BorderRadius.circular(90),
+                            child: const SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: Icon(
+                                Icons.home,
+                                size: 28,
+                                color: grey,
+                              ),
                             ),
-                            onPressed: () {},
-                            iconSize: 28,
-                            padding: const EdgeInsets.all(0),
-                            isSelected: true,
-                            selectedIcon:
-                                const Icon(Icons.home, color: Colors.black),
                           ),
                         ),
                         const SizedBox(
-                          width: 30,
+                          width: 20,
                         ),
-                        SizedBox(
-                          width: 28,
-                          height: 28,
-                          child: IconButton(
-                            icon: const Icon(Icons.category),
-                            onPressed: () {},
-                            iconSize: 28,
-                            color: grey,
-                            padding: const EdgeInsets.all(0),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => widget.pageController.jumpToPage(1),
+                            borderRadius: BorderRadius.circular(90),
+                            child: const SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: Icon(
+                                Icons.category,
+                                size: 28,
+                                color: grey,
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
                     Row(
                       children: [
-                        SizedBox(
-                          width: 28,
-                          height: 28,
-                          child: IconButton(
-                            icon: const Icon(Icons.chat),
-                            onPressed: () {},
-                            iconSize: 28,
-                            color: grey,
-                            padding: const EdgeInsets.all(0),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => widget.pageController.jumpToPage(2),
+                            borderRadius: BorderRadius.circular(90),
+                            child: const SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: Icon(
+                                Icons.notifications_rounded,
+                                size: 28,
+                                color: grey,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(
-                          width: 30,
+                          width: 20,
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const ProfileIcon(
-                            size: ProfileSize.sm,
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {},
+                            borderRadius: BorderRadius.circular(90),
+                            child: const Padding(
+                              padding: EdgeInsets.all(10),
+                              child: ProfileIcon(
+                                size: ProfileSize.sm,
+                              ),
+                            ),
                           ),
-                          iconSize: 28,
-                        )
+                        ),
                       ],
                     ),
                   ],
@@ -111,32 +131,21 @@ class _BottomMenuState extends State<BottomMenu> {
         ),
         Positioned(
           top: -16,
-          child: Ink(
-            width: 66,
-            height: 66,
-            decoration: const BoxDecoration(
-              color: red,
-              borderRadius: BorderRadius.all(
-                Radius.circular(90),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Color.fromRGBO(235, 28, 36, 0.13),
-                  offset: Offset(0.0, 10.0),
-                  blurRadius: 15.0,
-                ),
-              ],
-            ),
-            // move a bit to top
-            child: Center(
-              child: IconButton(
-                iconSize: 28,
-                onPressed: () {},
-                icon: const Icon(
+          child: Material(
+            elevation: 4,
+            borderRadius: BorderRadius.circular(90),
+            color: Colors.red,
+            child: InkWell(
+              onTap: () => Get.toNamed("/book_availability"),
+              borderRadius: BorderRadius.circular(90),
+              child: const SizedBox(
+                width: 70,
+                height: 70,
+                child: Icon(
                   Icons.menu_book,
+                  size: 28,
                   color: Colors.white,
                 ),
-                padding: const EdgeInsets.all(6),
               ),
             ),
           ),
