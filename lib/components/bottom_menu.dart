@@ -137,7 +137,7 @@ class _BottomMenuState extends State<BottomMenu> {
                           Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              onTap: () {},
+                              onTap: () => Get.toNamed("/profile"),
                               borderRadius: BorderRadius.circular(90),
                               child: const Padding(
                                 padding: EdgeInsets.all(10),

@@ -17,7 +17,7 @@ class TransactionPainel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Ink(
+      child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -33,7 +33,7 @@ class TransactionPainel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Ink(
+            Container(
               decoration: BoxDecoration(
                 color: lightGrey,
                 borderRadius: BorderRadius.only(
@@ -70,32 +70,35 @@ class TransactionPainel extends StatelessWidget {
                         ),
                       ],
                     ),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(20),
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 10,
-                        ),
-                        child: Row(
-                          children: const [
-                            Text(
-                              'Mostrar Tudo',
-                              style: TextStyle(
-                                color: grey,
-                                fontSize: 14,
-                                fontFamily: "Avenir",
-                                fontWeight: FontWeight.w800,
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(20),
+                        onTap: () {},
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 10,
+                          ),
+                          child: Row(
+                            children: const [
+                              Text(
+                                'Mostrar Tudo',
+                                style: TextStyle(
+                                  color: grey,
+                                  fontSize: 14,
+                                  fontFamily: "Avenir",
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 10),
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              color: grey,
-                              size: 18,
-                            ),
-                          ],
+                              SizedBox(width: 10),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: grey,
+                                size: 18,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
