@@ -48,7 +48,7 @@ class BookCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(radius),
                         image: DecorationImage(
-                          image: NetworkImage(book.capaUrl!),
+                          image: NetworkImage(book.coverUrl!),
                           fit: BoxFit.cover,
                         ),
                       ),
