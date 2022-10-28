@@ -19,7 +19,6 @@ class _ToggleOfferStatusStoriesState extends State<ToggleOfferStatusStories> {
       backgroundColor: lightGrey,
       body: Center(
         child: ToggleOfferStatus(
-          status: status,
           onChange: (newStatus) => setState(() {
             status = newStatus;
           }),

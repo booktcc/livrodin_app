@@ -1,7 +1,6 @@
 import 'package:app_flutter/components/confirm_dialog.dart';
 import 'package:app_flutter/components/toggle_offer_status.dart';
 import 'package:app_flutter/services/book_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 import '../models/book.dart';
@@ -20,21 +19,7 @@ class BookController extends GetxController {
             'Você está preste a adicionar o livro: “${book.title}” para a Doação.',
         onConfirm: () async {
           // update the book status
-          await FirebaseFirestore.instance
-              .collection("BookAvailable")
-              .doc()
-              .set({
-            "isbn10": book.isbn10,
-            "isbn13": book.isbn13,
-            "title": book.title,
-            "coverUrl": book.coverUrl,
-            "idUser": authController.user.value!.uid,
-            "createdAt": FieldValue.serverTimestamp(),
-            "forDonation": (offerStatus == OfferStatus.both ||
-                offerStatus == OfferStatus.donate),
-            "forTrade": (offerStatus == OfferStatus.both ||
-                offerStatus == OfferStatus.trade),
-          });
+          await bookService.addBook(book, offerStatus);
           // close the dialog
           Get.back();
         },
@@ -48,7 +33,7 @@ class BookController extends GetxController {
 
   Future<List<Book>> searchBook(String q) async {
     try {
-      var result = await bookService.searchBooks(q);
+      var result = await bookService.searchBooksOnGoogleApi(q);
       return result;
     } catch (e) {
       printError(info: e.toString());
