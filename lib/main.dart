@@ -14,7 +14,7 @@ import 'package:get/get.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const SplashPage());
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -32,10 +32,11 @@ class MyApp extends StatelessWidget {
       title: 'App Book',
       theme: themeData,
       initialRoute: '/',
+      defaultTransition: Transition.fade,
       getPages: [
         GetPage(
           name: '/',
-          page: () => const SplashPage(),
+          page: () => const SplashPage(withRedirect: true),
         ),
         GetPage(
           name: '/login',
