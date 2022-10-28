@@ -30,8 +30,12 @@ class Book {
       sinopse: oldBook.info.description,
       generos: oldBook.info.categories,
       publishedDate: oldBook.info.publishedDate,
-      isbn10: "",
-      isbn13: "",
+      isbn10: oldBook.info.industryIdentifiers
+          .firstWhere((element) => element.type == "ISBN_10")
+          .identifier,
+      isbn13: oldBook.info.industryIdentifiers
+          .firstWhere((element) => element.type == "ISBN_13")
+          .identifier,
     );
   }
 }
