@@ -21,6 +21,8 @@ class Book {
     this.genres,
   });
 
+  String get authorsString => authors?.join(', ') ?? '';
+
   factory Book.fromApi(books_finder.Book oldBook) {
     return Book(
       title: oldBook.info.title,
