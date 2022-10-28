@@ -30,7 +30,6 @@ class BookController extends GetxController {
   Future<List<Book>> searchBook(String q) async {
     try {
       var result = await bookService.searchBooks(q);
-      print(result);
       return result;
     } catch (e) {
       printError(info: e.toString());

@@ -22,7 +22,7 @@ class _SplashPageState extends State<SplashPage> {
       var pageToRedirect =
           authController.isLogged.value ? const HomePage() : const LoginPage();
       Get.to(
-        pageToRedirect,
+        () => pageToRedirect,
         binding: BindingsBuilder(() {
           Get.put(LoginController());
         }),

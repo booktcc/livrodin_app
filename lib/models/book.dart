@@ -1,3 +1,5 @@
+import 'package:books_finder/books_finder.dart' as books_finder;
+
 class Book {
   final String? isbn10;
   final String? isbn13;
@@ -18,4 +20,19 @@ class Book {
     this.publishedDate,
     this.generos,
   });
+
+  factory Book.fromApi(books_finder.Book oldBook) {
+    print("url: ${oldBook.info.imageLinks}");
+    return Book(
+      title: oldBook.info.title,
+      authors: oldBook.info.authors,
+      capaUrl:
+          "https://books.google.com/books/content?id=${oldBook.id}&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+      sinopse: oldBook.info.description,
+      generos: oldBook.info.categories,
+      publishedDate: oldBook.info.publishedDate,
+      isbn10: "",
+      isbn13: "",
+    );
+  }
 }
