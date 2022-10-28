@@ -1,10 +1,10 @@
 import 'package:app_flutter/configs/themes.dart';
 import 'package:app_flutter/controllers/auth_controller.dart';
+import 'package:app_flutter/controllers/login_controller.dart';
 import 'package:app_flutter/pages/home_page.dart';
 import 'package:app_flutter/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:page_transition/page_transition.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -21,15 +21,14 @@ class _SplashPageState extends State<SplashPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       var pageToRedirect =
           authController.isLogged.value ? HomePage() : const LoginPage();
-      Navigator.pushReplacement(
-        context,
-        PageTransition(
-          type: PageTransitionType.fade,
-          child: pageToRedirect,
-          childCurrent: widget,
-          duration: const Duration(seconds: 1),
-          curve: Curves.easeOut,
-        ),
+      Get.to(
+        () => pageToRedirect,
+        binding: BindingsBuilder(() {
+          Get.put(LoginController());
+        }),
+        transition: Transition.fadeIn,
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.easeIn,
       );
     });
   }

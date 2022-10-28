@@ -40,6 +40,9 @@ dependencies:
   firebase_storage: ^10.3.8
   page_transition: ^2.0.9
   badges: ^2.0.3
+  books_finder: ^4.3.0
+  easy_debounce: ^2.0.2+1
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   flutter_test:

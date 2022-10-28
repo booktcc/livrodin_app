@@ -11,7 +11,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  var loginController = Get.put(LoginController());
+  var loginController = Get.find<LoginController>();
   var authController = Get.find<AuthController>();
 
   @override

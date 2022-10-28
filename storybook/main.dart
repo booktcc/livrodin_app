@@ -90,7 +90,7 @@ class _StorybookAppState extends State<StorybookApp> {
                   isbn13: "978-85-7522-510-0",
                   title: "Harry Potter e a Pedra Filosofal",
                   authors: ["J. K. Rowling"],
-                  capaUrl:
+                  coverUrl:
                       "https://books.google.com.br/books/publisher/content?id=GjgQCwAAQBAJ&hl=pt-BR&pg=PP1&img=1&zoom=3&bul=1&sig=ACfU3U32CKE-XFfMvnbcz1qW0PS46Lg-Ew&w=1280",
                 ),
                 onTap: (book) {},

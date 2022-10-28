@@ -22,8 +22,8 @@ class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
   OfferStatus _status = OfferStatus.both;
   final BookController _bookController = Get.find<BookController>();
 
-  List<Book> _searchedBooks = [];
   final Rx<SearchStatus> _searchStatus = Rx(SearchStatus.initial);
+  final Rx<List<Book>> _searchedBooks = Rx([]);
   @override
   Widget build(BuildContext context) {
     return Layout(
@@ -47,7 +47,6 @@ class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
           children: [
             const SizedBox(height: 24),
             ToggleOfferStatus(
-              status: _status,
               onChange: (status) => _status = status,
             ),
             Padding(
@@ -67,7 +66,9 @@ class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
                   },
                 ),
                 onEditingComplete: (String text) async {
-                  _searchedBooks = await _bookController.searchBook(text);
+                  var books = await _bookController.searchBook(text);
+                  _searchedBooks.value = books;
+
                   _searchStatus.value = SearchStatus.complete;
                 },
               ),
@@ -99,14 +100,14 @@ class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
                             delegate: SliverChildBuilderDelegate(
                               (BuildContext context, int index) {
                                 return BookCard(
-                                  book: _searchedBooks[index],
+                                  book: _searchedBooks.value[index],
                                   onTap: (book) {
                                     _bookController.makeBookAvailable(
                                         book, _status);
                                   },
                                 );
                               },
-                              childCount: _searchedBooks.length,
+                              childCount: _searchedBooks.value.length,
                             ),
                           ),
                         ),
