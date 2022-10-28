@@ -15,7 +15,7 @@ class ProfileInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.max,
       children: [
         ProfileIcon(size: ProfileSize.xl, image: image),
         const SizedBox(width: 20),

@@ -29,55 +29,58 @@ class ButtonAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(radius),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: minWidth,
-          minHeight: minHeight,
-        ),
-        child: Ink(
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(radius),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                spreadRadius: 0.1,
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(radius),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minWidth: minWidth,
+            minHeight: minHeight,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Visibility(
-                visible: icon != null,
-                child: Icon(
-                  icon,
-                  size: iconSize,
-                  color: textColor,
+          child: Ink(
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(radius),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  spreadRadius: 0.1,
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
                 ),
-              ),
-              Visibility(
-                visible: icon != null,
-                child: const SizedBox(width: 10),
-              ),
-              Text(
-                label,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: fontSize,
-                  fontFamily: "Avenir",
-                  fontWeight: FontWeight.w800,
+              ],
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Visibility(
+                  visible: icon != null,
+                  child: Icon(
+                    icon,
+                    size: iconSize,
+                    color: textColor,
+                  ),
                 ),
-              ),
-            ],
+                Visibility(
+                  visible: icon != null,
+                  child: const SizedBox(width: 10),
+                ),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: fontSize,
+                    fontFamily: "Avenir",
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

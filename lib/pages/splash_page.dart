@@ -20,7 +20,7 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       var pageToRedirect =
-          authController.isLogged.value ? const HomePage() : const LoginPage();
+          authController.isLogged.value ? HomePage() : const LoginPage();
       Get.to(
         () => pageToRedirect,
         binding: BindingsBuilder(() {
