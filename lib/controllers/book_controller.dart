@@ -30,7 +30,6 @@ class BookController extends GetxController {
             "coverUrl": book.coverUrl,
             "idUser": authController.user.value!.uid,
             "createdAt": FieldValue.serverTimestamp(),
-            "updateAt": FieldValue.serverTimestamp(),
             "forDonation": (offerStatus == OfferStatus.both ||
                 offerStatus == OfferStatus.donate),
             "forTrade": (offerStatus == OfferStatus.both ||
