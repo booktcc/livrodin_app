@@ -1,40 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 enum OfferStatus { both, trade, donate }
 
-class ToggleOfferStatus extends StatelessWidget {
-  final OfferStatus status;
+class ToggleOfferStatus extends StatefulWidget {
   final void Function(OfferStatus)? onChange;
   const ToggleOfferStatus({
     super.key,
-    this.status = OfferStatus.both,
     this.onChange,
   });
 
   @override
+  State<ToggleOfferStatus> createState() => _ToggleOfferStatusState();
+}
+
+class _ToggleOfferStatusState extends State<ToggleOfferStatus> {
+  Rx<OfferStatus> status = Rx(OfferStatus.both);
+
+  @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _StatusBlock(
-          text: 'Doação',
-          selected: status == OfferStatus.donate,
-          roundedSide: _RoundedSide.left,
-          onTap: () => onChange?.call(OfferStatus.donate),
-        ),
-        _StatusBlock(
-          text: 'Ambos',
-          selected: status == OfferStatus.both,
-          roundedSide: _RoundedSide.none,
-          onTap: () => onChange?.call(OfferStatus.both),
-        ),
-        _StatusBlock(
-          text: 'Troca',
-          selected: status == OfferStatus.trade,
-          roundedSide: _RoundedSide.right,
-          onTap: () => onChange?.call(OfferStatus.trade),
-        ),
-      ],
+    return Obx(
+      () => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _StatusBlock(
+            text: 'Doação',
+            selected: status.value == OfferStatus.donate,
+            roundedSide: _RoundedSide.left,
+            onTap: () => {
+              widget.onChange?.call(OfferStatus.donate),
+              status.value = OfferStatus.donate
+            },
+          ),
+          _StatusBlock(
+            text: 'Ambos',
+            selected: status.value == OfferStatus.both,
+            roundedSide: _RoundedSide.none,
+            onTap: () => {
+              widget.onChange?.call(OfferStatus.both),
+              status.value = OfferStatus.both
+            },
+          ),
+          _StatusBlock(
+            text: 'Troca',
+            selected: status.value == OfferStatus.trade,
+            roundedSide: _RoundedSide.right,
+            onTap: () => {
+              widget.onChange?.call(OfferStatus.trade),
+              status.value = OfferStatus.trade
+            },
+          ),
+        ],
+      ),
     );
   }
 }

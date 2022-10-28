@@ -47,7 +47,6 @@ class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
           children: [
             const SizedBox(height: 24),
             ToggleOfferStatus(
-              status: _status,
               onChange: (status) => _status = status,
             ),
             Padding(
