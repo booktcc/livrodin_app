@@ -30,4 +30,16 @@ class BookService {
           (offerStatus == OfferStatus.both || offerStatus == OfferStatus.trade),
     });
   }
+
+  Future<void> addRate(
+      {required Book book, required int rate, required String comment}) async {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    await FirebaseFirestore.instance.collection("BookRate").doc().set({
+      "isbn10": book.isbn10,
+      "idUser": authController.user.value!.uid,
+      "rate": rate,
+      "comment": comment.trim().isNotEmpty ? comment : null,
+    });
+  }
 }

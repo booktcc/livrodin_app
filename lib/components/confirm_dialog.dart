@@ -16,7 +16,7 @@ class ConfirmDialog extends StatelessWidget {
       content: Text(content),
       actions: [
         TextButton(
-          onPressed: () => Get.back(),
+          onPressed: () => Get.back(result: false),
           child: const Text('Não', style: TextStyle(color: azure)),
         ),
         TextButton(

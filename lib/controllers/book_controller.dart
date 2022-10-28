@@ -14,26 +14,26 @@ class BookController extends GetxController {
   Future<bool?> makeBookAvailable(Book book, OfferStatus offerStatus) async {
     try {
       // call a dialog
-      await Get.dialog(ConfirmDialog(
+      bool hasAdded = await Get.dialog(ConfirmDialog(
         title: 'Confirmar?',
         content:
             'Você está preste a adicionar o livro: “${book.title}” para a Doação.',
         onConfirm: () async {
-          // update the book status
-          // await bookService.addBook(book, offerStatus);
-          // close the dialog
-          Get.back();
+          bookService
+              .addBook(book, offerStatus)
+              .whenComplete(() => Get.back(result: true));
         },
       ));
-
-      await Get.dialog(RateDialog(
-        title: 'Avalie o livro',
-        content: "Dê sua nota",
-        onConfirm: (rate) {
-          // update the book rate
-          Get.back();
-        },
-      ));
+      if (hasAdded) {
+        await Get.dialog(RateDialog(
+          title: 'Avalie o livro',
+          onConfirm: ({required rate, required comment}) async {
+            await bookService
+                .addRate(book: book, rate: rate, comment: comment)
+                .whenComplete(() => Get.back());
+          },
+        ));
+      }
 
       return true;
     } catch (e) {
