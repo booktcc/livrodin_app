@@ -37,6 +37,7 @@ class BookService {
 
     await FirebaseFirestore.instance.collection("BookRate").doc().set({
       "isbn10": book.isbn10,
+      "isbn13": book.isbn13,
       "idUser": authController.user.value!.uid,
       "rate": rate,
       "comment": comment.trim().isNotEmpty ? comment : null,
