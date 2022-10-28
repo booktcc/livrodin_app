@@ -44,8 +44,8 @@ class ProfilePage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 20, left: 20, top: 24),
                 child: ProfileInfo(
-                  name: authController.user.value!.displayName!,
-                  email: authController.user.value!.email!,
+                  name: authController.user.value?.displayName ?? "Sem nome",
+                  email: authController.user.value?.email ?? "Sem email",
                   image: "https://avatars.githubusercontent.com/u/47704204?v=4",
                 ),
               ),
