@@ -87,6 +87,7 @@ class _StorybookAppState extends State<StorybookApp> {
               body: Center(
                   child: BookCard(
                 book: Book(
+                  id: "1",
                   isbn13: "978-85-7522-510-0",
                   title: "Harry Potter e a Pedra Filosofal",
                   authors: ["J. K. Rowling"],

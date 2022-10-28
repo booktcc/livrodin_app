@@ -71,6 +71,21 @@ class BookCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 5),
+          Visibility(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.handshake_rounded,
+                  color: Colors.green[600],
+                ),
+                Icon(
+                  Icons.swap_horizontal_circle_rounded,
+                  color: Colors.green[600],
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

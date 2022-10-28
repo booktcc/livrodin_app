@@ -1,5 +1,6 @@
 import 'package:app_flutter/configs/themes.dart';
 import 'package:app_flutter/controllers/auth_controller.dart';
+import 'package:app_flutter/controllers/book_controller.dart';
 import 'package:app_flutter/controllers/login_controller.dart';
 import 'package:app_flutter/pages/home_page.dart';
 import 'package:app_flutter/pages/login_page.dart';
@@ -25,6 +26,7 @@ class _SplashPageState extends State<SplashPage> {
         () => pageToRedirect,
         binding: BindingsBuilder(() {
           Get.put(LoginController());
+          Get.put(BookController());
         }),
         transition: Transition.fadeIn,
         duration: const Duration(milliseconds: 1000),
