@@ -22,7 +22,6 @@ class Book {
   });
 
   factory Book.fromApi(books_finder.Book oldBook) {
-    print("url: ${oldBook.info.imageLinks}");
     return Book(
       title: oldBook.info.title,
       authors: oldBook.info.authors,
