@@ -44,8 +44,8 @@ class ProfilePage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 20, left: 20, top: 24),
                 child: ProfileInfo(
-                  name: authController.user.value?.displayName ?? "Sem nome",
-                  email: authController.user.value?.email ?? "Sem email",
+                  name: authController.user.value?.displayName ?? 'Sem nome',
+                  email: authController.user.value?.email ?? 'Sem email',
                   image: "https://avatars.githubusercontent.com/u/47704204?v=4",
                 ),
               ),
@@ -66,7 +66,7 @@ class ProfilePage extends StatelessWidget {
                 minWidth: 100,
                 icon: Icons.logout,
                 label: 'Sair',
-                onPressed: () {},
+                onPressed: authController.logout,
               ),
               const SizedBox(height: 10),
             ],
