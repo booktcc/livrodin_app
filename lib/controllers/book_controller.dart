@@ -24,9 +24,13 @@ class BookController extends GetxController {
               .collection("BookAvailable")
               .doc()
               .set({
-            "idBook": book.isbn10 ?? book.isbn13,
+            "isbn10": book.isbn10,
+            "isbn13": book.isbn13,
+            "title": book.title,
+            "coverUrl": book.coverUrl,
             "idUser": authController.user.value!.uid,
-            "data": DateTime.now().toIso8601String(),
+            "createdAt": FieldValue.serverTimestamp(),
+            "updateAt": FieldValue.serverTimestamp(),
             "forDonation": (offerStatus == OfferStatus.both ||
                 offerStatus == OfferStatus.donate),
             "forTrade": (offerStatus == OfferStatus.both ||
