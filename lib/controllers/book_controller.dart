@@ -2,6 +2,7 @@ import 'package:app_flutter/components/confirm_dialog.dart';
 import 'package:app_flutter/components/rate_dialog.dart';
 import 'package:app_flutter/components/toggle_offer_status.dart';
 import 'package:app_flutter/services/book_service.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 
 import '../models/book.dart';
@@ -44,6 +45,17 @@ class BookController extends GetxController {
   Future<List<Book>> searchBook(String q) async {
     try {
       var result = await bookService.searchBooksOnGoogleApi(q);
+      return result;
+    } catch (e) {
+      printError(info: e.toString());
+      return [];
+    }
+  }
+
+  Future<List<Book>> getAvailableBooks({int? limit, int? page}) async {
+    try {
+      var result =
+          await bookService.getAvailableBooks(limit: limit, page: page);
       return result;
     } catch (e) {
       printError(info: e.toString());

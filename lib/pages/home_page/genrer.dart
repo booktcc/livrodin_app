@@ -1,3 +1,4 @@
+import 'package:app_flutter/components/title.dart';
 import 'package:app_flutter/configs/themes.dart';
 import 'package:flutter/material.dart';
 
@@ -6,14 +7,28 @@ class Genrer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(
+        top: Radius.circular(pageRadius),
+      ),
+      child: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          color: lightGrey,
         ),
-        color: lightGrey,
+        child: Column(
+          children: const [
+            PageTitle(
+              title: "Gêneros",
+            ),
+            Expanded(
+              child: CustomScrollView(
+                slivers: [],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

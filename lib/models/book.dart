@@ -1,6 +1,7 @@
 import 'package:books_finder/books_finder.dart' as books_finder;
 
 class Book {
+  final String id;
   final String? isbn10;
   final String? isbn13;
   final String? title;
@@ -11,6 +12,7 @@ class Book {
   final List<String>? genres;
 
   Book({
+    required this.id,
     this.isbn10,
     this.isbn13,
     this.title,
@@ -21,8 +23,11 @@ class Book {
     this.genres,
   });
 
+  String get authorsString => authors?.join(', ') ?? '';
+
   factory Book.fromApi(books_finder.Book oldBook) {
     return Book(
+      id: oldBook.id,
       title: oldBook.info.title,
       authors: oldBook.info.authors,
       coverUrl:

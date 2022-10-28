@@ -18,8 +18,7 @@ class BookService {
     if (authController.user.value == null) throw 'User not logged in';
 
     await FirebaseFirestore.instance.collection("BookAvailable").doc().set({
-      "isbn10": book.isbn10,
-      "isbn13": book.isbn13,
+      "idBook": book.id,
       "title": book.title,
       "coverUrl": book.coverUrl,
       "idUser": authController.user.value!.uid,
@@ -36,11 +35,46 @@ class BookService {
     if (authController.user.value == null) throw 'User not logged in';
 
     await FirebaseFirestore.instance.collection("BookRate").doc().set({
-      "isbn10": book.isbn10,
-      "isbn13": book.isbn13,
+      "idBook": book.id,
       "idUser": authController.user.value!.uid,
       "rate": rate,
       "comment": comment.trim().isNotEmpty ? comment : null,
     });
+  }
+
+  Future<List<Book>> getAvailableBooks({int? limit, int? page}) async {
+    List<Book> books = List.empty(growable: true);
+
+    var result = await FirebaseFirestore.instance
+        .collection("BookAvailable")
+        .limit(limit ?? 100)
+        .orderBy("createdAt", descending: true)
+        .orderBy("idBook")
+        .get();
+
+    for (var doc in result.docs) {
+      var data = doc.data();
+      try {
+        if (books.last.id != data["idBook"]) {
+          books.add(
+            Book(
+              id: data['idBook'],
+              title: data['title'],
+              coverUrl: data['coverUrl'],
+            ),
+          );
+        }
+      } catch (e) {
+        books.add(
+          Book(
+            id: data['idBook'],
+            title: data['title'],
+            coverUrl: data['coverUrl'],
+          ),
+        );
+      }
+    }
+
+    return books;
   }
 }

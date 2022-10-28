@@ -47,6 +47,9 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/home',
           page: () => HomePage(),
+          binding: BindingsBuilder(() {
+            Get.put(BookController());
+          }),
         ),
         GetPage(
           name: '/book_availability',
