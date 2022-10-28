@@ -1,4 +1,5 @@
 import 'package:app_flutter/components/confirm_dialog.dart';
+import 'package:app_flutter/components/rate_dialog.dart';
 import 'package:app_flutter/components/toggle_offer_status.dart';
 import 'package:app_flutter/services/book_service.dart';
 import 'package:get/get.dart';
@@ -19,8 +20,17 @@ class BookController extends GetxController {
             'Você está preste a adicionar o livro: “${book.title}” para a Doação.',
         onConfirm: () async {
           // update the book status
-          await bookService.addBook(book, offerStatus);
+          // await bookService.addBook(book, offerStatus);
           // close the dialog
+          Get.back();
+        },
+      ));
+
+      await Get.dialog(RateDialog(
+        title: 'Avalie o livro',
+        content: "Dê sua nota",
+        onConfirm: (rate) {
+          // update the book rate
           Get.back();
         },
       ));
