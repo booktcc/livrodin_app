@@ -43,6 +43,7 @@ dependencies:
   books_finder: ^4.3.0
   easy_debounce: ^2.0.2+1
   flutter_rating_bar: ^4.0.1
+  flutter_native_splash: ^2.2.12
 
 dev_dependencies:
   flutter_test:
@@ -55,6 +56,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
   storybook_flutter: ^0.11.2
+  flutter_launcher_icons: ^0.10.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -90,6 +92,6 @@ flutter:
           weight: 600
         - asset: fonts/Avenir-Black.ttf
           weight: 800
-  #
+
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
