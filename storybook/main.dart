@@ -10,7 +10,6 @@ import 'package:app_flutter/configs/themes.dart';
 import 'package:app_flutter/models/book.dart';
 import 'package:app_flutter/pages/home_page.dart';
 import 'package:app_flutter/pages/login_page.dart';
-import 'package:app_flutter/pages/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
@@ -44,10 +43,6 @@ class _StorybookAppState extends State<StorybookApp> {
           debugShowCheckedModeBanner: false,
         ),
         stories: [
-          Story(
-            name: 'Pages/SplashPage',
-            builder: (context) => const SplashPage(),
-          ),
           Story(
             name: 'Pages/HomePage',
             builder: (context) => HomePage(),

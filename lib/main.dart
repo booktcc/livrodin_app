@@ -6,7 +6,7 @@ import 'package:app_flutter/pages/book_availability_page.dart';
 import 'package:app_flutter/pages/home_page.dart';
 import 'package:app_flutter/pages/login_page.dart';
 import 'package:app_flutter/pages/profile_page.dart';
-import 'package:app_flutter/pages/splash_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,11 +14,11 @@ import 'package:get/get.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
-  runApp(const SplashPage());
-
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(const MyApp());
 }
 
@@ -27,17 +27,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var userLogged = FirebaseAuth.instance.currentUser;
+    var isLogged = userLogged != null;
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'App Book',
       theme: themeData,
-      initialRoute: '/',
+      initialRoute: isLogged ? '/home' : '/login',
       defaultTransition: Transition.fade,
       getPages: [
-        GetPage(
-          name: '/',
-          page: () => const SplashPage(withRedirect: true),
-        ),
         GetPage(
           name: '/login',
           page: () => const LoginPage(),
