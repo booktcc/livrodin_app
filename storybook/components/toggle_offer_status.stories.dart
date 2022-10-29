@@ -1,5 +1,5 @@
-import 'package:app_flutter/components/toggle_offer_status.dart';
-import 'package:app_flutter/configs/themes.dart';
+import 'package:livrodin/components/toggle_offer_status.dart';
+import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
 
 class ToggleOfferStatusStories extends StatefulWidget {

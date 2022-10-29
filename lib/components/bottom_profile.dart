@@ -1,4 +1,4 @@
-import 'package:app_flutter/components/button_option_profile.dart';
+import 'package:livrodin/components/button_option_profile.dart';
 import 'package:flutter/material.dart';
 
 class BottomProfile extends StatelessWidget {

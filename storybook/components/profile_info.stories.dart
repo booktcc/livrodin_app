@@ -1,5 +1,5 @@
-import 'package:app_flutter/components/profile_info.dart';
-import 'package:app_flutter/configs/themes.dart';
+import 'package:livrodin/components/profile_info.dart';
+import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/fake_data.dart';

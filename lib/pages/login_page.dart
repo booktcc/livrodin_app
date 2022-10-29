@@ -1,5 +1,5 @@
-import 'package:app_flutter/controllers/auth_controller.dart';
-import 'package:app_flutter/controllers/login_controller.dart';
+import 'package:livrodin/controllers/auth_controller.dart';
+import 'package:livrodin/controllers/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,11 +1,11 @@
-import 'package:app_flutter/components/cards/book_card.dart';
-import 'package:app_flutter/components/header.dart';
-import 'package:app_flutter/components/layout.dart';
-import 'package:app_flutter/components/input.dart';
-import 'package:app_flutter/components/toggle_offer_status.dart';
-import 'package:app_flutter/configs/themes.dart';
-import 'package:app_flutter/controllers/book_controller.dart';
-import 'package:app_flutter/models/book.dart';
+import 'package:livrodin/components/cards/book_card.dart';
+import 'package:livrodin/components/header.dart';
+import 'package:livrodin/components/layout.dart';
+import 'package:livrodin/components/input.dart';
+import 'package:livrodin/components/toggle_offer_status.dart';
+import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/controllers/book_controller.dart';
+import 'package:livrodin/models/book.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

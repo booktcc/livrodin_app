@@ -1,5 +1,5 @@
-import 'package:app_flutter/components/toggle_offer_status.dart';
-import 'package:app_flutter/controllers/auth_controller.dart';
+import 'package:livrodin/components/toggle_offer_status.dart';
+import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:books_finder/books_finder.dart' as books_finder;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';

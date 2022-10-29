@@ -1,11 +1,11 @@
-import 'package:app_flutter/components/bottom_profile.dart';
-import 'package:app_flutter/components/button_action.dart';
-import 'package:app_flutter/components/header.dart';
-import 'package:app_flutter/components/layout.dart';
-import 'package:app_flutter/components/profile_info.dart';
-import 'package:app_flutter/components/transaction_painel.dart';
-import 'package:app_flutter/configs/themes.dart';
-import 'package:app_flutter/controllers/auth_controller.dart';
+import 'package:livrodin/components/bottom_profile.dart';
+import 'package:livrodin/components/button_action.dart';
+import 'package:livrodin/components/header.dart';
+import 'package:livrodin/components/layout.dart';
+import 'package:livrodin/components/profile_info.dart';
+import 'package:livrodin/components/transaction_painel.dart';
+import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

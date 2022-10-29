@@ -1,6 +1,6 @@
 {
-    "name": "app_flutter",
-    "short_name": "app_flutter",
+    "name": "livrodin",
+    "short_name": "livrodin",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

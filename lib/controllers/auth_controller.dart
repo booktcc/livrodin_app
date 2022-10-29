@@ -1,4 +1,4 @@
-import 'package:app_flutter/utils/snackbar.dart';
+import 'package:livrodin/utils/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 

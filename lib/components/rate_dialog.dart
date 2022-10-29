@@ -1,4 +1,4 @@
-import 'package:app_flutter/configs/themes.dart';
+import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';

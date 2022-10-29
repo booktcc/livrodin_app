@@ -1,5 +1,5 @@
-import 'package:app_flutter/components/filter_option.dart';
-import 'package:app_flutter/configs/themes.dart';
+import 'package:livrodin/components/filter_option.dart';
+import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
 
 class FilterOptionStories extends StatefulWidget {

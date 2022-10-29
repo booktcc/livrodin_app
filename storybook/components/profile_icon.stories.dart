@@ -1,4 +1,4 @@
-import 'package:app_flutter/components/profile_icon.dart';
+import 'package:livrodin/components/profile_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 

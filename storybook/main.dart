@@ -1,15 +1,15 @@
-import 'package:app_flutter/components/bottom_menu.dart';
-import 'package:app_flutter/components/bottom_profile.dart';
-import 'package:app_flutter/components/button_action.dart';
-import 'package:app_flutter/components/button_option.dart';
-import 'package:app_flutter/components/button_option_badge.dart';
-import 'package:app_flutter/components/cards/book_card.dart';
-import 'package:app_flutter/components/cards/genrer_card.dart';
-import 'package:app_flutter/components/transaction_painel.dart';
-import 'package:app_flutter/configs/themes.dart';
-import 'package:app_flutter/models/book.dart';
-import 'package:app_flutter/pages/home_page.dart';
-import 'package:app_flutter/pages/login_page.dart';
+import 'package:livrodin/components/bottom_menu.dart';
+import 'package:livrodin/components/bottom_profile.dart';
+import 'package:livrodin/components/button_action.dart';
+import 'package:livrodin/components/button_option.dart';
+import 'package:livrodin/components/button_option_badge.dart';
+import 'package:livrodin/components/cards/book_card.dart';
+import 'package:livrodin/components/cards/genrer_card.dart';
+import 'package:livrodin/components/transaction_painel.dart';
+import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/models/book.dart';
+import 'package:livrodin/pages/home_page.dart';
+import 'package:livrodin/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 

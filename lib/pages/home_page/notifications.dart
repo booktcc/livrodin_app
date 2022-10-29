@@ -1,5 +1,5 @@
-import 'package:app_flutter/components/title.dart';
-import 'package:app_flutter/configs/themes.dart';
+import 'package:livrodin/components/title.dart';
+import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
 
 class Notifications extends StatelessWidget {

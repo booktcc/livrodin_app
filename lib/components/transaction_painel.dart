@@ -1,5 +1,5 @@
-import 'package:app_flutter/components/button_option_badge.dart';
-import 'package:app_flutter/configs/themes.dart';
+import 'package:livrodin/components/button_option_badge.dart';
+import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
 
 class TransactionPainel extends StatelessWidget {

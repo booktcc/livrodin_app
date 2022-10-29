@@ -1,6 +1,6 @@
-import 'package:app_flutter/components/bottom_menu.dart';
-import 'package:app_flutter/components/header.dart';
-import 'package:app_flutter/configs/themes.dart';
+import 'package:livrodin/components/bottom_menu.dart';
+import 'package:livrodin/components/header.dart';
+import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
 
 class Layout extends StatelessWidget {

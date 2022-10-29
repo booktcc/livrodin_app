@@ -1,7 +1,7 @@
-import 'package:app_flutter/components/confirm_dialog.dart';
-import 'package:app_flutter/components/rate_dialog.dart';
-import 'package:app_flutter/components/toggle_offer_status.dart';
-import 'package:app_flutter/services/book_service.dart';
+import 'package:livrodin/components/confirm_dialog.dart';
+import 'package:livrodin/components/rate_dialog.dart';
+import 'package:livrodin/components/toggle_offer_status.dart';
+import 'package:livrodin/services/book_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 
