@@ -22,12 +22,14 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               TextFormField(
+                key: const Key('email'),
                 decoration: const InputDecoration(
                   hintText: 'Email',
                 ),
                 controller: loginController.emailController,
               ),
               TextFormField(
+                key: const Key('password'),
                 decoration: const InputDecoration(
                   hintText: 'Password',
                 ),
@@ -35,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: true,
               ),
               ElevatedButton(
+                key: const Key('login'),
                 onPressed: loginController.login,
                 child: const Text('Login'),
               ),
