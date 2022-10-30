@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
@@ -10,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:livrodin/services/book_service.dart';
 
 import 'firebase_options.dart';
 
@@ -47,6 +49,7 @@ class MyApp extends StatelessWidget {
           name: '/home',
           page: () => HomePage(),
           binding: BindingsBuilder(() {
+            Get.put(BookService(firestore: FirebaseFirestore.instance));
             Get.put(BookController());
           }),
         ),
@@ -63,7 +66,8 @@ class MyApp extends StatelessWidget {
         ),
       ],
       initialBinding: BindingsBuilder(() {
-        Get.put(AuthController(), permanent: true);
+        Get.put(AuthController(firebaseAuth: FirebaseAuth.instance),
+            permanent: true);
       }),
     );
   }

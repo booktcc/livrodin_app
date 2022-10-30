@@ -1,5 +1,4 @@
 import 'package:livrodin/components/cards/book_card.dart';
-import 'package:livrodin/components/home_banner.dart';
 import 'package:livrodin/components/title.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/book_controller.dart';

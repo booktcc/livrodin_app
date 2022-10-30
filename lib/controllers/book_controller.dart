@@ -2,7 +2,6 @@ import 'package:livrodin/components/confirm_dialog.dart';
 import 'package:livrodin/components/rate_dialog.dart';
 import 'package:livrodin/components/toggle_offer_status.dart';
 import 'package:livrodin/services/book_service.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 
 import '../models/book.dart';
@@ -10,7 +9,7 @@ import 'auth_controller.dart';
 
 class BookController extends GetxController {
   var authController = Get.find<AuthController>();
-  var bookService = BookService();
+  var bookService = Get.find<BookService>();
 
   Future<bool?> makeBookAvailable(Book book, OfferStatus offerStatus) async {
     try {

@@ -1,30 +1,76 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// ignore_for_file: avoid_print
 
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:livrodin/main.dart';
+import 'package:get/get.dart';
+import 'package:livrodin/controllers/auth_controller.dart';
+import 'package:livrodin/controllers/book_controller.dart';
+import 'package:livrodin/pages/home_page.dart';
+import 'package:livrodin/services/book_service.dart';
+import 'package:network_image_mock/network_image_mock.dart';
 
-void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+void main() async {
+  testWidgets('Should render Home Page with an Book available',
+      (WidgetTester tester) async {
+    disableOverflowErrors();
+    final mockedUser = MockUser(
+      isAnonymous: false,
+      uid: 'someuid',
+      email: 'bob@somedomain.com',
+      displayName: 'Bob',
+    );
+    final auth = MockFirebaseAuth(mockUser: mockedUser);
+
+    final authController = Get.put(AuthController(firebaseAuth: auth));
+
+    await authController.login("bob@somedomain.com", "123456");
+
+    final firestore = FakeFirebaseFirestore();
+
+    await firestore.collection("BookAvailable").doc().set({
+      "idBook": "VTeU5dQYAmQ3fK6bZkis",
+      "title": "Harry Potter e a Ordem da Fênix",
+      "coverUrl": "",
+      "idUser": "someuid",
+      "createdAt": DateTime.now(),
+      "forDonation": true,
+      "forTrade": true,
+    });
+
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
-
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    await mockNetworkImagesFor(
+      () async {
+        await tester.pumpWidget(
+          GetMaterialApp(
+            initialBinding: BindingsBuilder(() {
+              Get.put(BookService(firestore: firestore));
+              Get.put(BookController());
+            }),
+            home: HomePage(),
+          ),
+        );
+        await tester.idle();
+        await tester.pump();
+        expect(find.text('Harry Potter e a Ordem da Fênix'), findsOneWidget);
+      },
+    );
   });
+}
+
+void disableOverflowErrors() {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    final exception = details.exception;
+    final isOverflowError = exception is FlutterError &&
+        !exception.diagnostics.any(
+            (e) => e.value.toString().startsWith("A RenderFlex overflowed by"));
+
+    if (isOverflowError) {
+      print(details);
+    } else {
+      FlutterError.presentError(details);
+    }
+  };
 }
