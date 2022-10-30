@@ -20,17 +20,12 @@ class BookService extends GetxService {
   Future<void> addBook(Book book, OfferStatus offerStatus) async {
     if (authController.user.value == null) throw 'User not logged in';
 
-    await firestore.collection("BookAvailable").doc().set({
-      "idBook": book.id,
-      "title": book.title,
-      "coverUrl": book.coverUrl,
-      "idUser": authController.user.value!.uid,
-      "createdAt": FieldValue.serverTimestamp(),
-      "forDonation": (offerStatus == OfferStatus.both ||
-          offerStatus == OfferStatus.donate),
-      "forTrade":
-          (offerStatus == OfferStatus.both || offerStatus == OfferStatus.trade),
-    });
+    await firestore.collection("BookAvailable").doc().set(
+          book.toFireStore(
+            idUser: authController.user.value!.uid,
+            offerStatus: offerStatus,
+          ),
+        );
   }
 
   Future<void> addRate(

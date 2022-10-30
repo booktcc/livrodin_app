@@ -1,4 +1,6 @@
 import 'package:books_finder/books_finder.dart' as books_finder;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:livrodin/components/toggle_offer_status.dart';
 
 class Book {
   final String id;
@@ -42,5 +44,21 @@ class Book {
           .firstWhere((element) => element.type == "ISBN_13")
           .identifier,
     );
+  }
+
+  // toMap
+  Map<String, dynamic> toFireStore(
+      {required String idUser, required OfferStatus offerStatus}) {
+    return {
+      "idBook": id,
+      "title": title,
+      "coverUrl": coverUrl,
+      "idUser": idUser,
+      "createdAt": FieldValue.serverTimestamp(),
+      "forDonation": (offerStatus == OfferStatus.both ||
+          offerStatus == OfferStatus.donate),
+      "forTrade":
+          (offerStatus == OfferStatus.both || offerStatus == OfferStatus.trade),
+    };
   }
 }
