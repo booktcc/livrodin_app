@@ -51,6 +51,16 @@ class BookController extends GetxController {
     }
   }
 
+  Future<Book> getBookById(String id) async {
+    try {
+      var result = await bookService.searchBooksOnGoogleApi(id);
+      return result[0];
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
+
   Future<List<Book>> getAvailableBooks({int? limit, int? page}) async {
     try {
       var result =
