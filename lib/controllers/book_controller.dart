@@ -28,13 +28,22 @@ class BookController extends GetxController {
         await Get.dialog(RateDialog(
           title: 'Avalie o livro',
           onConfirm: ({required rate, required comment}) async {
-            await bookService
-                .addRate(book: book, rate: rate, comment: comment)
+            rateBook(book: book, rate: rate, comment: comment)
                 .whenComplete(() => Get.back());
           },
         ));
       }
 
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool?> rateBook(
+      {required Book book, required rate, required comment}) async {
+    try {
+      await bookService.addRate(book: book, rate: rate, comment: comment);
       return true;
     } catch (e) {
       return false;
@@ -69,6 +78,18 @@ class BookController extends GetxController {
     } catch (e) {
       printError(info: e.toString());
       return [];
+    }
+  }
+
+  // fecth book rating
+  Future<void> fetchBookRating(Book book) async {
+    try {
+      var result = await bookService.getBookRating(book.id);
+      book.ratings = result;
+      // return result;
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
     }
   }
 }

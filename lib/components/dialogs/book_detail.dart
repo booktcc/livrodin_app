@@ -48,6 +48,14 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
         _bookController.getBookById(widget._book.id).then((value) {
           widget._book = value;
           _bookStatus.value = BookStatus.loaded;
+
+          _bookRatingStatus.value = BookRatingStatus.loading;
+          _bookController.fetchBookRating(value).then(
+              (_) => _bookRatingStatus.value = BookRatingStatus.loaded,
+              onError: (_) => _bookRatingStatus.value = BookRatingStatus.error);
+          // _bookController.fetchBookDiscussions(value).then((value) => {
+
+          // });
         }).catchError((error) {
           _bookStatus.value = BookStatus.error;
         });
@@ -112,6 +120,7 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                           );
                         } else {
                           return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(
@@ -138,8 +147,12 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                       ),
                                     ),
                                     const SizedBox(height: 5),
-                                    const RatingInfo(
-                                      rating: 3.5,
+                                    RatingInfo(
+                                      rating: widget._book.averageRating,
+                                      isLoading: _bookRatingStatus.value ==
+                                              BookDiscussionStatus.loading
+                                          ? true
+                                          : false,
                                     ),
                                   ],
                                 ),
@@ -151,15 +164,23 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const TabBar(
+                                      TabBar(
                                         enableFeedback: true,
                                         labelColor: dark,
+                                        labelStyle: const TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                        unselectedLabelStyle: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                         isScrollable: true,
                                         tabs: [
-                                          Tab(text: "Sinopse"),
-                                          Tab(text: "Detalhes"),
-                                          Tab(text: "Avaliações (0)"),
-                                          Tab(text: "Discussões"),
+                                          const Tab(text: "Sinopse"),
+                                          const Tab(text: "Detalhes"),
+                                          Tab(
+                                              text:
+                                                  "Avaliações (${widget._book.ratings.length})"),
+                                          const Tab(text: "Discussões"),
                                         ],
                                       ),
                                       Flexible(
@@ -176,6 +197,9 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                                   scrollController,
                                             ),
                                             TabViewRatings(
+                                              book: widget._book,
+                                              bookRatingStatus:
+                                                  _bookRatingStatus,
                                               scrollController:
                                                   scrollController,
                                             ),

@@ -2,6 +2,8 @@ import 'package:books_finder/books_finder.dart' as books_finder;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:livrodin/components/toggle_offer_status.dart';
+import 'package:livrodin/models/discussion.dart';
+import 'package:livrodin/models/rating.dart';
 
 class Book {
   final String _id;
@@ -16,6 +18,8 @@ class Book {
   final String? publisher;
   final DateTime? publishedDate;
   final List<String>? genres;
+  List<Rating> ratings = List.empty(growable: false);
+  final List<Discussion> _discussions = List.empty(growable: true);
 
   Book({
     required String id,
@@ -34,8 +38,18 @@ class Book {
 
   String get id => _id;
 
+  double get averageRating {
+    if (ratings.isEmpty) return 0;
+    return ratings.map((e) => e.rating).reduce((a, b) => a + b) /
+        ratings.length;
+  }
+
   String get genresString => genres?.join(", ") ?? "";
   String get authorsString => authors?.join(', ') ?? 'Desconhecido';
+
+  void addRating(Rating rating) {
+    ratings.add(rating);
+  }
 
   factory Book.fromApi(books_finder.Book oldBook) {
     return Book(
