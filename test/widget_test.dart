@@ -56,7 +56,7 @@ void main() async {
         Finder passwordField = find.byKey(const Key('password'));
         await tester.enterText(passwordField, '123456');
 
-        Finder loginButton = find.byKey(const Key('login'));
+        Finder loginButton = find.byKey(const Key('loginButton'));
         await tester.tap(loginButton);
 
         await tester.pumpAndSettle();
