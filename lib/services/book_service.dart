@@ -101,7 +101,7 @@ class BookService extends GetxService {
               profilePictureUrl: authController.user.value!.photoURL,
             ),
             rating: data['rate'],
-            comment: data['comment'],
+            comment: data['comment'] ?? "",
           ),
         );
       } else {
@@ -116,7 +116,7 @@ class BookService extends GetxService {
                   profilePictureUrl: null,
                 ),
             rating: data['rate'],
-            comment: data['comment'],
+            comment: data['comment'] ?? "",
           ),
         );
       }
