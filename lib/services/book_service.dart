@@ -3,6 +3,8 @@ import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:books_finder/books_finder.dart' as books_finder;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:livrodin/models/rating.dart';
+import 'package:livrodin/models/user.dart';
 
 import '../models/book.dart';
 
@@ -13,7 +15,10 @@ class BookService extends GetxService {
   BookService({required this.firestore});
 
   Future<List<Book>> searchBooksOnGoogleApi(String query) async {
-    var results = await books_finder.queryBooks(query, maxResults: 10);
+    var results = await books_finder.queryBooks(query,
+        maxResults: 10,
+        langRestrict: "pt,en",
+        orderBy: books_finder.OrderBy.relevance);
     return results.map(Book.fromApi).toList();
   }
 
@@ -52,17 +57,7 @@ class BookService extends GetxService {
 
     for (var doc in result.docs) {
       var data = doc.data();
-      try {
-        if (books.last.id != data["idBook"]) {
-          books.add(
-            Book(
-              id: data['idBook'],
-              title: data['title'],
-              coverUrl: data['coverUrl'],
-            ),
-          );
-        }
-      } catch (e) {
+      if (!books.any((element) => element.id == data["idBook"])) {
         books.add(
           Book(
             id: data['idBook'],
@@ -74,5 +69,58 @@ class BookService extends GetxService {
     }
 
     return books;
+  }
+
+  Future<User?> getUserById(String idUser) async {
+    try {
+      var result = await firestore.collection("Users").doc(idUser).get();
+      return User.fromFireStore(result.id, result.data()!);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<List<Rating>> getBookRating(String idBook) async {
+    var result = await firestore
+        .collection("BookRate")
+        .where("idBook", isEqualTo: idBook)
+        .get();
+    List<Rating> ratings = List.empty(growable: true);
+    for (var doc in result.docs) {
+      var data = doc.data();
+
+      if (authController.user.value != null &&
+          authController.user.value!.uid == data["idUser"]) {
+        ratings.insert(
+          0,
+          Rating(
+            id: doc.id,
+            user: User(
+              id: authController.user.value!.uid,
+              name: "Eu",
+              profilePictureUrl: authController.user.value!.photoURL,
+            ),
+            rating: data['rate'],
+            comment: data['comment'] ?? "",
+          ),
+        );
+      } else {
+        User? user = await getUserById(data["idUser"]);
+        ratings.add(
+          Rating(
+            id: doc.id,
+            user: user ??
+                User(
+                  id: "-1",
+                  name: "Usuário",
+                  profilePictureUrl: null,
+                ),
+            rating: data['rate'],
+            comment: data['comment'] ?? "",
+          ),
+        );
+      }
+    }
+    return ratings;
   }
 }
