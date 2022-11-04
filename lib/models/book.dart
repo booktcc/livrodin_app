@@ -2,6 +2,7 @@ import 'package:books_finder/books_finder.dart' as books_finder;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:livrodin/components/toggle_offer_status.dart';
+import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/discussion.dart';
 import 'package:livrodin/models/rating.dart';
 
@@ -19,6 +20,7 @@ class Book {
   final DateTime? publishedDate;
   final List<String>? genres;
   List<Rating> ratings;
+  List<Availability> availabilities;
   final List<Discussion> _discussions = List.empty(growable: true);
 
   Book({
@@ -35,6 +37,7 @@ class Book {
     this.publishedDate,
     this.genres,
     this.ratings = const [],
+    this.availabilities = const [],
   }) : _id = id;
 
   String get id => _id;

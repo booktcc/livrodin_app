@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/button_option_profile.dart';
+import 'package:livrodin/components/dialogs/user_list_available.dart';
 import 'package:livrodin/components/dialogs/user_list_interest.dart';
 import 'package:livrodin/components/dialogs/user_list_rating.dart';
 
@@ -37,7 +38,7 @@ class BottomProfile extends StatelessWidget {
               ButtonOptionProfile(
                 label: "Livros Disponibilizados",
                 icon: Icons.book_rounded,
-                onPressed: () {},
+                onPressed: () => Get.dialog(UserListAvailableDialig()),
               ),
               ButtonOptionProfile(
                 label: "Livros Avaliados",
