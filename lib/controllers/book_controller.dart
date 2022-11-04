@@ -2,10 +2,11 @@ import 'package:get/get.dart';
 import 'package:livrodin/components/confirm_dialog.dart';
 import 'package:livrodin/components/rate_dialog.dart';
 import 'package:livrodin/components/toggle_offer_status.dart';
+import 'package:livrodin/models/availability.dart';
+import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/interest.dart';
 import 'package:livrodin/services/book_service.dart';
 
-import '../models/book.dart';
 import 'auth_controller.dart';
 
 class BookController extends GetxController {
@@ -74,6 +75,16 @@ class BookController extends GetxController {
   Future<List<Book>> getBooksRatingByUser() async {
     try {
       var result = await bookService.getBooksRatingByUser();
+      return result;
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<Availability>> getMadeAvailableList() async {
+    try {
+      var result = await bookService.getMadeAvailableList();
       return result;
     } catch (e) {
       printError(info: e.toString());
