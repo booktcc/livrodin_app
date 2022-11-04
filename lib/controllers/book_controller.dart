@@ -1,8 +1,8 @@
+import 'package:get/get.dart';
 import 'package:livrodin/components/confirm_dialog.dart';
 import 'package:livrodin/components/rate_dialog.dart';
 import 'package:livrodin/components/toggle_offer_status.dart';
 import 'package:livrodin/services/book_service.dart';
-import 'package:get/get.dart';
 
 import '../models/book.dart';
 import 'auth_controller.dart';
@@ -64,6 +64,17 @@ class BookController extends GetxController {
     try {
       var result = await bookService.searchBooksOnGoogleApi(id);
       return result[0];
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<Book>> getBooksRatingByUser() async {
+    try {
+      var result = await bookService
+          .getBooksRatingByUser(authController.user.value!.uid);
+      return result;
     } catch (e) {
       printError(info: e.toString());
       rethrow;

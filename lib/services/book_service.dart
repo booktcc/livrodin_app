@@ -1,8 +1,8 @@
-import 'package:livrodin/components/toggle_offer_status.dart';
-import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:books_finder/books_finder.dart' as books_finder;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:livrodin/components/toggle_offer_status.dart';
+import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/models/rating.dart';
 import 'package:livrodin/models/user.dart';
 
@@ -39,9 +39,13 @@ class BookService extends GetxService {
 
     await firestore.collection("BookRate").doc().set({
       "idBook": book.id,
+      "nameBook": book.title,
+      "coverUrl": book.coverUrl,
       "idUser": authController.user.value!.uid,
       "rate": rate,
       "comment": comment.trim().isNotEmpty ? comment : null,
+      "createdAt": FieldValue.serverTimestamp(),
+      "updatedAt": FieldValue.serverTimestamp(),
     });
   }
 
@@ -78,6 +82,30 @@ class BookService extends GetxService {
     } catch (e) {
       return null;
     }
+  }
+
+  Future<List<Book>> getBooksRatingByUser(String idUser) async {
+    var result = await firestore
+        .collection("BookRate")
+        .where("idUser", isEqualTo: idUser)
+        .get();
+
+    return result.docs.map((e) {
+      var data = e.data();
+      return Book(
+        id: data["idBook"],
+        title: data["nameBook"],
+        coverUrl: data["coverUrl"],
+        ratings: [
+          Rating(
+            id: e.id,
+            user: User(id: idUser, name: "Eu"),
+            rating: data["rate"],
+            comment: data["comment"] ?? "",
+          )
+        ],
+      );
+    }).toList();
   }
 
   Future<List<Rating>> getBookRating(String idBook) async {
