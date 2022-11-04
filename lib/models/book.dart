@@ -18,7 +18,7 @@ class Book {
   final String? publisher;
   final DateTime? publishedDate;
   final List<String>? genres;
-  List<Rating> ratings = List.empty(growable: false);
+  List<Rating> ratings;
   final List<Discussion> _discussions = List.empty(growable: true);
 
   Book({
@@ -34,6 +34,7 @@ class Book {
     this.coverUrl,
     this.publishedDate,
     this.genres,
+    this.ratings = const [],
   }) : _id = id;
 
   String get id => _id;
@@ -46,10 +47,6 @@ class Book {
 
   String get genresString => genres?.join(", ") ?? "";
   String get authorsString => authors?.join(', ') ?? 'Desconhecido';
-
-  void addRating(Rating rating) {
-    ratings.add(rating);
-  }
 
   factory Book.fromApi(books_finder.Book oldBook) {
     return Book(
