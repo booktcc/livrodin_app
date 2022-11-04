@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/toggle_offer_status.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
+import 'package:livrodin/models/interest.dart';
 import 'package:livrodin/models/rating.dart';
 import 'package:livrodin/models/user.dart';
 
@@ -84,10 +85,12 @@ class BookService extends GetxService {
     }
   }
 
-  Future<List<Book>> getBooksRatingByUser(String idUser) async {
+  Future<List<Book>> getBooksRatingByUser() async {
+    if (authController.user.value == null) throw 'User not logged in';
+
     var result = await firestore
         .collection("BookRate")
-        .where("idUser", isEqualTo: idUser)
+        .where("idUser", isEqualTo: authController.user.value!.uid)
         .get();
 
     return result.docs.map((e) {
@@ -99,7 +102,7 @@ class BookService extends GetxService {
         ratings: [
           Rating(
             id: e.id,
-            user: User(id: idUser, name: "Eu"),
+            user: User(id: authController.user.value!.uid, name: "Eu"),
             rating: data["rate"],
             comment: data["comment"] ?? "",
           )
@@ -150,5 +153,28 @@ class BookService extends GetxService {
       }
     }
     return ratings;
+  }
+
+  Future<List<Interest>> getInterestList() async {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    var result = await firestore
+        .collection("InterestList")
+        .where("idUser", isEqualTo: authController.user.value!.uid)
+        .get();
+
+    return result.docs.map(
+      (e) {
+        var data = e.data();
+        return Interest(
+          id: e.id,
+          book: Book(
+            id: data["idBook"],
+            title: data["nameBook"],
+            coverUrl: data["coverUrl"],
+          ),
+        );
+      },
+    ).toList();
   }
 }
