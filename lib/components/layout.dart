@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:livrodin/components/bottom_menu.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/configs/themes.dart';
-import 'package:flutter/material.dart';
 
 class Layout extends StatelessWidget {
   final bool showBottomMenu;
@@ -31,6 +31,7 @@ class Layout extends StatelessWidget {
             )
           : null,
       extendBody: true,
+      resizeToAvoidBottomInset: false,
       body: child,
     );
   }
