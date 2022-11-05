@@ -1,18 +1,24 @@
-import 'package:livrodin/components/button_option_badge.dart';
-import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:livrodin/components/button_option_badge.dart';
+import 'package:livrodin/components/dialogs/user_transations.dart';
+import 'package:livrodin/configs/themes.dart';
+
+enum TransactionPanelType {
+  donate,
+  trade,
+}
 
 class TransactionPainel extends StatelessWidget {
   const TransactionPainel({
     super.key,
     this.radius = 20,
-    required this.icon,
-    required this.title,
+    required this.type,
   });
 
   final double radius;
-  final IconData icon;
-  final String title;
+  final TransactionPanelType type;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -54,13 +60,17 @@ class TransactionPainel extends StatelessWidget {
                     Row(
                       children: [
                         Icon(
-                          icon,
+                          type == TransactionPanelType.donate
+                              ? Icons.handshake_rounded
+                              : Icons.swap_horizontal_circle_rounded,
                           color: Colors.black,
                           size: 32,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          title,
+                          type == TransactionPanelType.donate
+                              ? 'Doações'
+                              : 'Trocas',
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 20,
@@ -74,7 +84,14 @@ class TransactionPainel extends StatelessWidget {
                       color: Colors.transparent,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(20),
-                        onTap: () {},
+                        onTap: () => Get.dialog(
+                          UserTransationsDialog(
+                            type: type == TransactionPanelType.donate
+                                ? TransactionsType.donate
+                                : TransactionsType.trade,
+                            tab: TransactionTabType.done,
+                          ),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                             vertical: 10,
@@ -115,19 +132,40 @@ class TransactionPainel extends StatelessWidget {
                   ButtonOptionBadge(
                     iconData: Icons.book_rounded,
                     text: 'Pedidos Recebidos',
-                    onPressed: () {},
+                    onPressed: () => Get.dialog(
+                      UserTransationsDialog(
+                        type: type == TransactionPanelType.donate
+                            ? TransactionsType.donate
+                            : TransactionsType.trade,
+                        tab: TransactionTabType.ordersReceived,
+                      ),
+                    ),
                     badgeCount: 10,
                   ),
                   ButtonOptionBadge(
                     iconData: Icons.book_rounded,
                     text: 'Pedidos Feitos',
-                    onPressed: () {},
+                    onPressed: () => Get.dialog(
+                      UserTransationsDialog(
+                        type: type == TransactionPanelType.donate
+                            ? TransactionsType.donate
+                            : TransactionsType.trade,
+                        tab: TransactionTabType.ordersMade,
+                      ),
+                    ),
                     badgeCount: 9,
                   ),
                   ButtonOptionBadge(
                     iconData: Icons.book_rounded,
                     text: 'Andamento',
-                    onPressed: () {},
+                    onPressed: () => Get.dialog(
+                      UserTransationsDialog(
+                        type: type == TransactionPanelType.donate
+                            ? TransactionsType.donate
+                            : TransactionsType.trade,
+                        tab: TransactionTabType.progress,
+                      ),
+                    ),
                   ),
                 ],
               ),

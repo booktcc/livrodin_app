@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:livrodin/components/bottom_menu.dart';
 import 'package:livrodin/components/bottom_profile.dart';
 import 'package:livrodin/components/button_action.dart';
@@ -10,12 +11,11 @@ import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/pages/home_page.dart';
 import 'package:livrodin/pages/login_page.dart';
-import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
 import 'components/filter_option.stories.dart';
-import 'components/layout.stories.dart';
 import 'components/header.stories.dart';
+import 'components/layout.stories.dart';
 import 'components/profile_icon.stories.dart';
 import 'components/profile_info.stories.dart';
 import 'components/toggle_offer_status.stories.dart';
@@ -137,8 +137,7 @@ class _StorybookAppState extends State<StorybookApp> {
               backgroundColor: lightGrey,
               body: Center(
                 child: TransactionPainel(
-                  icon: Icons.swap_horizontal_circle_rounded,
-                  title: 'Trocas',
+                  type: TransactionPanelType.trade,
                 ),
               ),
             ),

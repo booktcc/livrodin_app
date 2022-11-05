@@ -1,10 +1,10 @@
-import 'package:livrodin/components/profile_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:livrodin/components/profile_icon.dart';
 
 class ProfileInfo extends StatelessWidget {
   final String name;
   final String email;
-  final String image;
+  final String? image;
   const ProfileInfo({
     super.key,
     required this.name,
