@@ -4,10 +4,15 @@ import fetch from "node-fetch";
 
 type BookAvailable = {
   idBook: string;
-  forTrade: boolean;
-  forDonation: boolean;
+  availableType: BookAvailableType;
   createdAt: Date;
 };
+
+enum BookAvailableType {
+  FOR_TRADE = "FOR_TRADE",
+  FOR_DONATION = "FOR_DONATION",
+  BOTH = "BOTH",
+}
 
 enum TransactionStatus {
   PENDING = "PENDING",
@@ -46,8 +51,28 @@ const fetchBook = async (bookId: string) => {
   };
 };
 
-export const onBookAvailabilityCreated = functions.region("southamerica-east1").firestore
-  .document("BookAvailable/{bookAvailableId}")
+const calculateAvailableType = (
+  book: admin.firestore.DocumentData,
+  newBookAvailable: BookAvailable
+) => {
+  if (book.availableType === BookAvailableType.BOTH)
+    return BookAvailableType.BOTH;
+  if (
+    book.availableType === BookAvailableType.FOR_DONATION &&
+    newBookAvailable.availableType === BookAvailableType.FOR_TRADE
+  )
+    return BookAvailableType.BOTH;
+  if (
+    book.availableType === BookAvailableType.FOR_TRADE &&
+    newBookAvailable.availableType === BookAvailableType.FOR_DONATION
+  )
+    return BookAvailableType.BOTH;
+  return newBookAvailable.availableType;
+};
+
+export const onBookAvailabilityCreated = functions
+  .region("southamerica-east1")
+  .firestore.document("BookAvailable/{bookAvailableId}")
   .onCreate(async (change) => {
     const db = admin.firestore();
 
@@ -61,26 +86,24 @@ export const onBookAvailabilityCreated = functions.region("southamerica-east1").
       const bookData = await fetchBook(availabityBook.idBook);
       await bookRef.set({
         ...bookData,
-        forTrade: Boolean(availabityBook.forTrade),
-        forDonation: Boolean(availabityBook.forDonation),
+        availableType: availabityBook.availableType,
         lastAvailabilityUpdated: admin.firestore.FieldValue.serverTimestamp(),
       });
     } else {
       const bookData = book.data();
       if (!bookData) return;
+      // if book available type is different from the one in the book, update it
 
       await bookRef.update({
-        forTrade: Boolean(availabityBook.forTrade || bookData.forTrade),
-        forDonation: Boolean(
-          availabityBook.forDonation || bookData.forDonation
-        ),
+        availableType: calculateAvailableType(bookData, availabityBook),
         lastAvailabilityUpdated: admin.firestore.FieldValue.serverTimestamp(),
       });
     }
   });
 
-export const onBookAvailabilityDeleted = functions.region("southamerica-east1").firestore
-  .document("BookAvailable/{bookAvailableId}")
+export const onBookAvailabilityDeleted = functions
+  .region("southamerica-east1")
+  .firestore.document("BookAvailable/{bookAvailableId}")
   .onDelete(async (change) => {
     const db = admin.firestore();
 
@@ -103,24 +126,29 @@ export const onBookAvailabilityDeleted = functions.region("southamerica-east1").
       .get();
 
     const forTrade = availabilityBooks.docs.some(
-      (doc) => doc.data().forTrade === true
+      (doc) => doc.data().availableType === BookAvailableType.FOR_TRADE
     );
 
     const forDonation = availabilityBooks.docs.some(
-      (doc) => doc.data().forDonation === true
+      (doc) => doc.data().availableType === BookAvailableType.FOR_DONATION
     );
 
+    const newAvailableType = forTrade
+      ? forDonation
+        ? BookAvailableType.BOTH
+        : BookAvailableType.FOR_TRADE
+      : forDonation
+      ? BookAvailableType.FOR_DONATION
+      : null;
+
     await bookRef.update({
-      forTrade,
-      forDonation,
-      lastAvailabilityUpdated: !availabilityBooks.empty
-        ? availabilityBooks.docs[0].data().createdAt
-        : null,
+      availableType: newAvailableType,
     });
   });
 
-export const createTransaction = functions.region("southamerica-east1").https.onCall(
-  async (data, context) => {
+export const createTransaction = functions
+  .region("southamerica-east1")
+  .https.onCall(async (data, context) => {
     const db = admin.firestore();
 
     const user2Id = context.auth?.uid;
@@ -162,11 +190,11 @@ export const createTransaction = functions.region("southamerica-east1").https.on
     });
 
     return transaction.id;
-  }
-);
+  });
 
-export const confirmTransaction = functions.region("southamerica-east1").https.onCall(
-  async (data, context) => {
+export const confirmTransaction = functions
+  .region("southamerica-east1")
+  .https.onCall(async (data, context) => {
     const db = admin.firestore();
 
     const user1Id = context.auth?.uid;
@@ -205,11 +233,11 @@ export const confirmTransaction = functions.region("southamerica-east1").https.o
     });
 
     return transaction.id;
-  }
-);
+  });
 
-export const completeTransaction = functions.region("southamerica-east1").https.onCall(
-  async (data, context) => {
+export const completeTransaction = functions
+  .region("southamerica-east1")
+  .https.onCall(async (data, context) => {
     const db = admin.firestore();
 
     const user1Id = context.auth?.uid;
@@ -246,11 +274,11 @@ export const completeTransaction = functions.region("southamerica-east1").https.
       .delete();
 
     return transaction.id;
-  }
-);
+  });
 
-export const cancelTransaction = functions.region("southamerica-east1").https.onCall(
-  async (data, context) => {
+export const cancelTransaction = functions
+  .region("southamerica-east1")
+  .https.onCall(async (data, context) => {
     const db = admin.firestore();
 
     const user1Id = context.auth?.uid;
@@ -282,5 +310,4 @@ export const cancelTransaction = functions.region("southamerica-east1").https.on
     });
 
     return transaction.id;
-  }
-);
+  });
