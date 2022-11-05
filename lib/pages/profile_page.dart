@@ -50,13 +50,11 @@ class ProfilePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 const TransactionPainel(
-                  icon: Icons.handshake_rounded,
-                  title: 'Doações',
+                  type: TransactionPanelType.donate,
                 ),
                 const SizedBox(height: 10),
                 const TransactionPainel(
-                  icon: Icons.swap_horizontal_circle_rounded,
-                  title: 'Trocas',
+                  type: TransactionPanelType.trade,
                 ),
                 const SizedBox(height: 10),
                 const BottomProfile(),
