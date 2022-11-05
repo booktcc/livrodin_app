@@ -16,4 +16,8 @@ class LoginController extends GetxController {
     if (result == null) return;
     await Get.offAllNamed("/home");
   }
+
+  Future<void> forgotPassword() async {
+    await authController.resetPassword(emailController.text);
+  }
 }

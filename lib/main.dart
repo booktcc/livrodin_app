@@ -13,6 +13,7 @@ import 'package:livrodin/pages/home_page.dart';
 import 'package:livrodin/pages/login_page.dart';
 import 'package:livrodin/pages/profile_edit_page.dart';
 import 'package:livrodin/pages/profile_page.dart';
+import 'package:livrodin/pages/reset_password_page.dart';
 import 'package:livrodin/pages/resgister_page.dart';
 import 'package:livrodin/services/book_service.dart';
 
@@ -44,6 +45,13 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/login',
           page: () => const LoginPage(),
+          binding: BindingsBuilder(() {
+            Get.put(LoginController());
+          }),
+        ),
+        GetPage(
+          name: '/forgot-password',
+          page: () => const ResetPasswordPage(),
           binding: BindingsBuilder(() {
             Get.put(LoginController());
           }),

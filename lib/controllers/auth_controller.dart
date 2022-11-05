@@ -1,6 +1,7 @@
-import 'package:livrodin/utils/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:livrodin/utils/alert.dart';
+import 'package:livrodin/utils/snackbar.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth firebaseAuth;
@@ -56,6 +57,11 @@ class AuthController extends GetxController {
   Future<void> resetPassword(String email) async {
     try {
       await firebaseAuth.sendPasswordResetEmail(email: email);
+      Alert.info(
+        title: "Sucesso",
+        message: "Email de recuperação enviado com sucesso!",
+        onConfirm: () => Get.offAllNamed("/login"),
+      );
     } on FirebaseAuthException catch (e) {
       Snackbar.error(e.message);
     }

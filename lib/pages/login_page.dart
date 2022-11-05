@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () => Get.toNamed("/forgot-password"),
                       child: RichText(
                         text: const TextSpan(
                           style: TextStyle(
