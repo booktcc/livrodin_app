@@ -1,7 +1,7 @@
-import 'package:livrodin/components/profile_icon.dart';
-import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:livrodin/components/profile_icon.dart';
+import 'package:livrodin/configs/themes.dart';
 
 class BottomMenu extends StatefulWidget {
   BottomMenu({
@@ -163,7 +163,7 @@ class _BottomMenuState extends State<BottomMenu> {
             borderRadius: BorderRadius.circular(90),
             color: Colors.red,
             child: InkWell(
-              onTap: () => Get.toNamed("/book_availability"),
+              onTap: () => Get.toNamed("/book/availability"),
               borderRadius: BorderRadius.circular(90),
               child: const SizedBox(
                 width: 70,

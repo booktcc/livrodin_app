@@ -5,17 +5,17 @@ import 'package:livrodin/components/input.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
-import 'package:livrodin/controllers/login_controller.dart';
+import 'package:livrodin/controllers/register_controller.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  var loginController = Get.find<LoginController>();
+class _RegisterPageState extends State<RegisterPage> {
+  var registerController = Get.find<RegisterController>();
   var authController = Get.find<AuthController>();
 
   @override
@@ -60,28 +60,28 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      style: TextButton.styleFrom(
-                        splashFactory: NoSplash.splashFactory,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Text(
-                            "Entrar como visitante",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w800,
-                            ),
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        ButtonAction(
+                          onPressed: () => Get.offAllNamed("/login"),
+                          icon: Icons.arrow_back_rounded,
+                          color: Colors.transparent,
+                          elevation: 0,
+                          textColor: Theme.of(context).primaryColor,
+                          radius: 360,
+                          minWidth: 40,
+                          minHeight: 40,
+                        ),
+                        const SizedBox(width: 10),
+                        const Text(
+                          "Cadastrar",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
                           ),
-                          Icon(
-                            Icons.arrow_forward_rounded,
-                            size: 24,
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -90,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         Input(
                           key: const Key("email"),
-                          controller: loginController.emailController,
+                          controller: registerController.emailController,
                           leftIcon: const Icon(
                             Icons.email_rounded,
                             color: grey,
@@ -100,58 +100,45 @@ class _LoginPageState extends State<LoginPage> {
                             AutofillHints.email,
                           ],
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                         Input(
                           key: const Key("password"),
-                          controller: loginController.passwordController,
+                          controller: registerController.passwordController,
                           leftIcon: const Icon(
                             Icons.password_rounded,
                             color: grey,
                           ),
                           hintText: "Senha",
                           autofillHints: const [
-                            AutofillHints.password,
+                            AutofillHints.newPassword,
+                          ],
+                          obscureText: true,
+                        ),
+                        const SizedBox(height: 10),
+                        Input(
+                          key: const Key("confirm_password"),
+                          controller:
+                              registerController.confirmPasswordController,
+                          leftIcon: const Icon(
+                            Icons.password_rounded,
+                            color: grey,
+                          ),
+                          hintText: "Confirmar Senha",
+                          autofillHints: const [
+                            AutofillHints.newPassword,
                           ],
                           obscureText: true,
                         ),
                       ],
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: RichText(
-                        text: const TextSpan(
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: "Esqueceu a senha?",
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                            TextSpan(
-                              text: " Recupere aqui",
-                              style: TextStyle(
-                                color: red,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
                   ButtonAction(
-                    key: const Key("loginButton"),
-                    onPressed: loginController.login,
+                    key: const Key("registerButton"),
+                    onPressed: () {},
                     minWidth: double.infinity,
                     fontSize: 20,
-                    label: "Entrar",
+                    label: "Avançar",
                   ),
                   const SizedBox(height: 20),
                   Expanded(
@@ -170,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           child: const Center(
                             child: Text(
-                              "Ou, faça login com",
+                              "Ou, registre-se com",
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
@@ -196,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 20),
                   TextButton(
-                    onPressed: () => Get.toNamed("/register"),
+                    onPressed: () => Get.offAllNamed("/login"),
                     child: RichText(
                       text: const TextSpan(
                         style: TextStyle(
@@ -205,13 +192,13 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         children: [
                           TextSpan(
-                            text: "Não tem uma conta?",
+                            text: "Já tem uma conta?",
                             style: TextStyle(
                               color: Colors.black,
                             ),
                           ),
                           TextSpan(
-                            text: " Cadastre-se aqui",
+                            text: " Faça login",
                             style: TextStyle(
                               color: red,
                             ),

@@ -7,11 +7,13 @@ import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/controllers/login_controller.dart';
+import 'package:livrodin/controllers/register_controller.dart';
 import 'package:livrodin/pages/book_availability_page.dart';
 import 'package:livrodin/pages/home_page.dart';
 import 'package:livrodin/pages/login_page.dart';
 import 'package:livrodin/pages/profile_edit_page.dart';
 import 'package:livrodin/pages/profile_page.dart';
+import 'package:livrodin/pages/resgister_page.dart';
 import 'package:livrodin/services/book_service.dart';
 
 import 'firebase_options.dart';
@@ -47,6 +49,13 @@ class MyApp extends StatelessWidget {
           }),
         ),
         GetPage(
+          name: '/register',
+          page: () => const RegisterPage(),
+          binding: BindingsBuilder(() {
+            Get.put(RegisterController());
+          }),
+        ),
+        GetPage(
           name: '/home',
           page: () => HomePage(),
           binding: BindingsBuilder(() {
@@ -55,7 +64,7 @@ class MyApp extends StatelessWidget {
           }),
         ),
         GetPage(
-          name: '/book_availability',
+          name: '/book/availability',
           page: () => const BookAvailabilityPage(),
           binding: BindingsBuilder(() {
             Get.put(BookController());
