@@ -1,17 +1,17 @@
+import 'package:flutter/material.dart';
 import 'package:livrodin/components/bottom_menu.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/configs/themes.dart';
-import 'package:flutter/material.dart';
 
 class Layout extends StatelessWidget {
   final bool showBottomMenu;
   final Widget child;
-  final HeaderProps headerProps;
+  final HeaderProps? headerProps;
   const Layout(
       {super.key,
       this.showBottomMenu = false,
       required this.child,
-      required this.headerProps,
+      this.headerProps,
       this.pageController});
 
   final PageController? pageController;
@@ -19,9 +19,11 @@ class Layout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(
-        props: headerProps,
-      ),
+      appBar: headerProps != null
+          ? Header(
+              props: headerProps!,
+            )
+          : null,
       backgroundColor: dark,
       bottomNavigationBar: showBottomMenu
           ? BottomMenu(
@@ -29,6 +31,7 @@ class Layout extends StatelessWidget {
             )
           : null,
       extendBody: true,
+      resizeToAvoidBottomInset: false,
       body: child,
     );
   }

@@ -1,11 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:livrodin/components/cards/book_card.dart';
 import 'package:livrodin/components/dialogs/book_detail.dart';
 import 'package:livrodin/components/title.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/models/book.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});

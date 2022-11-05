@@ -1,5 +1,5 @@
-import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:livrodin/configs/themes.dart';
 
 class ButtonAction extends StatelessWidget {
   const ButtonAction({
@@ -54,7 +54,9 @@ class ButtonAction extends StatelessWidget {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: icon != null
+                  ? MainAxisAlignment.spaceAround
+                  : MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
