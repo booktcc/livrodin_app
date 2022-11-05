@@ -9,7 +9,10 @@ class Input extends StatelessWidget {
     this.rightIcon,
     this.hintText,
     this.validator,
-  }) : _controller = TextEditingController(text: text);
+    this.autofillHints,
+    this.obscureText = false,
+    TextEditingController? controller,
+  }) : _controller = controller ?? TextEditingController(text: text);
 
   final Function(String)? onEditingComplete;
   final TextEditingController _controller;
@@ -18,10 +21,14 @@ class Input extends StatelessWidget {
   final Widget? rightIcon;
   final String? hintText;
   final String Function(String?)? validator;
+  final Iterable<String>? autofillHints;
+  final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autofillHints: autofillHints,
+      obscureText: obscureText,
       onEditingComplete: () {
         FocusManager.instance.primaryFocus?.unfocus();
         onEditingComplete?.call(_controller.text);

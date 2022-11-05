@@ -1,5 +1,5 @@
-import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:livrodin/configs/themes.dart';
 
 class ButtonAction extends StatelessWidget {
   const ButtonAction({
@@ -31,6 +31,8 @@ class ButtonAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var hasOnlyElement =
+        !(label != null && icon == null || label == null && icon != null);
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -58,7 +60,7 @@ class ButtonAction extends StatelessWidget {
                 ? const EdgeInsets.symmetric(horizontal: 15, vertical: 10)
                 : const EdgeInsets.all(0),
             child: Row(
-              mainAxisAlignment: label != null
+              mainAxisAlignment: hasOnlyElement
                   ? MainAxisAlignment.spaceAround
                   : MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -73,8 +75,7 @@ class ButtonAction extends StatelessWidget {
                   ),
                 ),
                 Visibility(
-                  visible: !(label != null && icon == null ||
-                      label == null && icon != null),
+                  visible: hasOnlyElement,
                   child: const SizedBox(width: 10),
                 ),
                 Visibility(

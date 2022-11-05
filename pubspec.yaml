@@ -42,6 +42,7 @@ flutter:
   uses-material-design: true
   assets: 
     - assets/icons/
+    - assets/splash.png
   fonts:
     - family:  LivrodinIcons
       fonts:

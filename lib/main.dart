@@ -1,4 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
@@ -6,11 +10,8 @@ import 'package:livrodin/controllers/login_controller.dart';
 import 'package:livrodin/pages/book_availability_page.dart';
 import 'package:livrodin/pages/home_page.dart';
 import 'package:livrodin/pages/login_page.dart';
+import 'package:livrodin/pages/profile_edit_page.dart';
 import 'package:livrodin/pages/profile_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:livrodin/services/book_service.dart';
 
 import 'firebase_options.dart';
@@ -63,6 +64,13 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/profile',
           page: () => ProfilePage(),
+          binding: BindingsBuilder(() {
+            Get.put(BookController());
+          }),
+        ),
+        GetPage(
+          name: '/profile/edit',
+          page: () => ProfileEditPage(),
         ),
       ],
       initialBinding: BindingsBuilder(() {

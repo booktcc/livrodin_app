@@ -2,6 +2,7 @@ import 'package:books_finder/books_finder.dart' as books_finder;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:livrodin/components/toggle_offer_status.dart';
+import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/discussion.dart';
 import 'package:livrodin/models/rating.dart';
 
@@ -18,7 +19,8 @@ class Book {
   final String? publisher;
   final DateTime? publishedDate;
   final List<String>? genres;
-  List<Rating> ratings = List.empty(growable: false);
+  List<Rating> ratings;
+  List<Availability> availabilities;
   final List<Discussion> _discussions = List.empty(growable: true);
   final bool forTrade;
   final bool forDonation;
@@ -38,6 +40,8 @@ class Book {
     this.genres,
     this.forTrade = false,
     this.forDonation = false,
+    this.ratings = const [],
+    this.availabilities = const [],
   }) : _id = id;
 
   String get id => _id;
@@ -50,10 +54,6 @@ class Book {
 
   String get genresString => genres?.join(", ") ?? "";
   String get authorsString => authors?.join(', ') ?? 'Desconhecido';
-
-  void addRating(Rating rating) {
-    ratings.add(rating);
-  }
 
   factory Book.fromApi(books_finder.Book oldBook) {
     return Book(
