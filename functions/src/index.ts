@@ -46,7 +46,7 @@ const fetchBook = async (bookId: string) => {
   };
 };
 
-export const onBookAvailabilityCreated = functions.firestore
+export const onBookAvailabilityCreated = functions.region("southamerica-east1").firestore
   .document("BookAvailable/{bookAvailableId}")
   .onCreate(async (change) => {
     const db = admin.firestore();
@@ -79,7 +79,7 @@ export const onBookAvailabilityCreated = functions.firestore
     }
   });
 
-export const onBookAvailabilityDeleted = functions.firestore
+export const onBookAvailabilityDeleted = functions.region("southamerica-east1").firestore
   .document("BookAvailable/{bookAvailableId}")
   .onDelete(async (change) => {
     const db = admin.firestore();
@@ -119,7 +119,7 @@ export const onBookAvailabilityDeleted = functions.firestore
     });
   });
 
-export const createTransaction = functions.https.onCall(
+export const createTransaction = functions.region("southamerica-east1").https.onCall(
   async (data, context) => {
     const db = admin.firestore();
 
@@ -165,7 +165,7 @@ export const createTransaction = functions.https.onCall(
   }
 );
 
-export const confirmTransaction = functions.https.onCall(
+export const confirmTransaction = functions.region("southamerica-east1").https.onCall(
   async (data, context) => {
     const db = admin.firestore();
 
@@ -208,7 +208,7 @@ export const confirmTransaction = functions.https.onCall(
   }
 );
 
-export const completeTransaction = functions.https.onCall(
+export const completeTransaction = functions.region("southamerica-east1").https.onCall(
   async (data, context) => {
     const db = admin.firestore();
 
@@ -249,7 +249,7 @@ export const completeTransaction = functions.https.onCall(
   }
 );
 
-export const cancelTransaction = functions.https.onCall(
+export const cancelTransaction = functions.region("southamerica-east1").https.onCall(
   async (data, context) => {
     const db = admin.firestore();
 
