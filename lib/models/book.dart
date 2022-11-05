@@ -20,6 +20,8 @@ class Book {
   final List<String>? genres;
   List<Rating> ratings = List.empty(growable: false);
   final List<Discussion> _discussions = List.empty(growable: true);
+  final bool forTrade;
+  final bool forDonation;
 
   Book({
     required String id,
@@ -34,6 +36,8 @@ class Book {
     this.coverUrl,
     this.publishedDate,
     this.genres,
+    this.forTrade = false,
+    this.forDonation = false,
   }) : _id = id;
 
   String get id => _id;

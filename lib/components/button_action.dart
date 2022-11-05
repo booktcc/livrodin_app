@@ -9,11 +9,12 @@ class ButtonAction extends StatelessWidget {
     this.minWidth = 0,
     this.icon,
     this.iconSize = 20,
-    required this.label,
+    this.label,
     this.fontSize = 14,
     this.radius = 90,
     this.color = red,
     this.textColor = Colors.white,
+    this.rounded = false,
   });
 
   final double minWidth;
@@ -21,11 +22,12 @@ class ButtonAction extends StatelessWidget {
   final VoidCallback onPressed;
   final IconData? icon;
   final double iconSize;
-  final String label;
+  final String? label;
   final double fontSize;
   final double radius;
   final Color color;
   final Color textColor;
+  final bool rounded;
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +54,13 @@ class ButtonAction extends StatelessWidget {
                 ),
               ],
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            padding: label != null
+                ? const EdgeInsets.symmetric(horizontal: 15, vertical: 10)
+                : const EdgeInsets.all(0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: label != null
+                  ? MainAxisAlignment.spaceAround
+                  : MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -67,16 +73,20 @@ class ButtonAction extends StatelessWidget {
                   ),
                 ),
                 Visibility(
-                  visible: icon != null,
+                  visible: !(label != null && icon == null ||
+                      label == null && icon != null),
                   child: const SizedBox(width: 10),
                 ),
-                Text(
-                  label,
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: fontSize,
-                    fontFamily: "Avenir",
-                    fontWeight: FontWeight.w800,
+                Visibility(
+                  visible: label != null,
+                  child: Text(
+                    label ?? "",
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: fontSize,
+                      fontFamily: "Avenir",
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ],
