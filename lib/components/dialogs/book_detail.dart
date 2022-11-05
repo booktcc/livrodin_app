@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:livrodin/components/button_action.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/components/rating_info.dart';
@@ -7,6 +9,7 @@ import 'package:livrodin/components/tabs/book_detail/details.dart';
 import 'package:livrodin/components/tabs/book_detail/discussions.dart';
 import 'package:livrodin/components/tabs/book_detail/ratings.dart';
 import 'package:livrodin/components/tabs/book_detail/synopsis.dart';
+import 'package:livrodin/configs/livrodin_icons.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/models/book.dart';
@@ -222,6 +225,57 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                   ),
                 ),
               ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  height: 60,
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10, left: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ButtonAction(
+                          onPressed: () {},
+                          color: Colors.white,
+                          icon: Icons.bookmark_add,
+                          iconSize: 24,
+                          radius: 360,
+                          minHeight: 40,
+                          minWidth: 40,
+                          textColor: grey,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Visibility(
+                              visible: widget._book.forDonation,
+                              child: ButtonAction(
+                                onPressed: () {},
+                                label: "PEDIR",
+                                icon: LivrodinIcons.donateIcon,
+                              ),
+                            ),
+                            Visibility(
+                              visible: widget._book.forDonation &&
+                                  widget._book.forTrade,
+                              child: const SizedBox(width: 30),
+                            ),
+                            Visibility(
+                              visible: widget._book.forTrade,
+                              child: ButtonAction(
+                                onPressed: () {},
+                                label: "TROCAR",
+                                icon: Icons.swap_horizontal_circle,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              )
             ],
           );
         },
