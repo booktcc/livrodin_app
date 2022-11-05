@@ -6,8 +6,8 @@ import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/models/availability.dart';
 
-class UserListAvailableDialig extends StatelessWidget {
-  UserListAvailableDialig({super.key});
+class UserListAvailableDialog extends StatelessWidget {
+  UserListAvailableDialog({super.key});
 
   final bookController = Get.find<BookController>();
 

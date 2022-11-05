@@ -38,7 +38,7 @@ class BottomProfile extends StatelessWidget {
               ButtonOptionProfile(
                 label: "Livros Disponibilizados",
                 icon: Icons.book_rounded,
-                onPressed: () => Get.dialog(UserListAvailableDialig()),
+                onPressed: () => Get.dialog(UserListAvailableDialog()),
               ),
               ButtonOptionProfile(
                 label: "Livros Avaliados",
