@@ -23,7 +23,7 @@ class ProfilePage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () {},
+            onPressed: () => Get.toNamed("/profile/edit"),
           ),
         ],
       ),

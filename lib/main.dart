@@ -10,6 +10,7 @@ import 'package:livrodin/controllers/login_controller.dart';
 import 'package:livrodin/pages/book_availability_page.dart';
 import 'package:livrodin/pages/home_page.dart';
 import 'package:livrodin/pages/login_page.dart';
+import 'package:livrodin/pages/profile_edit_page.dart';
 import 'package:livrodin/pages/profile_page.dart';
 import 'package:livrodin/services/book_service.dart';
 
@@ -66,6 +67,10 @@ class MyApp extends StatelessWidget {
           binding: BindingsBuilder(() {
             Get.put(BookController());
           }),
+        ),
+        GetPage(
+          name: '/profile/edit',
+          page: () => ProfileEditPage(),
         ),
       ],
       initialBinding: BindingsBuilder(() {
