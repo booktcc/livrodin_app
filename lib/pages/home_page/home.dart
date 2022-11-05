@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/cards/book_card.dart';
@@ -7,10 +9,34 @@ import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/models/book.dart';
 
-class Home extends StatelessWidget {
-  Home({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+enum ResultBooksFetch { success, error, loading }
+
+class _HomeState extends State<Home> {
+  final RxList<Book> books = <Book>[].obs;
 
   final BookController _bookController = Get.find<BookController>();
+  final Rx<ResultBooksFetch> result = ResultBooksFetch.loading.obs;
+
+  @override
+  void initState() {
+    super.initState();
+    result.value = ResultBooksFetch.loading;
+    _bookController.getAvailableBooks().then((value) {
+      books.value = value;
+      result.value = ResultBooksFetch.success;
+      inspect(books);
+    }).onError((error, stackTrace) {
+      result.value = ResultBooksFetch.error;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -52,22 +78,20 @@ class Home extends StatelessWidget {
                         sliver: SliverToBoxAdapter(
                           child: SizedBox(
                             height: 222,
-                            child: FutureBuilder(
-                              future: _bookController.getAvailableBooks(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  var data = snapshot.data as List<Book>;
+                            child: Obx(
+                              () {
+                                if (result.value == ResultBooksFetch.success) {
                                   return ListView.builder(
                                     physics: const BouncingScrollPhysics(),
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: data.length,
+                                    itemCount: books.length,
                                     itemBuilder: (context, index) {
                                       return Padding(
                                         padding: EdgeInsets.only(
                                             left: index == 0 ? 20 : 0,
                                             right: 20),
                                         child: BookCard(
-                                          book: data[index],
+                                          book: books[index],
                                           onTap: (book) => Get.dialog(
                                             BookDetailDialog(
                                               book: book,
@@ -77,11 +101,15 @@ class Home extends StatelessWidget {
                                       );
                                     },
                                   );
-                                } else {
+                                } else if (result.value ==
+                                    ResultBooksFetch.loading) {
                                   return const Center(
                                     child: CircularProgressIndicator(),
                                   );
                                 }
+                                return const Center(
+                                  child: Text("Erro ao carregar livros"),
+                                );
                               },
                             ),
                           ),
