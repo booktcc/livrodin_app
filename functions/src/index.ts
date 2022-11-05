@@ -207,3 +207,80 @@ export const confirmTransaction = functions.https.onCall(
     return transaction.id;
   }
 );
+
+export const completeTransaction = functions.https.onCall(
+  async (data, context) => {
+    const db = admin.firestore();
+
+    const user1Id = context.auth?.uid;
+
+    if (!user1Id) return { error: "User not authenticated" };
+
+    const { transactionId } = data as { transactionId: string };
+
+    const transaction = await db
+      .collection("Transaction")
+      .doc(transactionId)
+      .get();
+
+    if (!transaction.exists) return { error: "Transaction not found" };
+
+    const transactionData = transaction.data();
+
+    if (!transactionData) return { error: "Transaction not found" };
+
+    if (transactionData.status !== TransactionStatus.IN_PROGRESS)
+      return { error: "Transaction not in progress" };
+
+    if (transactionData.user1Id !== user1Id)
+      return { error: "User not authorized" };
+
+    await transaction.ref.update({
+      status: TransactionStatus.COMPLETED,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    await db
+      .collection("BookAvailable")
+      .doc(transactionData.bookAvailableId)
+      .delete();
+
+    return transaction.id;
+  }
+);
+
+export const cancelTransaction = functions.https.onCall(
+  async (data, context) => {
+    const db = admin.firestore();
+
+    const user1Id = context.auth?.uid;
+
+    if (!user1Id) return { error: "User not authenticated" };
+
+    const { transactionId } = data as { transactionId: string };
+
+    const transaction = await db
+      .collection("Transaction")
+      .doc(transactionId)
+      .get();
+
+    if (!transaction.exists) return { error: "Transaction not found" };
+
+    const transactionData = transaction.data();
+
+    if (!transactionData) return { error: "Transaction not found" };
+
+    if (transactionData.status === TransactionStatus.COMPLETED)
+      return { error: "Transaction already completed" };
+
+    if (transactionData.user1Id !== user1Id)
+      return { error: "User not authorized" };
+
+    await transaction.ref.update({
+      status: TransactionStatus.CANCELED,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    return transaction.id;
+  }
+);
