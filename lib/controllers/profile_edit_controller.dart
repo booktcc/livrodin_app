@@ -116,7 +116,7 @@ class ProfileEditController extends GetxController {
         image.value = file;
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      printError(info: e.toString());
     }
     isLoading.value = false;
   }

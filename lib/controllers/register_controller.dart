@@ -92,7 +92,7 @@ class RegisterController extends GetxController {
         ],
       );
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      printError(info: e.toString());
     }
   }
 
