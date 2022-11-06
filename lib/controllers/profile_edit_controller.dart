@@ -156,7 +156,10 @@ class ProfileEditController extends GetxController {
             Get.back();
             final result =
                 await authController.updateProfile(nameController.text);
-            if (result) await userService.updateUser();
+            if (result) {
+              await userService.updateUser();
+              Get.snackbar("Sucesso", "Seu perfil foi atualizado com sucesso!");
+            }
             isLoading.value = false;
           }
         },
