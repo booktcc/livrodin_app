@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
@@ -23,6 +25,9 @@ import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  initializeDateFormatting('pt_BR', null);
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -44,6 +49,14 @@ class MyApp extends StatelessWidget {
       theme: themeData,
       initialRoute: isLogged ? '/home' : '/login',
       defaultTransition: Transition.fade,
+      scrollBehavior: const MaterialScrollBehavior().copyWith(
+        dragDevices: {
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.touch,
+          PointerDeviceKind.stylus,
+          PointerDeviceKind.unknown
+        },
+      ),
       getPages: [
         GetPage(
           name: '/login',

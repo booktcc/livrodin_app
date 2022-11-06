@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:livrodin/components/bottom_menu.dart';
 import 'package:livrodin/components/bottom_profile.dart';
 import 'package:livrodin/components/button_action.dart';
@@ -19,10 +20,11 @@ import 'components/layout.stories.dart';
 import 'components/profile_icon.stories.dart';
 import 'components/profile_info.stories.dart';
 import 'components/toggle_offer_status.stories.dart';
+import 'components/transaction_card.stories.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  initializeDateFormatting('pt_BR', null);
   runApp(const StorybookApp());
 }
 
@@ -169,6 +171,12 @@ class _StorybookAppState extends State<StorybookApp> {
                 child: BottomProfile(),
               ),
             ),
+          ),
+          Story(
+            name: 'Components/TradeCard',
+            builder: (context) {
+              return const TransactionCardStories();
+            },
           ),
         ],
       );

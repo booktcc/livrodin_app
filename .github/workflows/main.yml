@@ -31,7 +31,7 @@ jobs:
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
           cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
           architecture: x64
-      - run: flutter build web --release
+      - run: flutter build web --release --web-renderer html
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
