@@ -14,7 +14,7 @@ class ButtonAction extends StatelessWidget {
     this.radius = 90,
     this.color = red,
     this.textColor = Colors.white,
-    this.rounded = false,
+    this.elevation = 0.5,
   });
 
   final double minWidth;
@@ -27,7 +27,7 @@ class ButtonAction extends StatelessWidget {
   final double radius;
   final Color color;
   final Color textColor;
-  final bool rounded;
+  final double elevation;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +35,8 @@ class ButtonAction extends StatelessWidget {
         !(label != null && icon == null || label == null && icon != null);
     return Material(
       color: Colors.transparent,
+      elevation: elevation,
+      borderRadius: BorderRadius.circular(radius),
       child: InkWell(
         onTap: onPressed,
         borderRadius: BorderRadius.circular(radius),
@@ -47,14 +49,6 @@ class ButtonAction extends StatelessWidget {
             decoration: BoxDecoration(
               color: color,
               borderRadius: BorderRadius.circular(radius),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  spreadRadius: 0.1,
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ],
             ),
             padding: label != null
                 ? const EdgeInsets.symmetric(horizontal: 15, vertical: 10)

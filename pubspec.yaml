@@ -26,6 +26,8 @@ dependencies:
   flutter_native_splash: ^2.2.12
   cloud_functions: ^3.3.9
   flutter_svg: ^1.1.6
+  image_picker: ^0.8.6
+  image_cropper: ^3.0.1
 
 dev_dependencies:
   flutter_test:

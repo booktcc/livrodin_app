@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/bottom_profile.dart';
@@ -43,7 +44,8 @@ class ProfilePage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 20, left: 20, top: 24),
                   child: ProfileInfo(
-                    name: authController.user.value?.displayName ?? 'Sem nome',
+                    name: FirebaseAuth.instance.currentUser?.displayName ??
+                        'Sem nome',
                     email: authController.user.value?.email ?? 'Sem email',
                     image: authController.user.value?.photoURL ?? "",
                   ),
