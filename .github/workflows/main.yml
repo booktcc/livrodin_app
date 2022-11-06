@@ -31,8 +31,10 @@ jobs:
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
           cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
           architecture: x64
-      - run: flutter build web --release
-      - uses: actions/upload-artifact@v3
+      - run: flutter build web --release --web-renderer html
+      - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          name: web-release
-          path: build/web
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TCC_BOOK }}'
+          channelId: live
+          projectId: tcc-book
