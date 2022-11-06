@@ -1,7 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/button_action.dart';
+import 'package:livrodin/components/dialogs/book_list_available.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/components/rating_info.dart';
@@ -12,6 +14,7 @@ import 'package:livrodin/components/tabs/book_detail/synopsis.dart';
 import 'package:livrodin/configs/livrodin_icons.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/book_controller.dart';
+import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 
 enum BookStatus { init, loading, loaded, error }
@@ -35,6 +38,7 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
   final Rx<BookRatingStatus> _bookRatingStatus = BookRatingStatus.init.obs;
   final Rx<BookDiscussionStatus> _bookDiscussionStatus =
       BookDiscussionStatus.init.obs;
+  final RxList<Availability> _bookAvailabilityList = <Availability>[].obs;
 
   @override
   void initState() {
@@ -48,7 +52,7 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (_bookStatus.value == BookStatus.init) {
         _bookStatus.value = BookStatus.loading;
-        _bookController.getBookById(widget._book.id).then((value) {
+        _bookController.getBookByIdGoogle(widget._book.id).then((value) {
           widget._book = value;
           _bookStatus.value = BookStatus.loaded;
 
@@ -57,7 +61,9 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
               (_) => _bookRatingStatus.value = BookRatingStatus.loaded,
               onError: (_) => _bookRatingStatus.value = BookRatingStatus.error);
           // _bookController.fetchBookDiscussions(value).then((value) => {
-
+          _bookController.getBookAvailabityById(value.id).then((value) {
+            _bookAvailabilityList.value = value;
+          }, onError: (_) {});
           // });
         }).catchError((error) {
           _bookStatus.value = BookStatus.error;
@@ -249,22 +255,28 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Visibility(
-                              visible: widget._book.forDonation,
+                              visible: widget._book.availableType ==
+                                  BookAvailableType.donate,
                               child: ButtonAction(
-                                onPressed: () {},
+                                onPressed: () =>
+                                    Get.dialog(const BookListAvailable()),
                                 label: "PEDIR",
                                 icon: LivrodinIcons.donateIcon,
                               ),
                             ),
                             Visibility(
-                              visible: widget._book.forDonation &&
-                                  widget._book.forTrade,
+                              visible: widget._book.availableType ==
+                                      BookAvailableType.donate &&
+                                  widget._book.availableType ==
+                                      BookAvailableType.trade,
                               child: const SizedBox(width: 30),
                             ),
                             Visibility(
-                              visible: widget._book.forTrade,
+                              visible: widget._book.availableType ==
+                                  BookAvailableType.trade,
                               child: ButtonAction(
-                                onPressed: () {},
+                                onPressed: () =>
+                                    Get.dialog(const BookListAvailable()),
                                 label: "TROCAR",
                                 icon: Icons.swap_horizontal_circle,
                               ),

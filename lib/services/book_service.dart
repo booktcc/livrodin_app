@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:books_finder/books_finder.dart' as books_finder;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -24,13 +26,14 @@ class BookService extends GetxService {
     return results.map(Book.fromApi).toList();
   }
 
-  Future<void> addBook(Book book, OfferStatus offerStatus) async {
+  Future<void> addBookAvailable(
+      Book book, BookAvailableType offerStatus) async {
     if (authController.user.value == null) throw 'User not logged in';
 
     await firestore.collection("BookAvailable").doc().set(
           book.toFireStore(
             idUser: authController.user.value!.uid,
-            offerStatus: offerStatus,
+            availableType: offerStatus,
           ),
         );
   }
@@ -53,22 +56,29 @@ class BookService extends GetxService {
 
   Future<List<Book>> getAvailableBooks({int? limit, int? page}) async {
     List<Book> books = List.empty(growable: true);
-
     var result = await firestore
-        .collection("BookAvailable")
+        .collection("Book")
+        .where(
+          "lastAvailabilityUpdated",
+          isNull: false,
+        )
+        .orderBy("lastAvailabilityUpdated", descending: true)
         .limit(limit ?? 100)
-        .orderBy("createdAt", descending: true)
-        .orderBy("idBook")
         .get();
-
     for (var doc in result.docs) {
       var data = doc.data();
       if (!books.any((element) => element.id == data["idBook"])) {
         books.add(
           Book(
-            id: data['idBook'],
+            id: doc.id,
             title: data['title'],
             coverUrl: data['coverUrl'],
+            // can be null
+            availableType: data['availableType'] == "FOR_TRADE"
+                ? BookAvailableType.trade
+                : data['availableType'] == "FOR_DONATION"
+                    ? BookAvailableType.donate
+                    : BookAvailableType.both,
           ),
         );
       }
@@ -129,9 +139,11 @@ class BookService extends GetxService {
         book: book,
         user: User(id: authController.user.value!.uid, name: "Eu"),
         dateAvailable: data["createdAt"].toDate(),
-        offerStatus: data["forDonation"] && data["forTrade"]
-            ? OfferStatus.both
-            : (data["forDonation"] ? OfferStatus.donate : OfferStatus.trade),
+        availableType: data["forDonation"] && data["forTrade"]
+            ? BookAvailableType.both
+            : (data["forDonation"]
+                ? BookAvailableType.donate
+                : BookAvailableType.trade),
       );
       book.availabilities = [availability];
       return availability;
@@ -203,5 +215,64 @@ class BookService extends GetxService {
         );
       },
     ).toList();
+  }
+
+  Future<List<User>> _getUsersByIds(List<String> ids) async {
+    if (ids.isEmpty) return [];
+    var result = await firestore
+        .collection("Users")
+        .where(FieldPath.documentId, whereIn: ids)
+        .get();
+
+    return result.docs.map((e) {
+      var data = e.data();
+      return User(
+        id: e.id,
+        name: data["name"],
+        profilePictureUrl: data["profilePictureUrl"],
+      );
+    }).toList();
+  }
+
+  Future<List<Availability>> getBookAvailabityById(String idBook) async {
+    var result = await firestore
+        .collection("BookAvailable")
+        .where("idBook", isEqualTo: idBook)
+        .get();
+
+    List<Availability> availabilities = List.empty(growable: true);
+
+    var users = await _getUsersByIds(
+        result.docs.map((e) => (e.data()["idUser"] as String)).toList());
+
+    for (var doc in result.docs) {
+      var data = doc.data();
+      var user = users.firstWhere(
+        (element) => element.id == data["idUser"],
+        orElse: () => User(
+          id: "",
+          name: "Usuário",
+        ),
+      );
+      availabilities.add(
+        Availability(
+          id: doc.id,
+          book: Book(
+            id: data["idBook"],
+            title: data["title"],
+            coverUrl: data["coverUrl"],
+          ),
+          user: user,
+          dateAvailable: data["createdAt"].toDate(),
+          availableType: data["availableType"] == "FOR_TRADE"
+              ? BookAvailableType.trade
+              : data["availableType"] == "FOR_DONATION"
+                  ? BookAvailableType.donate
+                  : BookAvailableType.both,
+        ),
+      );
+    }
+
+    return availabilities;
   }
 }

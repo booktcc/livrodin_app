@@ -31,7 +31,6 @@ class _HomeState extends State<Home> {
     _bookController.getAvailableBooks().then((value) {
       books.value = value;
       result.value = ResultBooksFetch.success;
-      inspect(books);
     }).onError((error, stackTrace) {
       result.value = ResultBooksFetch.error;
     });

@@ -13,7 +13,8 @@ class BookController extends GetxController {
   var authController = Get.find<AuthController>();
   var bookService = Get.find<BookService>();
 
-  Future<bool?> makeBookAvailable(Book book, OfferStatus offerStatus) async {
+  Future<bool?> makeBookAvailable(
+      Book book, BookAvailableType offerStatus) async {
     try {
       // call a dialog
       bool hasAdded = await Get.dialog(ConfirmDialog(
@@ -22,7 +23,7 @@ class BookController extends GetxController {
             'Você está preste a adicionar o livro: “${book.title}” para a Doação.',
         onConfirm: () async {
           bookService
-              .addBook(book, offerStatus)
+              .addBookAvailable(book, offerStatus)
               .whenComplete(() => Get.back(result: true));
         },
       ));
@@ -62,7 +63,7 @@ class BookController extends GetxController {
     }
   }
 
-  Future<Book> getBookById(String id) async {
+  Future<Book> getBookByIdGoogle(String id) async {
     try {
       var result = await bookService.searchBooksOnGoogleApi(id);
       return result[0];
@@ -117,6 +118,16 @@ class BookController extends GetxController {
   Future<List<Interest>> getInterestsList() async {
     try {
       var result = await bookService.getInterestList();
+      return result;
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<Availability>> getBookAvailabityById(String id) async {
+    try {
+      var result = await bookService.getBookAvailabityById(id);
       return result;
     } catch (e) {
       printError(info: e.toString());

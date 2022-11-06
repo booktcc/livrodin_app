@@ -75,13 +75,21 @@ class BookCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.handshake_rounded,
-                  color: Colors.green[600],
+                Visibility(
+                  visible: book.availableType == BookAvailableType.both ||
+                      book.availableType == BookAvailableType.donate,
+                  child: Icon(
+                    Icons.handshake_rounded,
+                    color: Colors.green[600],
+                  ),
                 ),
-                Icon(
-                  Icons.swap_horizontal_circle_rounded,
-                  color: Colors.green[600],
+                Visibility(
+                  visible: book.availableType == BookAvailableType.both ||
+                      book.availableType == BookAvailableType.trade,
+                  child: Icon(
+                    Icons.swap_horizontal_circle_rounded,
+                    color: Colors.green[600],
+                  ),
                 ),
               ],
             ),

@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:get/get.dart';
-import 'package:livrodin/components/toggle_offer_status.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/controllers/login_controller.dart';
+import 'package:livrodin/models/book.dart';
 import 'package:livrodin/pages/home_page.dart';
 import 'package:livrodin/pages/login_page.dart';
 import 'package:livrodin/services/book_service.dart';
@@ -81,7 +81,7 @@ void main() async {
     await firestore.collection("BookAvailable").doc().set(
           fakeBook.toFireStore(
             idUser: mockedUser.uid,
-            offerStatus: OfferStatus.both,
+            availableType: BookAvailableType.both,
           ),
         );
 

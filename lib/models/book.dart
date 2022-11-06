@@ -1,10 +1,26 @@
 import 'package:books_finder/books_finder.dart' as books_finder;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get_utils/get_utils.dart';
-import 'package:livrodin/components/toggle_offer_status.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/discussion.dart';
 import 'package:livrodin/models/rating.dart';
+
+enum BookAvailableType {
+  both,
+  trade,
+  donate;
+
+  String get value {
+    switch (this) {
+      case BookAvailableType.trade:
+        return "FOR_TRADE";
+      case BookAvailableType.donate:
+        return "FOR_DONATION";
+      case BookAvailableType.both:
+        return "BOTH";
+    }
+  }
+}
 
 class Book {
   final String _id;
@@ -22,8 +38,7 @@ class Book {
   List<Rating> ratings;
   List<Availability> availabilities;
   final List<Discussion> _discussions = List.empty(growable: true);
-  final bool forTrade;
-  final bool forDonation;
+  final BookAvailableType? availableType;
 
   Book({
     required String id,
@@ -38,10 +53,9 @@ class Book {
     this.coverUrl,
     this.publishedDate,
     this.genres,
-    this.forTrade = false,
-    this.forDonation = false,
     this.ratings = const [],
     this.availabilities = const [],
+    this.availableType,
   }) : _id = id;
 
   String get id => _id;
@@ -79,17 +93,12 @@ class Book {
 
   // toMap
   Map<String, dynamic> toFireStore(
-      {required String idUser, required OfferStatus offerStatus}) {
+      {required String idUser, required BookAvailableType availableType}) {
     return {
       "idBook": id,
-      "title": title,
-      "coverUrl": coverUrl,
       "idUser": idUser,
       "createdAt": FieldValue.serverTimestamp(),
-      "forDonation": (offerStatus == OfferStatus.both ||
-          offerStatus == OfferStatus.donate),
-      "forTrade":
-          (offerStatus == OfferStatus.both || offerStatus == OfferStatus.trade),
+      "availableType": availableType.value,
     };
   }
 }

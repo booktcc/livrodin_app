@@ -143,6 +143,10 @@ export const onBookAvailabilityDeleted = functions
 
     await bookRef.update({
       availableType: newAvailableType,
+      lastAvailabilityUpdated:
+        newAvailableType === null
+          ? null
+          : admin.firestore.FieldValue.serverTimestamp(),
     });
   });
 
