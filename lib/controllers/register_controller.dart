@@ -29,10 +29,14 @@ class RegisterController extends GetxController {
 
   Future<void> register() async {
     isLoading.value = true;
-    await authController.register(
+    var registerResult = await authController.register(
       emailController.text,
       passwordController.text,
     );
+    if (registerResult == null) {
+      isLoading.value = false;
+      return;
+    }
     await authController.login(
       emailController.text,
       passwordController.text,
