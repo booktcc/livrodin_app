@@ -14,8 +14,8 @@ import 'package:livrodin/pages/home_page.dart';
 import 'package:livrodin/pages/login_page.dart';
 import 'package:livrodin/pages/profile_edit_page.dart';
 import 'package:livrodin/pages/profile_page.dart';
+import 'package:livrodin/pages/register_page.dart';
 import 'package:livrodin/pages/reset_password_page.dart';
-import 'package:livrodin/pages/resgister_page.dart';
 import 'package:livrodin/services/book_service.dart';
 import 'package:livrodin/services/user_service.dart';
 
