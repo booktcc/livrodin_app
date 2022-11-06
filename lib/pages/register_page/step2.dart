@@ -105,7 +105,7 @@ class Step2 extends StatelessWidget {
           const SizedBox(height: 20),
           ButtonAction(
             key: const Key("registerButton"),
-            onPressed: registerController.register,
+            onPressed: registerController.nextStep,
             minWidth: double.infinity,
             fontSize: 20,
             label: "Cadastrar",

@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
+import 'package:livrodin/services/user_service.dart';
 
 class RegisterController extends GetxController {
   final TextEditingController nameController = TextEditingController(text: "");
@@ -23,7 +22,10 @@ class RegisterController extends GetxController {
   final GlobalKey<FormState> formKeyStep1 = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyStep2 = GlobalKey<FormState>();
 
-  var authController = Get.find<AuthController>();
+  final AuthController authController;
+  final UserService userService;
+  RegisterController({required this.userService, required this.authController});
+
   Future<void> register() async {
     await authController.register(
       emailController.text,
@@ -33,31 +35,12 @@ class RegisterController extends GetxController {
       emailController.text,
       passwordController.text,
     );
-
-    if (image.value != null) {
-      try {
-        var snapshot = await FirebaseStorage.instance
-            .ref("Users")
-            .child(authController.user.value!.uid)
-            .putFile(File(image.value!.path));
-        await authController.updatePhoto(await snapshot.ref.getDownloadURL());
-      } catch (e) {
-        Get.snackbar("Error", e.toString());
-      }
-    }
+    if (authController.user.value == null) return;
+    final photoUrl = await userService.uploadUserPhoto(File(image.value!.path));
+    if (photoUrl != null) await authController.updatePhoto(photoUrl);
     await authController.updateProfile(nameController.text);
 
-    await FirebaseFirestore.instance
-        .collection("Users")
-        .doc(authController.user.value!.uid)
-        .set(
-      {
-        "name": nameController.text,
-        "lastName": lastNameController.text,
-        "email": emailController.text,
-        "profilePictureUrl": authController.user.value!.photoURL,
-      },
-    );
+    await userService.createUser();
     await Get.offAllNamed("/home");
   }
 

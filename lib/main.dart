@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/configs/themes.dart';
@@ -16,6 +17,7 @@ import 'package:livrodin/pages/profile_page.dart';
 import 'package:livrodin/pages/reset_password_page.dart';
 import 'package:livrodin/pages/resgister_page.dart';
 import 'package:livrodin/services/book_service.dart';
+import 'package:livrodin/services/user_service.dart';
 
 import 'firebase_options.dart';
 
@@ -60,7 +62,15 @@ class MyApp extends StatelessWidget {
           name: '/register',
           page: () => const RegisterPage(),
           binding: BindingsBuilder(() {
-            Get.put(RegisterController());
+            Get.put(
+              RegisterController(
+                userService: UserService(
+                  firestore: FirebaseFirestore.instance,
+                  storage: FirebaseStorage.instance,
+                ),
+                authController: Get.find<AuthController>(),
+              ),
+            );
           }),
         ),
         GetPage(

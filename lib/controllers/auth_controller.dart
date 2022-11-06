@@ -16,7 +16,7 @@ class AuthController extends GetxController {
 
   @override
   void onInit() {
-    firebaseAuth.authStateChanges().listen((user) {
+    firebaseAuth.userChanges().listen((user) {
       _user.value = user;
     });
     super.onInit();
@@ -34,14 +34,15 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> register(String email, String password) async {
+  Future<UserCredential?> register(String email, String password) async {
     try {
-      await firebaseAuth.createUserWithEmailAndPassword(
+      return await firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
     } on FirebaseAuthException catch (e) {
       Snackbar.error(e.message);
+      return null;
     }
   }
 
@@ -91,11 +92,13 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> updatePhoto(String photo) async {
+  Future<String?> updatePhoto(String photo) async {
     try {
       await firebaseAuth.currentUser!.updatePhotoURL(photo);
+      return photo;
     } on FirebaseAuthException catch (e) {
       Snackbar.error(e.message);
+      return null;
     }
   }
 }
