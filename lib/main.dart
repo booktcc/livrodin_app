@@ -8,6 +8,7 @@ import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/controllers/login_controller.dart';
+import 'package:livrodin/controllers/profile_edit_controller.dart';
 import 'package:livrodin/controllers/register_controller.dart';
 import 'package:livrodin/pages/book_availability_page.dart';
 import 'package:livrodin/pages/home_page.dart';
@@ -64,11 +65,14 @@ class MyApp extends StatelessWidget {
           page: () => const RegisterPage(),
           binding: BindingsBuilder(() {
             Get.put(
+              UserService(
+                firestore: FirebaseFirestore.instance,
+                storage: FirebaseStorage.instance,
+              ),
+            );
+            Get.put(
               RegisterController(
-                userService: UserService(
-                  firestore: FirebaseFirestore.instance,
-                  storage: FirebaseStorage.instance,
-                ),
+                userService: Get.find<UserService>(),
                 authController: Get.find<AuthController>(),
               ),
             );
@@ -99,6 +103,18 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/profile/edit',
           page: () => ProfileEditPage(),
+          binding: BindingsBuilder(() {
+            Get.put(
+              UserService(
+                firestore: FirebaseFirestore.instance,
+                storage: FirebaseStorage.instance,
+              ),
+            );
+            Get.put(ProfileEditController(
+              userService: Get.find<UserService>(),
+              authController: Get.find<AuthController>(),
+            ));
+          }),
         ),
       ],
       initialBinding: BindingsBuilder(() {

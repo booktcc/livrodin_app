@@ -25,28 +25,25 @@ class UserService extends GetxService {
     });
   }
 
-  Future<void> updateUser(
-      {String? name,
-      String? lastName,
-      String? email,
-      String? profilePictureUrl}) async {
+  Future<void> updateUser() async {
     await firestore
         .collection(collectionUsers)
         .doc(authController.user.value!.uid)
         .update({
-      "name": name,
-      "lastName": lastName,
-      "email": email,
-      "profilePictureUrl": profilePictureUrl,
+      "name": authController.user.value?.displayName,
+      "lastName": "",
+      "email": authController.user.value?.email,
+      "profilePictureUrl": authController.user.value?.photoURL,
     });
   }
 
-  Future<String?> uploadUserPhoto(File file) async {
+  Future<String?> uploadUserPhoto(String? file) async {
+    if (file == null) return null;
     try {
       var snapshot = await storage
           .ref(storageUsers)
           .child(authController.user.value!.uid)
-          .putFile(file);
+          .putFile(File(file));
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
       return null;

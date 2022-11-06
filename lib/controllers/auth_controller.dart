@@ -68,27 +68,33 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> updatePassword(String password) async {
+  Future<bool> updatePassword(String password) async {
     try {
       await firebaseAuth.currentUser!.updatePassword(password);
+      return true;
     } on FirebaseAuthException catch (e) {
       Snackbar.error(e.message);
+      return false;
     }
   }
 
-  Future<void> updateEmail(String email) async {
+  Future<bool> updateEmail(String email) async {
     try {
       await firebaseAuth.currentUser!.updateEmail(email);
+      return true;
     } on FirebaseAuthException catch (e) {
       Snackbar.error(e.message);
+      return false;
     }
   }
 
-  Future<void> updateProfile(String name) async {
+  Future<bool> updateProfile(String name) async {
     try {
       await firebaseAuth.currentUser!.updateDisplayName(name);
+      return true;
     } on FirebaseAuthException catch (e) {
       Snackbar.error(e.message);
+      return false;
     }
   }
 

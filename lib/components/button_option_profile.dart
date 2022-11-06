@@ -28,7 +28,7 @@ class ButtonOptionProfile extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(radius)),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
