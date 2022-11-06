@@ -145,7 +145,7 @@ export const createTransaction = functions
 
     const user2Id = context.auth?.uid;
 
-    if (!user2Id) return { error: "User not authenticated" };
+    if (!user2Id) return { message: "Usuário não autenticado", error: true };
 
     const { availabilityId, type } = data as {
       availabilityId: string;
@@ -157,7 +157,6 @@ export const createTransaction = functions
       .doc(availabilityId)
       .get();
 
-    // check if user has a transaction in progress
     const userTransactions = await db
       .collection("Transaction")
       .where("user2Id", "==", user2Id)
@@ -169,22 +168,33 @@ export const createTransaction = functions
       .get();
 
     if (userTransactions.docs.length > 0)
-      return { error: "User already has a transaction in progress" };
+      return {
+        message: "Usuário já possui uma transação em andamento",
+        error: true,
+      };
 
     if (bookAvailable.data()?.userId === user2Id) {
-      return { error: "You can't trade with yourself" };
+      return {
+        message: "Usuário não pode solicitar um livro dele mesmo",
+        error: true,
+      };
     }
-    if (!bookAvailable.exists) return { error: "Book not available" };
+    if (!bookAvailable.exists)
+      return { message: "Livro não encontrado", error: true };
 
     const bookAvailableData = bookAvailable.data();
 
-    if (!bookAvailableData) return { error: "Book not found" };
+    if (!bookAvailableData)
+      return { message: "Livro não encontrado", error: true };
 
     if (
       (type === TransactionType.TRADE && !bookAvailableData?.forTrade) ||
       (type === TransactionType.DONATION && !bookAvailableData?.forDonation)
     ) {
-      return { error: "Book not available for this type of transaction" };
+      return {
+        message: "Livro não disponível para este tipo de transação",
+        error: true,
+      };
     }
 
     const transaction = await db.collection("Transaction").add({
@@ -197,7 +207,11 @@ export const createTransaction = functions
       type,
     });
 
-    return transaction.id;
+    return {
+      error: false,
+      message: "Transação criada com sucesso",
+      transactionId: transaction.id,
+    };
   });
 
 export const confirmTransaction = functions
@@ -207,7 +221,7 @@ export const confirmTransaction = functions
 
     const user1Id = context.auth?.uid;
 
-    if (!user1Id) return { error: "User not authenticated" };
+    if (!user1Id) return { message: "Usuário não autenticado", error: true };
 
     const { transactionId, availability2Id } = data as {
       transactionId: string;
@@ -219,20 +233,22 @@ export const confirmTransaction = functions
       .doc(transactionId)
       .get();
 
-    if (!transaction.exists) return { error: "Transaction not found" };
+    if (!transaction.exists)
+      return { message: "Transação não encontrada", error: true };
 
     const transactionData = transaction.data();
 
-    if (!transactionData) return { error: "Transaction not found" };
+    if (!transactionData)
+      return { error: true, message: "Transação não encontrada" };
 
     if (transactionData.status !== TransactionStatus.PENDING)
-      return { error: "Transaction not pending" };
+      return { message: "Transação não está pendente", error: true };
 
     if (transactionData.user1Id !== user1Id)
-      return { error: "User not authorized" };
+      return { message: "Usuário não é o dono da transação", error: true };
 
     if (transactionData.type === TransactionType.TRADE && !availability2Id)
-      return { error: "User2 availability id is required" };
+      return { message: "Livro para troca não informado", error: true };
 
     await transaction.ref.update({
       status: TransactionStatus.IN_PROGRESS,
@@ -240,7 +256,7 @@ export const confirmTransaction = functions
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    return transaction.id;
+    return { error: false, message: "Transação confirmada com sucesso" };
   });
 
 export const completeTransaction = functions
@@ -250,7 +266,7 @@ export const completeTransaction = functions
 
     const user1Id = context.auth?.uid;
 
-    if (!user1Id) return { error: "User not authenticated" };
+    if (!user1Id) return { error: true, message: "Usuário não autenticado" };
 
     const { transactionId } = data as { transactionId: string };
 
@@ -259,17 +275,19 @@ export const completeTransaction = functions
       .doc(transactionId)
       .get();
 
-    if (!transaction.exists) return { error: "Transaction not found" };
+    if (!transaction.exists)
+      return { error: true, message: "Transação não encontrada" };
 
     const transactionData = transaction.data();
 
-    if (!transactionData) return { error: "Transaction not found" };
+    if (!transactionData)
+      return { error: true, message: "Transação não encontrada" };
 
     if (transactionData.status !== TransactionStatus.IN_PROGRESS)
-      return { error: "Transaction not in progress" };
+      return { error: true, message: "Transação não está em andamento" };
 
     if (transactionData.user1Id !== user1Id)
-      return { error: "User not authorized" };
+      return { error: true, message: "Usuário não é o dono da transação" };
 
     await transaction.ref.update({
       status: TransactionStatus.COMPLETED,
@@ -281,7 +299,7 @@ export const completeTransaction = functions
       .doc(transactionData.bookAvailableId)
       .delete();
 
-    return transaction.id;
+    return { error: false, message: "Transação concluída com sucesso" };
   });
 
 export const cancelTransaction = functions
@@ -291,7 +309,7 @@ export const cancelTransaction = functions
 
     const user1Id = context.auth?.uid;
 
-    if (!user1Id) return { error: "User not authenticated" };
+    if (!user1Id) return { error: true, message: "Usuário não autenticado" };
 
     const { transactionId } = data as { transactionId: string };
 
@@ -300,22 +318,24 @@ export const cancelTransaction = functions
       .doc(transactionId)
       .get();
 
-    if (!transaction.exists) return { error: "Transaction not found" };
+    if (!transaction.exists)
+      return { error: true, message: "Transação não encontrada" };
 
     const transactionData = transaction.data();
 
-    if (!transactionData) return { error: "Transaction not found" };
+    if (!transactionData)
+      return { error: true, message: "Transação não encontrada" };
 
     if (transactionData.status === TransactionStatus.COMPLETED)
-      return { error: "Transaction already completed" };
+      return { error: true, message: "Transação já foi concluída" };
 
     if (transactionData.user1Id !== user1Id)
-      return { error: "User not authorized" };
+      return { error: true, message: "Usuário não é o dono da transação" };
 
     await transaction.ref.update({
       status: TransactionStatus.CANCELED,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    return transaction.id;
+    return { error: false, message: "Transação cancelada com sucesso" };
   });

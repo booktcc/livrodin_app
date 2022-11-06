@@ -291,15 +291,9 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                           },
                                         )).then((value) async {
                                           if (!value!) return;
-                                          await _bookController.requestBook(
+                                          _bookController.requestBook(
                                             availabilityId,
                                             BookAvailableType.donate,
-                                          );
-                                          Get.snackbar(
-                                            "Pedido Requisitado",
-                                            "O pedido foi requisitado com sucesso! Aguarde a resposta do dono do livro.",
-                                            backgroundColor: Colors.green,
-                                            colorText: Colors.white,
                                           );
                                         });
                                       }
@@ -329,16 +323,26 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                           },
                                         )).then((value) async {
                                           if (!value!) return;
-                                          await _bookController.requestBook(
-                                            availabilityId,
-                                            BookAvailableType.trade,
-                                          );
-                                          Get.snackbar(
-                                            "Troca Requisitada",
-                                            "A troca foi requisitada com sucesso! Aguarde a resposta do dono do livro.",
-                                            backgroundColor: Colors.green,
-                                            colorText: Colors.white,
-                                          );
+                                          await _bookController
+                                              .requestBook(
+                                                availabilityId,
+                                                BookAvailableType.trade,
+                                              )
+                                              .then((value) => Get.snackbar(
+                                                    "Troca Requisitada",
+                                                    "A troca foi requisitada com sucesso! Aguarde a resposta do dono do livro.",
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                    colorText: Colors.white,
+                                                  ))
+                                              .catchError((e) {
+                                            Get.snackbar(
+                                              "Erro",
+                                              e.toString(),
+                                              backgroundColor: Colors.red,
+                                              colorText: Colors.white,
+                                            );
+                                          });
                                         });
                                       }
                                     }),

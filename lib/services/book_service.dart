@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:books_finder/books_finder.dart' as books_finder;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -288,7 +286,9 @@ class BookService extends GetxService {
       "type": availableType.value.toString()
     };
 
-    inspect(request);
-    await callable.call(request);
+    var result = await callable.call<Map<String, dynamic>>(request);
+    if (result.data["error"]) {
+      throw result.data["message"];
+    }
   }
 }

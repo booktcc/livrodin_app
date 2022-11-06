@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
     var userLogged = FirebaseAuth.instance.currentUser;
     var isLogged = userLogged != null;
     return GetMaterialApp(
+      enableLog: false,
       debugShowCheckedModeBanner: false,
       title: 'App Book',
       theme: themeData,

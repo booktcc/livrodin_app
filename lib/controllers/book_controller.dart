@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/confirm_dialog.dart';
 import 'package:livrodin/components/rate_dialog.dart';
+import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/interest.dart';
@@ -137,7 +139,24 @@ class BookController extends GetxController {
   Future<void> requestBook(
       String availabilityId, BookAvailableType availableType) {
     try {
-      return bookService.requestBook(availabilityId, availableType);
+      return bookService
+          .requestBook(availabilityId, availableType)
+          .then(
+            (_) => Get.snackbar(
+              "Pedido Requisitado",
+              "O pedido foi requisitado com sucesso! Aguarde a resposta do dono do livro.",
+              backgroundColor: green,
+              colorText: Colors.white,
+            ),
+          )
+          .catchError(
+            (e) => Get.snackbar(
+              "Erro",
+              e.toString(),
+              backgroundColor: red,
+              colorText: Colors.white,
+            ),
+          );
     } catch (e) {
       printError(info: e.toString());
       rethrow;
