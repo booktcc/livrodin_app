@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:livrodin/components/confirm_dialog.dart';
 import 'package:livrodin/components/rate_dialog.dart';
-import 'package:livrodin/components/toggle_offer_status.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/interest.dart';
@@ -129,6 +128,16 @@ class BookController extends GetxController {
     try {
       var result = await bookService.getBookAvailabityById(id);
       return result;
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> requestBook(
+      String availabilityId, BookAvailableType availableType) {
+    try {
+      return bookService.requestBook(availabilityId, availableType);
     } catch (e) {
       printError(info: e.toString());
       rethrow;

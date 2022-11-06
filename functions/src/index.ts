@@ -26,18 +26,6 @@ enum TransactionType {
   DONATION = "DONATION",
 }
 
-// type Transaction = {
-//   bookAvailableId: string;
-//   user1Id: string;
-//   user2Id: string;
-//   user1BookId: string;
-//   user2BookId?: string;
-//   status: TransactionStatus;
-//   createdAt: Date;
-//   updatedAt: Date;
-//   type: TransactionType;
-// };
-
 admin.initializeApp();
 
 const baseBookApi = "https://www.googleapis.com/books/v1/volumes/";
@@ -159,16 +147,33 @@ export const createTransaction = functions
 
     if (!user2Id) return { error: "User not authenticated" };
 
-    const { bookAvailableId, type } = data as {
-      bookAvailableId: string;
+    const { availabilityId, type } = data as {
+      availabilityId: string;
       type: TransactionType;
     };
 
     const bookAvailable = await db
       .collection("BookAvailable")
-      .doc(bookAvailableId)
+      .doc(availabilityId)
       .get();
 
+    // check if user has a transaction in progress
+    const userTransactions = await db
+      .collection("Transaction")
+      .where("user2Id", "==", user2Id)
+      .where("status", "in", [
+        TransactionStatus.IN_PROGRESS,
+        TransactionStatus.PENDING,
+        TransactionStatus.COMPLETED,
+      ])
+      .get();
+
+    if (userTransactions.docs.length > 0)
+      return { error: "User already has a transaction in progress" };
+
+    if (bookAvailable.data()?.userId === user2Id) {
+      return { error: "You can't trade with yourself" };
+    }
     if (!bookAvailable.exists) return { error: "Book not available" };
 
     const bookAvailableData = bookAvailable.data();
@@ -183,10 +188,9 @@ export const createTransaction = functions
     }
 
     const transaction = await db.collection("Transaction").add({
-      bookAvailableId,
+      availabilityId,
       user1Id: bookAvailableData.idUser,
       user2Id,
-      user1BookId: bookAvailableData.idBook,
       status: TransactionStatus.PENDING,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -205,9 +209,9 @@ export const confirmTransaction = functions
 
     if (!user1Id) return { error: "User not authenticated" };
 
-    const { transactionId, user2BookId } = data as {
+    const { transactionId, availability2Id } = data as {
       transactionId: string;
-      user2BookId?: string;
+      availability2Id?: string;
     };
 
     const transaction = await db
@@ -227,12 +231,12 @@ export const confirmTransaction = functions
     if (transactionData.user1Id !== user1Id)
       return { error: "User not authorized" };
 
-    if (transactionData.type === TransactionType.TRADE && !user2BookId)
-      return { error: "User2 book id is required" };
+    if (transactionData.type === TransactionType.TRADE && !availability2Id)
+      return { error: "User2 availability id is required" };
 
     await transaction.ref.update({
       status: TransactionStatus.IN_PROGRESS,
-      user2BookId: user2BookId || null,
+      availability2Id: availability2Id || null,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 

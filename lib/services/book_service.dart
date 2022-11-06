@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:books_finder/books_finder.dart' as books_finder;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
-import 'package:livrodin/components/toggle_offer_status.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/interest.dart';
@@ -238,6 +238,7 @@ class BookService extends GetxService {
     var result = await firestore
         .collection("BookAvailable")
         .where("idBook", isEqualTo: idBook)
+        .where("idUser", isNotEqualTo: authController.user.value?.uid)
         .get();
 
     List<Availability> availabilities = List.empty(growable: true);
@@ -274,5 +275,20 @@ class BookService extends GetxService {
     }
 
     return availabilities;
+  }
+
+  Future<void> requestBook(
+      String availabilityId, BookAvailableType availableType) async {
+    if (authController.user.value == null) throw 'User not logged in';
+    HttpsCallable callable =
+        FirebaseFunctions.instanceFor(region: 'southamerica-east1')
+            .httpsCallable('createTransaction');
+    var request = <String, dynamic>{
+      "availabilityId": availabilityId.toString(),
+      "type": availableType.value.toString()
+    };
+
+    inspect(request);
+    await callable.call(request);
   }
 }

@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/button_action.dart';
+import 'package:livrodin/components/confirm_dialog.dart';
 import 'package:livrodin/components/dialogs/book_list_available.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
@@ -85,6 +84,22 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
         builder: (context, boxConstraints) {
           final double minSize =
               (boxConstraints.maxHeight - 240) / boxConstraints.maxHeight;
+
+          var availabilityForTrade = _bookAvailabilityList
+              .where(
+                (element) =>
+                    element.availableType == BookAvailableType.trade ||
+                    element.availableType == BookAvailableType.both,
+              )
+              .toList();
+          var availabilityForDonate = _bookAvailabilityList
+              .where(
+                (element) =>
+                    element.availableType == BookAvailableType.donate ||
+                    element.availableType == BookAvailableType.both,
+              )
+              .toList();
+
           return Stack(
             children: [
               SizedBox(
@@ -255,28 +270,73 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Visibility(
-                              visible: widget._book.availableType ==
-                                  BookAvailableType.donate,
+                              visible: availabilityForDonate.isNotEmpty,
                               child: ButtonAction(
                                 onPressed: () =>
-                                    Get.dialog(const BookListAvailable()),
+                                    Get.dialog<String>(BookListAvailable(
+                                  title: "Selecione para pedir",
+                                  availabilityList: availabilityForDonate,
+                                )).then((availabilityId) {
+                                  if (availabilityId != null) {
+                                    Get.dialog<bool>(ConfirmDialog(
+                                      title: "Pedir",
+                                      content: "Deseja pedir o livro?",
+                                      onConfirm: () {
+                                        Get.back(result: true);
+                                      },
+                                    )).then((value) async {
+                                      if (!value!) return;
+                                      await _bookController.requestBook(
+                                        availabilityId,
+                                        BookAvailableType.donate,
+                                      );
+                                      Get.snackbar(
+                                        "Pedido Requisitado",
+                                        "O pedido foi requisitado com sucesso! Aguarde a resposta do dono do livro.",
+                                        backgroundColor: Colors.green,
+                                        colorText: Colors.white,
+                                      );
+                                    });
+                                  }
+                                }),
                                 label: "PEDIR",
                                 icon: LivrodinIcons.donateIcon,
                               ),
                             ),
                             Visibility(
-                              visible: widget._book.availableType ==
-                                      BookAvailableType.donate &&
-                                  widget._book.availableType ==
-                                      BookAvailableType.trade,
+                              visible: availabilityForDonate.isNotEmpty,
                               child: const SizedBox(width: 30),
                             ),
                             Visibility(
-                              visible: widget._book.availableType ==
-                                  BookAvailableType.trade,
+                              visible: availabilityForTrade.isNotEmpty,
                               child: ButtonAction(
                                 onPressed: () =>
-                                    Get.dialog(const BookListAvailable()),
+                                    Get.dialog<String>(BookListAvailable(
+                                  title: "Selecione para trocar",
+                                  availabilityList: availabilityForTrade,
+                                )).then((availabilityId) {
+                                  if (availabilityId != null) {
+                                    Get.dialog<bool>(ConfirmDialog(
+                                      title: "Trocar",
+                                      content: "Deseja trocar o livro?",
+                                      onConfirm: () {
+                                        Get.back(result: true);
+                                      },
+                                    )).then((value) async {
+                                      if (!value!) return;
+                                      await _bookController.requestBook(
+                                        availabilityId,
+                                        BookAvailableType.trade,
+                                      );
+                                      Get.snackbar(
+                                        "Troca Requisitada",
+                                        "A troca foi requisitada com sucesso! Aguarde a resposta do dono do livro.",
+                                        backgroundColor: Colors.green,
+                                        colorText: Colors.white,
+                                      );
+                                    });
+                                  }
+                                }),
                                 label: "TROCAR",
                                 icon: Icons.swap_horizontal_circle,
                               ),
