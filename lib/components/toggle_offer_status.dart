@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-enum OfferStatus { both, trade, donate }
+import 'package:livrodin/models/book.dart';
 
 class ToggleOfferStatus extends StatefulWidget {
-  final void Function(OfferStatus)? onChange;
+  final void Function(BookAvailableType)? onChange;
   const ToggleOfferStatus({
     super.key,
     this.onChange,
@@ -15,7 +14,7 @@ class ToggleOfferStatus extends StatefulWidget {
 }
 
 class _ToggleOfferStatusState extends State<ToggleOfferStatus> {
-  Rx<OfferStatus> status = Rx(OfferStatus.both);
+  Rx<BookAvailableType> status = Rx(BookAvailableType.both);
 
   @override
   Widget build(BuildContext context) {
@@ -25,29 +24,29 @@ class _ToggleOfferStatusState extends State<ToggleOfferStatus> {
         children: [
           _StatusBlock(
             text: 'Doação',
-            selected: status.value == OfferStatus.donate,
+            selected: status.value == BookAvailableType.donate,
             roundedSide: _RoundedSide.left,
             onTap: () => {
-              widget.onChange?.call(OfferStatus.donate),
-              status.value = OfferStatus.donate
+              widget.onChange?.call(BookAvailableType.donate),
+              status.value = BookAvailableType.donate
             },
           ),
           _StatusBlock(
             text: 'Ambos',
-            selected: status.value == OfferStatus.both,
+            selected: status.value == BookAvailableType.both,
             roundedSide: _RoundedSide.none,
             onTap: () => {
-              widget.onChange?.call(OfferStatus.both),
-              status.value = OfferStatus.both
+              widget.onChange?.call(BookAvailableType.both),
+              status.value = BookAvailableType.both
             },
           ),
           _StatusBlock(
             text: 'Troca',
-            selected: status.value == OfferStatus.trade,
+            selected: status.value == BookAvailableType.trade,
             roundedSide: _RoundedSide.right,
             onTap: () => {
-              widget.onChange?.call(OfferStatus.trade),
-              status.value = OfferStatus.trade
+              widget.onChange?.call(BookAvailableType.trade),
+              status.value = BookAvailableType.trade
             },
           ),
         ],

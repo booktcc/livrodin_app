@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/confirm_dialog.dart';
 import 'package:livrodin/components/rate_dialog.dart';
-import 'package:livrodin/components/toggle_offer_status.dart';
+import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/interest.dart';
@@ -13,7 +14,8 @@ class BookController extends GetxController {
   var authController = Get.find<AuthController>();
   var bookService = Get.find<BookService>();
 
-  Future<bool?> makeBookAvailable(Book book, OfferStatus offerStatus) async {
+  Future<bool?> makeBookAvailable(
+      Book book, BookAvailableType offerStatus) async {
     try {
       // call a dialog
       bool hasAdded = await Get.dialog(ConfirmDialog(
@@ -22,7 +24,7 @@ class BookController extends GetxController {
             'Você está preste a adicionar o livro: “${book.title}” para a Doação.',
         onConfirm: () async {
           bookService
-              .addBook(book, offerStatus)
+              .addBookAvailable(book, offerStatus)
               .whenComplete(() => Get.back(result: true));
         },
       ));
@@ -62,7 +64,7 @@ class BookController extends GetxController {
     }
   }
 
-  Future<Book> getBookById(String id) async {
+  Future<Book> getBookByIdGoogle(String id) async {
     try {
       var result = await bookService.searchBooksOnGoogleApi(id);
       return result[0];
@@ -118,6 +120,43 @@ class BookController extends GetxController {
     try {
       var result = await bookService.getInterestList();
       return result;
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<Availability>> getBookAvailabityById(String id) async {
+    try {
+      var result = await bookService.getBookAvailabityById(id);
+      return result;
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> requestBook(
+      String availabilityId, BookAvailableType availableType) {
+    try {
+      return bookService
+          .requestBook(availabilityId, availableType)
+          .then(
+            (_) => Get.snackbar(
+              "Pedido Requisitado",
+              "O pedido foi requisitado com sucesso! Aguarde a resposta do dono do livro.",
+              backgroundColor: green,
+              colorText: Colors.white,
+            ),
+          )
+          .catchError(
+            (e) => Get.snackbar(
+              "Erro",
+              e.toString(),
+              backgroundColor: red,
+              colorText: Colors.white,
+            ),
+          );
     } catch (e) {
       printError(info: e.toString());
       rethrow;

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/button_action.dart';
+import 'package:livrodin/components/confirm_dialog.dart';
+import 'package:livrodin/components/dialogs/book_list_available.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/components/rating_info.dart';
@@ -12,6 +13,7 @@ import 'package:livrodin/components/tabs/book_detail/synopsis.dart';
 import 'package:livrodin/configs/livrodin_icons.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/book_controller.dart';
+import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 
 enum BookStatus { init, loading, loaded, error }
@@ -35,6 +37,7 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
   final Rx<BookRatingStatus> _bookRatingStatus = BookRatingStatus.init.obs;
   final Rx<BookDiscussionStatus> _bookDiscussionStatus =
       BookDiscussionStatus.init.obs;
+  final RxList<Availability> _bookAvailabilityList = <Availability>[].obs;
 
   @override
   void initState() {
@@ -48,7 +51,7 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (_bookStatus.value == BookStatus.init) {
         _bookStatus.value = BookStatus.loading;
-        _bookController.getBookById(widget._book.id).then((value) {
+        _bookController.getBookByIdGoogle(widget._book.id).then((value) {
           widget._book = value;
           _bookStatus.value = BookStatus.loaded;
 
@@ -57,7 +60,9 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
               (_) => _bookRatingStatus.value = BookRatingStatus.loaded,
               onError: (_) => _bookRatingStatus.value = BookRatingStatus.error);
           // _bookController.fetchBookDiscussions(value).then((value) => {
-
+          _bookController.getBookAvailabityById(value.id).then((value) {
+            _bookAvailabilityList.value = value;
+          }, onError: (_) {});
           // });
         }).catchError((error) {
           _bookStatus.value = BookStatus.error;
@@ -79,6 +84,7 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
         builder: (context, boxConstraints) {
           final double minSize =
               (boxConstraints.maxHeight - 240) / boxConstraints.maxHeight;
+
           return Stack(
             children: [
               SizedBox(
@@ -245,31 +251,108 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                           minWidth: 40,
                           textColor: grey,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Visibility(
-                              visible: widget._book.forDonation,
-                              child: ButtonAction(
-                                onPressed: () {},
-                                label: "PEDIR",
-                                icon: LivrodinIcons.donateIcon,
-                              ),
-                            ),
-                            Visibility(
-                              visible: widget._book.forDonation &&
-                                  widget._book.forTrade,
-                              child: const SizedBox(width: 30),
-                            ),
-                            Visibility(
-                              visible: widget._book.forTrade,
-                              child: ButtonAction(
-                                onPressed: () {},
-                                label: "TROCAR",
-                                icon: Icons.swap_horizontal_circle,
-                              ),
-                            ),
-                          ],
+                        Obx(
+                          () {
+                            var availabilityForTrade = _bookAvailabilityList
+                                .where(
+                                  (element) =>
+                                      element.availableType ==
+                                          BookAvailableType.trade ||
+                                      element.availableType ==
+                                          BookAvailableType.both,
+                                )
+                                .toList();
+                            var availabilityForDonate = _bookAvailabilityList
+                                .where(
+                                  (element) =>
+                                      element.availableType ==
+                                          BookAvailableType.donate ||
+                                      element.availableType ==
+                                          BookAvailableType.both,
+                                )
+                                .toList();
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Visibility(
+                                  visible: availabilityForDonate.isNotEmpty,
+                                  child: ButtonAction(
+                                    onPressed: () =>
+                                        Get.dialog<String>(BookListAvailable(
+                                      title: "Selecione para pedir",
+                                      availabilityList: availabilityForDonate,
+                                    )).then((availabilityId) {
+                                      if (availabilityId != null) {
+                                        Get.dialog<bool>(ConfirmDialog(
+                                          title: "Pedir",
+                                          content: "Deseja pedir o livro?",
+                                          onConfirm: () {
+                                            Get.back(result: true);
+                                          },
+                                        )).then((value) async {
+                                          if (!value!) return;
+                                          _bookController.requestBook(
+                                            availabilityId,
+                                            BookAvailableType.donate,
+                                          );
+                                        });
+                                      }
+                                    }),
+                                    label: "PEDIR",
+                                    icon: LivrodinIcons.donateIcon,
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: availabilityForDonate.isNotEmpty,
+                                  child: const SizedBox(width: 30),
+                                ),
+                                Visibility(
+                                  visible: availabilityForTrade.isNotEmpty,
+                                  child: ButtonAction(
+                                    onPressed: () =>
+                                        Get.dialog<String>(BookListAvailable(
+                                      title: "Selecione para trocar",
+                                      availabilityList: availabilityForTrade,
+                                    )).then((availabilityId) {
+                                      if (availabilityId != null) {
+                                        Get.dialog<bool>(ConfirmDialog(
+                                          title: "Trocar",
+                                          content: "Deseja trocar o livro?",
+                                          onConfirm: () {
+                                            Get.back(result: true);
+                                          },
+                                        )).then((value) async {
+                                          if (!value!) return;
+                                          await _bookController
+                                              .requestBook(
+                                                availabilityId,
+                                                BookAvailableType.trade,
+                                              )
+                                              .then((value) => Get.snackbar(
+                                                    "Troca Requisitada",
+                                                    "A troca foi requisitada com sucesso! Aguarde a resposta do dono do livro.",
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                    colorText: Colors.white,
+                                                  ))
+                                              .catchError((e) {
+                                            Get.snackbar(
+                                              "Erro",
+                                              e.toString(),
+                                              backgroundColor: Colors.red,
+                                              colorText: Colors.white,
+                                            );
+                                          });
+                                        });
+                                      }
+                                    }),
+                                    label: "TROCAR",
+                                    icon: Icons.swap_horizontal_circle,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         )
                       ],
                     ),

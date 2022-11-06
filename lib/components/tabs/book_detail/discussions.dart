@@ -11,7 +11,7 @@ class TabViewDiscussions extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       controller: _scrollController,
-      slivers: [],
+      slivers: const [],
     );
   }
 }

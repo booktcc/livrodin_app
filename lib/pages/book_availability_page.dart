@@ -19,7 +19,7 @@ class BookAvailabilityPage extends StatefulWidget {
 }
 
 class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
-  OfferStatus _status = OfferStatus.both;
+  BookAvailableType _status = BookAvailableType.both;
   final BookController _bookController = Get.find<BookController>();
 
   final Rx<SearchStatus> _searchStatus = Rx(SearchStatus.initial);

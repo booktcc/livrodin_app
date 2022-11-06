@@ -1,4 +1,3 @@
-import 'package:livrodin/components/toggle_offer_status.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/user.dart';
 
@@ -7,14 +6,14 @@ class Availability {
   final Book book;
   final User user;
   final DateTime dateAvailable;
-  final OfferStatus offerStatus;
+  final BookAvailableType availableType;
 
   Availability({
     required String id,
     required this.book,
     required this.user,
     required this.dateAvailable,
-    required this.offerStatus,
+    required this.availableType,
   }) : _id = id;
 
   String get id => _id;
