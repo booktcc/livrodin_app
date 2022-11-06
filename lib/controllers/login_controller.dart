@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'auth_controller.dart';
 
 class LoginController extends GetxController {
+  final Rx<bool> isLoading = false.obs;
   final TextEditingController emailController = TextEditingController(text: "");
   final TextEditingController passwordController =
       TextEditingController(text: "");
@@ -11,12 +12,16 @@ class LoginController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   Future<void> login() async {
+    isLoading.value = true;
     if (formKey.currentState!.validate()) {
       var result = await authController.login(
         emailController.text,
         passwordController.text,
       );
-      if (result == null) return;
+      if (result == null) {
+        isLoading.value = false;
+        return;
+      }
       await Get.offAllNamed("/home");
     }
   }

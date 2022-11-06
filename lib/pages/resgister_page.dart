@@ -57,10 +57,27 @@ class _RegisterPageState extends State<RegisterPage> {
                 top: Radius.circular(pageRadius),
               ),
             ),
-            child: PageView(
-              controller: registerController.pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [Step1(), Step2()],
+            child: Stack(
+              children: [
+                PageView(
+                  controller: registerController.pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [Step1(), Step2()],
+                ),
+                Obx(
+                  () => Visibility(
+                    visible: registerController.isLoading.value,
+                    child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: Colors.black.withOpacity(0.5),
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

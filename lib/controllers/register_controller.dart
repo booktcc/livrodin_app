@@ -9,6 +9,7 @@ import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/services/user_service.dart';
 
 class RegisterController extends GetxController {
+  final Rx<bool> isLoading = false.obs;
   final TextEditingController nameController = TextEditingController(text: "");
   final TextEditingController lastNameController =
       TextEditingController(text: "");
@@ -27,6 +28,7 @@ class RegisterController extends GetxController {
   RegisterController({required this.userService, required this.authController});
 
   Future<void> register() async {
+    isLoading.value = true;
     await authController.register(
       emailController.text,
       passwordController.text,
@@ -35,7 +37,10 @@ class RegisterController extends GetxController {
       emailController.text,
       passwordController.text,
     );
-    if (authController.user.value == null) return;
+    if (authController.user.value == null) {
+      isLoading.value = false;
+      return;
+    }
     final photoUrl = await userService.uploadUserPhoto(File(image.value!.path));
     if (photoUrl != null) await authController.updatePhoto(photoUrl);
     await authController.updateProfile(nameController.text);

@@ -54,177 +54,194 @@ class _LoginPageState extends State<LoginPage> {
                 top: Radius.circular(pageRadius),
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      style: TextButton.styleFrom(
-                        splashFactory: NoSplash.splashFactory,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Text(
-                            "Entrar como visitante",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w800,
-                            ),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {},
+                          style: TextButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
                           ),
-                          Icon(
-                            Icons.arrow_forward_rounded,
-                            size: 24,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Text(
+                                "Entrar como visitante",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_rounded,
+                                size: 24,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Form(
-                    key: loginController.formKey,
-                    child: Column(
-                      children: [
-                        Input(
-                          key: const Key("email"),
-                          controller: loginController.emailController,
-                          leftIcon: const Icon(
-                            Icons.email_rounded,
-                            color: grey,
-                          ),
-                          hintText: "Email",
-                          autofillHints: const [
-                            AutofillHints.email,
-                          ],
-                          validator: loginController.validateEmail,
                         ),
-                        const SizedBox(height: 20),
-                        Input(
-                          key: const Key("password"),
-                          controller: loginController.passwordController,
-                          leftIcon: const Icon(
-                            Icons.password_rounded,
-                            color: grey,
-                          ),
-                          hintText: "Senha",
-                          autofillHints: const [
-                            AutofillHints.password,
-                          ],
-                          obscureText: true,
-                          validator: loginController.validatePassword,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () => Get.toNamed("/forgot-password"),
-                      child: RichText(
-                        text: const TextSpan(
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      ),
+                      const SizedBox(height: 10),
+                      Form(
+                        key: loginController.formKey,
+                        child: Column(
                           children: [
-                            TextSpan(
-                              text: "Esqueceu a senha?",
-                              style: TextStyle(
-                                color: Colors.black,
+                            Input(
+                              key: const Key("email"),
+                              controller: loginController.emailController,
+                              leftIcon: const Icon(
+                                Icons.email_rounded,
+                                color: grey,
                               ),
+                              hintText: "Email",
+                              autofillHints: const [
+                                AutofillHints.email,
+                              ],
+                              validator: loginController.validateEmail,
                             ),
-                            TextSpan(
-                              text: " Recupere aqui",
-                              style: TextStyle(
-                                color: red,
+                            const SizedBox(height: 20),
+                            Input(
+                              key: const Key("password"),
+                              controller: loginController.passwordController,
+                              leftIcon: const Icon(
+                                Icons.password_rounded,
+                                color: grey,
                               ),
+                              hintText: "Senha",
+                              autofillHints: const [
+                                AutofillHints.password,
+                              ],
+                              obscureText: true,
+                              validator: loginController.validatePassword,
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  ButtonAction(
-                    key: const Key("loginButton"),
-                    onPressed: loginController.login,
-                    minWidth: double.infinity,
-                    fontSize: 20,
-                    label: "Entrar",
-                  ),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 250,
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: grey,
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Ou, faça login com",
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () => Get.toNamed("/forgot-password"),
+                          child: RichText(
+                            text: const TextSpan(
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
+                              children: [
+                                TextSpan(
+                                  text: "Esqueceu a senha?",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: " Recupere aqui",
+                                  style: TextStyle(
+                                    color: red,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        Row(
+                      ),
+                      const SizedBox(height: 10),
+                      ButtonAction(
+                        key: const Key("loginButton"),
+                        onPressed: loginController.login,
+                        minWidth: double.infinity,
+                        fontSize: 20,
+                        label: "Entrar",
+                      ),
+                      const SizedBox(height: 20),
+                      Expanded(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            IconButton(
-                              iconSize: 40,
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.facebook_rounded,
-                                color: grey,
+                            Container(
+                              width: 250,
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: grey,
+                                    width: 1,
+                                  ),
+                                ),
                               ),
+                              child: const Center(
+                                child: Text(
+                                  "Ou, faça login com",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  iconSize: 40,
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.facebook_rounded,
+                                    color: grey,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextButton(
-                    onPressed: () => Get.toNamed("/register"),
-                    child: RichText(
-                      text: const TextSpan(
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                      ),
+                      const SizedBox(height: 20),
+                      TextButton(
+                        onPressed: () => Get.toNamed("/register"),
+                        child: RichText(
+                          text: const TextSpan(
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: "Não tem uma conta?",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                              TextSpan(
+                                text: " Cadastre-se aqui",
+                                style: TextStyle(
+                                  color: red,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        children: [
-                          TextSpan(
-                            text: "Não tem uma conta?",
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                          TextSpan(
-                            text: " Cadastre-se aqui",
-                            style: TextStyle(
-                              color: red,
-                            ),
-                          ),
-                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Obx(
+                  () => Visibility(
+                    visible: loginController.isLoading.value,
+                    child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: Colors.black.withOpacity(0.5),
+                      child: const Center(
+                        child: CircularProgressIndicator(),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           SizedBox(height: context.mediaQueryPadding.bottom),
