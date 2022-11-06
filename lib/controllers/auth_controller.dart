@@ -107,4 +107,14 @@ class AuthController extends GetxController {
       return null;
     }
   }
+
+  Future<bool> deleteAccount() async {
+    try {
+      await firebaseAuth.currentUser!.delete();
+      return true;
+    } on FirebaseAuthException catch (e) {
+      Snackbar.error(e.message);
+      return false;
+    }
+  }
 }

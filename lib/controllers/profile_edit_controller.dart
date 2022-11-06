@@ -294,6 +294,52 @@ class ProfileEditController extends GetxController {
     );
   }
 
+  Future deleteAccount() async {
+    await Get.dialog(
+      EditProfileDialog(
+        inputs: [
+          Input(
+            hintText: "Confirmar Senha",
+            controller: confirmCurrentPasswordController,
+            validator: validatePassword,
+            autofillHints: const [AutofillHints.password],
+            leftIcon: const Icon(
+              Icons.lock_rounded,
+              color: grey,
+            ),
+            obscureText: true,
+          ),
+        ],
+        formKey: formKey,
+        title: "Deletar Conta",
+        onCancel: () {
+          Get.back();
+          confirmCurrentPasswordController.text = "";
+        },
+        onConfirm: () async {
+          if (formKey.currentState!.validate()) {
+            isLoading.value = true;
+            Get.back();
+            if (await authController.login(authController.user.value!.email!,
+                    confirmCurrentPasswordController.text) !=
+                null) {
+              final result = await authController.deleteAccount();
+              if (result) {
+                Get.snackbar(
+                  "Conta Deletada",
+                  "Conta deletada com sucesso",
+                );
+                Get.offAllNamed("/login");
+              }
+            }
+            isLoading.value = false;
+          }
+        },
+      ),
+      barrierDismissible: false,
+    );
+  }
+
   String? validateName(String? name) {
     if (name == null || name.isEmpty) {
       return "Campo obrigatório";
