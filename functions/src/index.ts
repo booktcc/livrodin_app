@@ -160,6 +160,7 @@ export const createTransaction = functions
     const userTransactions = await db
       .collection("Transaction")
       .where("user2Id", "==", user2Id)
+      .where("availabilityId", "==", availabilityId)
       .where("status", "in", [
         TransactionStatus.IN_PROGRESS,
         TransactionStatus.PENDING,

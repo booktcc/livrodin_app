@@ -143,8 +143,8 @@ class BookController extends GetxController {
           .requestBook(availabilityId, availableType)
           .then(
             (_) => Get.snackbar(
-              "Pedido Requisitado",
-              "O pedido foi requisitado com sucesso! Aguarde a resposta do dono do livro.",
+              "Livro Requisitado",
+              "O livro foi requisitado com sucesso! Aguarde a resposta do dono do livro.",
               backgroundColor: green,
               colorText: Colors.white,
             ),
