@@ -1,18 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/controllers/login_controller.dart';
+import 'package:livrodin/controllers/register_controller.dart';
 import 'package:livrodin/pages/book_availability_page.dart';
 import 'package:livrodin/pages/home_page.dart';
 import 'package:livrodin/pages/login_page.dart';
 import 'package:livrodin/pages/profile_edit_page.dart';
 import 'package:livrodin/pages/profile_page.dart';
+import 'package:livrodin/pages/reset_password_page.dart';
+import 'package:livrodin/pages/resgister_page.dart';
 import 'package:livrodin/services/book_service.dart';
+import 'package:livrodin/services/user_service.dart';
 
 import 'firebase_options.dart';
 
@@ -47,6 +52,28 @@ class MyApp extends StatelessWidget {
           }),
         ),
         GetPage(
+          name: '/forgot-password',
+          page: () => const ResetPasswordPage(),
+          binding: BindingsBuilder(() {
+            Get.put(LoginController());
+          }),
+        ),
+        GetPage(
+          name: '/register',
+          page: () => const RegisterPage(),
+          binding: BindingsBuilder(() {
+            Get.put(
+              RegisterController(
+                userService: UserService(
+                  firestore: FirebaseFirestore.instance,
+                  storage: FirebaseStorage.instance,
+                ),
+                authController: Get.find<AuthController>(),
+              ),
+            );
+          }),
+        ),
+        GetPage(
           name: '/home',
           page: () => HomePage(),
           binding: BindingsBuilder(() {
@@ -55,7 +82,7 @@ class MyApp extends StatelessWidget {
           }),
         ),
         GetPage(
-          name: '/book_availability',
+          name: '/book/availability',
           page: () => const BookAvailabilityPage(),
           binding: BindingsBuilder(() {
             Get.put(BookController());

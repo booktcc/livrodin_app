@@ -20,7 +20,7 @@ class Input extends StatelessWidget {
   final Widget? leftIcon;
   final Widget? rightIcon;
   final String? hintText;
-  final String Function(String?)? validator;
+  final String? Function(String?)? validator;
   final Iterable<String>? autofillHints;
   final bool obscureText;
 
@@ -50,6 +50,7 @@ class Input extends StatelessWidget {
         suffixIcon: rightIcon,
       ),
       validator: validator,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }

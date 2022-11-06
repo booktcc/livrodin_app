@@ -1,7 +1,8 @@
-import 'package:livrodin/components/profile_icon.dart';
-import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:livrodin/components/profile_icon.dart';
+import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/controllers/auth_controller.dart';
 
 class BottomMenu extends StatefulWidget {
   BottomMenu({
@@ -17,6 +18,7 @@ class BottomMenu extends StatefulWidget {
 }
 
 class _BottomMenuState extends State<BottomMenu> {
+  final AuthController authController = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -139,9 +141,10 @@ class _BottomMenuState extends State<BottomMenu> {
                             child: InkWell(
                               onTap: () => Get.toNamed("/profile"),
                               borderRadius: BorderRadius.circular(90),
-                              child: const Padding(
-                                padding: EdgeInsets.all(10),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
                                 child: ProfileIcon(
+                                  image: authController.user.value?.photoURL,
                                   size: ProfileSize.sm,
                                 ),
                               ),
@@ -163,7 +166,7 @@ class _BottomMenuState extends State<BottomMenu> {
             borderRadius: BorderRadius.circular(90),
             color: Colors.red,
             child: InkWell(
-              onTap: () => Get.toNamed("/book_availability"),
+              onTap: () => Get.toNamed("/book/availability"),
               borderRadius: BorderRadius.circular(90),
               child: const SizedBox(
                 width: 70,

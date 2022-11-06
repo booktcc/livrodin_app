@@ -1,5 +1,7 @@
-import 'package:livrodin/configs/themes.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:livrodin/configs/themes.dart';
 
 enum ProfileSize {
   sm(28),
@@ -11,13 +13,19 @@ enum ProfileSize {
   final double value;
 }
 
+enum ImageType {
+  network,
+  file,
+}
 class ProfileIcon extends StatefulWidget {
   final String? image;
   final ProfileSize size;
+  final ImageType imageType;
   const ProfileIcon({
     super.key,
     this.image,
     this.size = ProfileSize.xl,
+    this.imageType = ImageType.network,
   });
 
   @override
@@ -44,8 +52,10 @@ class _ProfileIconState extends State<ProfileIcon> {
         ],
         image: hasImage
             ? DecorationImage(
-                image: Image.network(
+                image: widget.imageType == ImageType.network ? Image.network(
                   widget.image!,
+                ).image : Image.file(
+                  File(widget.image!),
                 ).image,
                 fit: BoxFit.cover,
               )
