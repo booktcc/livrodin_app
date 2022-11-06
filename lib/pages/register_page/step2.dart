@@ -20,8 +20,7 @@ class Step2 extends StatelessWidget {
           Row(
             children: [
               ButtonAction(
-                onPressed: () =>
-                    registerController.pageController.jumpToPage(0),
+                onPressed: registerController.previousStep,
                 icon: Icons.arrow_back_rounded,
                 color: Colors.transparent,
                 elevation: 0,
@@ -54,7 +53,7 @@ class Step2 extends StatelessWidget {
                           imageType: ImageType.file,
                         );
                       }),
-                      Positioned(
+                      const Positioned(
                         right: 0,
                         bottom: 0,
                         child: Icon(Icons.edit_rounded, color: grey),
@@ -63,36 +62,42 @@ class Step2 extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Input(
-                        key: const Key("name"),
-                        controller: registerController.nameController,
-                        leftIcon: const Icon(
-                          Icons.account_circle_rounded,
-                          color: grey,
+                Form(
+                  key: registerController.formKeyStep2,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Input(
+                          key: const Key("name"),
+                          controller: registerController.nameController,
+                          leftIcon: const Icon(
+                            Icons.account_circle_rounded,
+                            color: grey,
+                          ),
+                          hintText: "Nome*",
+                          autofillHints: const [
+                            AutofillHints.name,
+                          ],
+                          validator: registerController.validateName,
                         ),
-                        hintText: "Nome",
-                        autofillHints: const [
-                          AutofillHints.name,
-                        ],
                       ),
-                    ),
-                    SizedBox(width: 5),
-                    Expanded(
-                      flex: 1,
-                      child: Input(
-                        key: const Key("lastName"),
-                        controller: registerController.lastNameController,
-                        hintText: "Sobrenome",
-                        autofillHints: const [
-                          AutofillHints.middleName,
-                        ],
+                      const SizedBox(width: 5),
+                      Expanded(
+                        flex: 1,
+                        child: Input(
+                          key: const Key("lastName"),
+                          controller: registerController.lastNameController,
+                          hintText: "Sobrenome",
+                          autofillHints: const [
+                            AutofillHints.middleName,
+                          ],
+                          validator: registerController.validateLastName,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

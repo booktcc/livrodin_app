@@ -40,6 +40,7 @@ class Step1 extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Form(
+            key: registerController.formKeyStep1,
             child: Column(
               children: [
                 Input(
@@ -49,10 +50,11 @@ class Step1 extends StatelessWidget {
                     Icons.email_rounded,
                     color: grey,
                   ),
-                  hintText: "Email",
+                  hintText: "Email*",
                   autofillHints: const [
                     AutofillHints.email,
                   ],
+                  validator: registerController.validateEmail,
                 ),
                 const SizedBox(height: 10),
                 Input(
@@ -62,11 +64,12 @@ class Step1 extends StatelessWidget {
                     Icons.password_rounded,
                     color: grey,
                   ),
-                  hintText: "Senha",
+                  hintText: "Senha*",
                   autofillHints: const [
                     AutofillHints.newPassword,
                   ],
                   obscureText: true,
+                  validator: registerController.validatePassword,
                 ),
                 const SizedBox(height: 10),
                 Input(
@@ -76,11 +79,12 @@ class Step1 extends StatelessWidget {
                     Icons.password_rounded,
                     color: grey,
                   ),
-                  hintText: "Confirmar Senha",
+                  hintText: "Confirmar Senha*",
                   autofillHints: const [
                     AutofillHints.newPassword,
                   ],
                   obscureText: true,
+                  validator: registerController.validateConfirmPassword,
                 ),
               ],
             ),
@@ -88,7 +92,7 @@ class Step1 extends StatelessWidget {
           const SizedBox(height: 20),
           ButtonAction(
             key: const Key("registerButton"),
-            onPressed: () => registerController.pageController.jumpToPage(1),
+            onPressed: registerController.nextStep,
             minWidth: double.infinity,
             fontSize: 20,
             label: "Avançar",

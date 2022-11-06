@@ -86,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 10),
                   Form(
+                    key: loginController.formKey,
                     child: Column(
                       children: [
                         Input(
@@ -99,6 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                           autofillHints: const [
                             AutofillHints.email,
                           ],
+                          validator: loginController.validateEmail,
                         ),
                         const SizedBox(height: 20),
                         Input(
@@ -113,6 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                             AutofillHints.password,
                           ],
                           obscureText: true,
+                          validator: loginController.validatePassword,
                         ),
                       ],
                     ),

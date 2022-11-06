@@ -20,12 +20,17 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final headerHeigth = MediaQuery.of(context).size.height * 0.3;
+    final bodyHeight = MediaQuery.of(context).size.height -
+        headerHeigth -
+        context.mediaQueryPadding.top -
+        context.mediaQueryPadding.bottom;
     return Layout(
       child: Column(
         children: [
           SizedBox(height: context.mediaQueryPadding.top),
           SizedBox(
-            height: context.height * 0.3,
+            height: headerHeigth,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -45,10 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
           Container(
-            height: Get.height -
-                context.height * 0.3 -
-                context.mediaQueryPadding.top -
-                context.mediaQueryPadding.bottom,
+            height: bodyHeight,
             decoration: const BoxDecoration(
               color: lightGrey,
               borderRadius: BorderRadius.vertical(
