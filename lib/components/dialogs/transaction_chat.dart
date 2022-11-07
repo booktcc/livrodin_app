@@ -88,18 +88,23 @@ class _TransactionChatState extends State<TransactionChat> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                              child: Input(
-                            controller: _messagesController.textInputController,
-                          )),
-                          IconButton(
-                              onPressed: _messagesController.sendMessage,
-                              icon: const Icon(Icons.send))
-                        ],
+                    Visibility(
+                      visible: widget.transaction.status ==
+                          TransactionStatus.inProgress,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: Input(
+                              controller:
+                                  _messagesController.textInputController,
+                            )),
+                            IconButton(
+                                onPressed: _messagesController.sendMessage,
+                                icon: const Icon(Icons.send))
+                          ],
+                        ),
                       ),
                     ),
                   ],
