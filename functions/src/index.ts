@@ -188,6 +188,20 @@ export const createTransaction = functions
     if (!bookAvailableData)
       return { message: "Livro não encontrado", error: true };
 
+    if (type === TransactionType.TRADE) {
+      const userBooksAvailable = await db
+        .collection("BookAvailable")
+        .where("userId", "==", user2Id)
+        .get();
+
+      if (userBooksAvailable.docs.length === 0) {
+        return {
+          message: "Você não possui livros disponíveis para troca",
+          error: true,
+        };
+      }
+    }
+
     if (
       bookAvailableData?.availableType === BookAvailableType.FOR_TRADE &&
       type !== TransactionType.TRADE
