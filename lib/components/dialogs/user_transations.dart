@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/cards/transaction_card.dart';
@@ -48,7 +46,8 @@ class UserTransationsDialog extends StatefulWidget {
   State<UserTransationsDialog> createState() => _UserTransationsDialogState();
 }
 
-class _UserTransationsDialogState extends State<UserTransationsDialog> {
+class _UserTransationsDialogState extends State<UserTransationsDialog>
+    with TickerProviderStateMixin {
   final BookController _bookController = Get.find<BookController>();
   final AuthController _authController = Get.find<AuthController>();
 
@@ -63,9 +62,16 @@ class _UserTransationsDialogState extends State<UserTransationsDialog> {
 
   final Rx<FetchState> stateFetch = FetchState.loading.obs;
 
+  late final TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(
+      length: TransactionTabType.values.length,
+      vsync: this,
+      initialIndex: TransactionTabType.values.indexOf(widget.tab),
+    );
     stateFetch.value = FetchState.loading;
     fetchTransactions();
   }
@@ -129,86 +135,85 @@ class _UserTransationsDialogState extends State<UserTransationsDialog> {
           color: lightGrey,
           height: double.infinity,
           width: double.infinity,
-          child: DefaultTabController(
-            length: TransactionTabType.values.length,
-            child: Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: TabBar(
-                    overlayColor: MaterialStateProperty.all(Colors.transparent),
-                    enableFeedback: true,
-                    labelColor: dark,
-                    labelStyle: const TextStyle(
-                      fontWeight: FontWeight.w800,
-                    ),
-                    unselectedLabelStyle: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                    ),
-                    isScrollable: true,
-                    physics: const BouncingScrollPhysics(),
-                    tabs: TransactionTabType.values
-                        .map(
-                          (e) => Tab(
-                            text: e.name,
-                          ),
-                        )
-                        .toList(),
+          child: Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: TabBar(
+                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                  enableFeedback: true,
+                  labelColor: dark,
+                  labelStyle: const TextStyle(
+                    fontWeight: FontWeight.w800,
                   ),
+                  unselectedLabelStyle: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
+                  isScrollable: true,
+                  physics: const BouncingScrollPhysics(),
+                  tabs: TransactionTabType.values
+                      .map(
+                        (e) => Tab(
+                          text: e.name,
+                        ),
+                      )
+                      .toList(),
+                  controller: _tabController,
                 ),
-                Expanded(
-                  child: Builder(builder: (context) {
-                    return Obx(
-                      () => TabBarView(
-                          children: TransactionTabType.values
-                              .map(
-                                (e) => ListView.builder(
-                                  itemCount: transactionsByTab[e]!.length,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 20),
-                                  itemBuilder: (context, index) {
-                                    var transaction =
-                                        transactionsByTab[e]![index];
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                          top: index == 0 ? 0 : 20),
-                                      child: TransactionCard(
-                                        transaction: transaction,
-                                        onMessagePressed: () {},
-                                        onConfirmPressed: () async {
+              ),
+              Expanded(
+                child: Builder(builder: (context) {
+                  return Obx(
+                    () => TabBarView(
+                        controller: _tabController,
+                        children: TransactionTabType.values
+                            .map(
+                              (e) => ListView.builder(
+                                itemCount: transactionsByTab[e]!.length,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 20),
+                                itemBuilder: (context, index) {
+                                  var transaction =
+                                      transactionsByTab[e]![index];
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                        top: index == 0 ? 0 : 20),
+                                    child: TransactionCard(
+                                      transaction: transaction,
+                                      onMessagePressed: () {},
+                                      onConfirmPressed: () async {
+                                        await _bookController
+                                            .confirmTransaction(
+                                          transaction.id,
+                                          null,
+                                        );
+                                        fetchTransactions();
+                                      },
+                                      onCancelPressed: () async {
+                                        if (transaction.status ==
+                                            TransactionStatus.pending) {
                                           await _bookController
-                                              .confirmTransaction(
+                                              .rejectTransaction(
                                             transaction.id,
-                                            null,
                                           );
-                                          fetchTransactions();
-                                        },
-                                        onCancelPressed: () async {
-                                          if (transaction.status ==
-                                              TransactionStatus.pending) {
-                                            await _bookController
-                                                .rejectTransaction(
-                                              transaction.id,
-                                            );
-                                          } else {
-                                            await _bookController
-                                                .cancelTransaction(
-                                              transaction.id,
-                                            );
-                                          }
-                                          fetchTransactions();
-                                        },
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                              .toList()),
-                    );
-                  }),
-                )
-              ],
-            ),
+                                        } else {
+                                          await _bookController
+                                              .cancelTransaction(
+                                            transaction.id,
+                                          );
+                                        }
+                                        fetchTransactions();
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                            .toList()),
+                  );
+                }),
+              )
+            ],
           ),
         ),
       ),

@@ -165,7 +165,6 @@ export const createTransaction = functions
       .where("status", "in", [
         TransactionStatus.IN_PROGRESS,
         TransactionStatus.PENDING,
-        TransactionStatus.COMPLETED,
       ])
       .get();
 
