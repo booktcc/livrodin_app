@@ -8,4 +8,8 @@ service cloud.firestore {
   match /Users/{userId} {
     allow write: if request.auth.uid == userId;
   }
+  match /Transaction/{transactionId} {
+    allow read: if request.auth.uid != null;
+    allow write: false;
+  }
 }
