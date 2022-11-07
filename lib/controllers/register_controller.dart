@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -45,7 +43,7 @@ class RegisterController extends GetxController {
       isLoading.value = false;
       return;
     }
-    final photoUrl = await userService.uploadUserPhoto(File(image.value!.path));
+    final photoUrl = await userService.uploadUserPhoto(image.value!.path);
     if (photoUrl != null) await authController.updatePhoto(photoUrl);
     await authController.updateProfile(nameController.text);
 
@@ -98,7 +96,7 @@ class RegisterController extends GetxController {
         ],
       );
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      printError(info: e.toString());
     }
   }
 

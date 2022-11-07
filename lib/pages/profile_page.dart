@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/bottom_profile.dart';
@@ -43,12 +42,14 @@ class ProfilePage extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 20, left: 20, top: 24),
-                  child: ProfileInfo(
-                    name: FirebaseAuth.instance.currentUser?.displayName ??
-                        'Sem nome',
-                    email: authController.user.value?.email ?? 'Sem email',
-                    image: authController.user.value?.photoURL ?? "",
-                  ),
+                  child: Obx(() {
+                    return ProfileInfo(
+                      name:
+                          authController.user.value?.displayName ?? 'Sem nome',
+                      email: authController.user.value?.email ?? 'Sem email',
+                      image: authController.user.value?.photoURL ?? "",
+                    );
+                  }),
                 ),
                 const SizedBox(height: 24),
                 const TransactionPainel(
