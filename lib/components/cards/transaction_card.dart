@@ -74,10 +74,10 @@ class TransactionCard extends StatelessWidget {
                             book: transaction.book1,
                             otherUser: transaction.user2,
                           ),
-                          Icon(transaction.type == BookAvailableType.trade
+                          Icon(transaction.type == TransactionType.trade
                               ? Icons.swap_horizontal_circle
                               : LivrodinIcons.donateIcon),
-                          transaction.type == BookAvailableType.trade
+                          transaction.type == TransactionType.trade
                               ? BookCardWithProfile(
                                   user: transaction.user2,
                                   book: transaction.book2,
@@ -106,30 +106,58 @@ class TransactionCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(top: 13.5, bottom: 13.5),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ButtonOption(
-                      iconData: Icons.message,
-                      text: "Mensagem",
-                      onPressed:
-                          transaction.status == TransactionStatus.inProgress
-                              ? onMessagePressed
-                              : null,
+                    Visibility(
+                      visible: [
+                        TransactionStatus.inProgress,
+                        TransactionStatus.completed,
+                        TransactionStatus.canceled,
+                      ].contains(transaction.status),
+                      child: Column(
+                        children: [
+                          ButtonOption(
+                            iconData: Icons.message,
+                            text: "Mensagem",
+                            onPressed: onMessagePressed,
+                          ),
+                          Visibility(
+                            visible: ![
+                              TransactionStatus.completed,
+                              TransactionStatus.canceled,
+                            ].contains(transaction.status),
+                            child: const SizedBox(height: 15),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 15),
-                    ButtonOption(
-                      iconData: Icons.check_circle,
-                      text: "Confirmar",
-                      color: green,
-                      onPressed: transaction.status == TransactionStatus.pending
-                          ? onConfirmPressed
-                          : null,
+                    Visibility(
+                      visible: transaction.status == TransactionStatus.pending,
+                      child: Column(
+                        children: [
+                          ButtonOption(
+                            iconData: Icons.check_circle,
+                            text: "Confirmar",
+                            color: green,
+                            onPressed: onConfirmPressed,
+                          ),
+                          const SizedBox(height: 15),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 15),
-                    ButtonOption(
-                      iconData: Icons.cancel,
-                      text: "Cancelar",
-                      color: red,
-                      onPressed: onCancelPressed,
+                    Visibility(
+                      visible: [
+                        TransactionStatus.inProgress,
+                        TransactionStatus.pending,
+                      ].contains(transaction.status),
+                      child: ButtonOption(
+                        iconData: Icons.cancel,
+                        text: transaction.status == TransactionStatus.pending
+                            ? "Rejeitar"
+                            : "Cancelar",
+                        color: red,
+                        onPressed: onCancelPressed,
+                      ),
                     ),
                   ],
                 ),

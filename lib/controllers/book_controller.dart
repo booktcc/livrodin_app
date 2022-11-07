@@ -138,10 +138,10 @@ class BookController extends GetxController {
   }
 
   Future<void> requestBook(
-      String availabilityId, BookAvailableType availableType) {
+      String availabilityId, TransactionType transactionType) {
     try {
       return bookService
-          .requestBook(availabilityId, availableType)
+          .requestBook(availabilityId, transactionType)
           .then(
             (_) => Get.snackbar(
               "Livro Requisitado",
@@ -164,13 +164,81 @@ class BookController extends GetxController {
     }
   }
 
-  Future<List<Transaction>> getTransactionsFromUser() async {
+  Future<List<Transaction>> getTransactionsFromUser(
+      TransactionType type) async {
     try {
-      var result = await bookService.getTransactionsFromUser();
+      var result = await bookService.getTransactionsFromUser(type);
       return result;
     } catch (e) {
       printError(info: e.toString());
       rethrow;
     }
+  }
+
+  Future<void> confirmTransaction(
+      String transactionId, String? availability2Id) async {
+    return bookService.confirmTransaction(transactionId, availability2Id).then(
+      (_) {
+        Get.snackbar(
+          "Transação Confirmada",
+          "A transação foi confirmada com sucesso!",
+          backgroundColor: green,
+          colorText: Colors.white,
+        );
+      },
+    ).catchError(
+      (e) {
+        Get.snackbar(
+          "Erro",
+          e.toString(),
+          backgroundColor: red,
+          colorText: Colors.white,
+        );
+      },
+    );
+  }
+
+  Future<void> cancelTransaction(String transactionId) async {
+    return bookService.cancelTransaction(transactionId).then(
+      (_) {
+        Get.snackbar(
+          "Transação Cancelada",
+          "A transação foi cancelada com sucesso!",
+          backgroundColor: green,
+          colorText: Colors.white,
+        );
+      },
+    ).catchError(
+      (e) {
+        Get.snackbar(
+          "Erro",
+          e.toString(),
+          backgroundColor: red,
+          colorText: Colors.white,
+        );
+      },
+    );
+  }
+
+  Future<void> rejectTransaction(String transactionId) async {
+    return bookService.rejectTransaction(transactionId).then(
+      (_) {
+        Get.snackbar(
+          "Transação Rejeitada",
+          "A transação foi rejeitada com sucesso!",
+          backgroundColor: green,
+          colorText: Colors.white,
+        );
+      },
+    ).catchError(
+      (e) {
+        Get.snackbar(
+          "Erro",
+          e.toString(),
+          backgroundColor: red,
+          colorText: Colors.white,
+        );
+      },
+    );
   }
 }

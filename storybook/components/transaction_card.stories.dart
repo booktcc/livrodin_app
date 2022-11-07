@@ -39,7 +39,7 @@ class TransactionCardStories extends StatelessWidget {
           book1: fakeBook,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          type: BookAvailableType.trade,
+          type: TransactionType.trade,
           status: TransactionStatus.pending,
           user1: user1,
           user2: user2,

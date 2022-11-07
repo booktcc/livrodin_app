@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:books_finder/books_finder.dart' as books_finder;
 import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:cloud_functions/cloud_functions.dart';
@@ -298,7 +296,7 @@ class BookService extends GetxService {
   }
 
   Future<void> requestBook(
-      String availabilityId, BookAvailableType availableType) async {
+      String availabilityId, TransactionType availableType) async {
     if (authController.user.value == null) throw 'User not logged in';
     HttpsCallable callable =
         FirebaseFunctions.instanceFor(region: 'southamerica-east1')
@@ -314,16 +312,19 @@ class BookService extends GetxService {
     }
   }
 
-  Future<List<Transaction>> getTransactionsFromUser() async {
+  Future<List<Transaction>> getTransactionsFromUser(
+      TransactionType type) async {
     if (authController.user.value == null) throw 'User not logged in';
 
     var resultTransactions1 = await firestore
         .collection(collectionTransaction)
         .where("user1Id", isEqualTo: authController.user.value!.uid)
+        .where("type", isEqualTo: type.value)
         .get();
     var resultTransactions2 = await firestore
         .collection(collectionTransaction)
         .where("user2Id", isEqualTo: authController.user.value!.uid)
+        .where("type", isEqualTo: type.value)
         .get();
 
     var resultTransactionsDocs =
@@ -394,9 +395,9 @@ class BookService extends GetxService {
             (element) => element.value == data["status"],
             orElse: () => TransactionStatus.pending,
           ),
-          type: BookAvailableType.values.firstWhere(
+          type: TransactionType.values.firstWhere(
             (element) => element.value == data["type"],
-            orElse: () => BookAvailableType.trade,
+            orElse: () => TransactionType.trade,
           ),
         ),
       );
@@ -405,5 +406,51 @@ class BookService extends GetxService {
     transactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     return transactions;
+  }
+
+  Future<void> confirmTransaction(
+      String transactionId, String? availability2Id) async {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    HttpsCallable callable =
+        FirebaseFunctions.instanceFor(region: 'southamerica-east1')
+            .httpsCallable('confirmTransaction');
+    var request = <String, dynamic>{
+      "transactionId": transactionId.toString(),
+      "availability2Id": availability2Id
+    };
+
+    var result = await callable.call<Map<String, dynamic>>(request);
+    if (result.data["error"]) {
+      throw result.data["message"];
+    }
+  }
+
+  Future<void> cancelTransaction(String transactionId) async {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    HttpsCallable callable =
+        FirebaseFunctions.instanceFor(region: 'southamerica-east1')
+            .httpsCallable('cancelTransaction');
+    var request = <String, dynamic>{"transactionId": transactionId.toString()};
+
+    var result = await callable.call<Map<String, dynamic>>(request);
+    if (result.data["error"]) {
+      throw result.data["message"];
+    }
+  }
+
+  Future<void> rejectTransaction(String transactionId) async {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    HttpsCallable callable =
+        FirebaseFunctions.instanceFor(region: 'southamerica-east1')
+            .httpsCallable('rejectTransaction');
+    var request = <String, dynamic>{"transactionId": transactionId.toString()};
+
+    var result = await callable.call<Map<String, dynamic>>(request);
+    if (result.data["error"]) {
+      throw result.data["message"];
+    }
   }
 }

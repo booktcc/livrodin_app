@@ -21,11 +21,25 @@ enum TransactionStatus {
   }
 }
 
+enum TransactionType {
+  trade,
+  donate;
+
+  String get value {
+    switch (this) {
+      case TransactionType.trade:
+        return "FOR_TRADE";
+      case TransactionType.donate:
+        return "FOR_DONATION";
+    }
+  }
+}
+
 class Transaction {
   final String id;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final BookAvailableType type;
+  final TransactionType type;
   final TransactionStatus status;
   final User user1;
   final User user2;

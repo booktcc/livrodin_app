@@ -22,8 +22,8 @@ enum TransactionStatus {
 }
 
 enum TransactionType {
-  TRADE = "TRADE",
-  DONATION = "DONATION",
+  TRADE = "FOR_TRADE",
+  DONATION = "FOR_DONATION",
 }
 
 admin.initializeApp();
@@ -256,7 +256,11 @@ export const confirmTransaction = functions
       status: TransactionStatus.IN_PROGRESS,
       availability2Id: availability2Id || null,
       idBook2: availability2Id
-        ? await db.collection("BookAvailable").doc(availability2Id).get().then((doc) => doc.data()?.idBook)
+        ? await db
+            .collection("BookAvailable")
+            .doc(availability2Id)
+            .get()
+            .then((doc) => doc.data()?.idBook)
         : null,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
@@ -334,13 +338,47 @@ export const cancelTransaction = functions
     if (transactionData.status === TransactionStatus.COMPLETED)
       return { error: true, message: "Transação já foi concluída" };
 
-    if (transactionData.user1Id !== user1Id)
-      return { error: true, message: "Usuário não é o dono da transação" };
-
     await transaction.ref.update({
       status: TransactionStatus.CANCELED,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
     return { error: false, message: "Transação cancelada com sucesso" };
+  });
+
+export const rejectTransaction = functions
+  .region("southamerica-east1")
+  .https.onCall(async (data, context) => {
+    const db = admin.firestore();
+
+    const user1Id = context.auth?.uid;
+
+    if (!user1Id) return { error: true, message: "Usuário não autenticado" };
+
+    const { transactionId } = data as { transactionId: string };
+
+    const transaction = await db
+      .collection("Transaction")
+      .doc(transactionId)
+      .get();
+
+    if (!transaction.exists)
+      return { error: true, message: "Transação não encontrada" };
+
+    const transactionData = transaction.data();
+
+    if (!transactionData)
+      return { error: true, message: "Transação não encontrada" };
+
+    if (transactionData.status !== TransactionStatus.PENDING)
+      return { error: true, message: "Transação não está pendente" };
+
+    if (transactionData.user1Id !== user1Id)
+      return { error: true, message: "Usuário não é o dono da transação" };
+
+    // delete transaction
+
+    await transaction.ref.delete();
+
+    return { error: false, message: "Transação rejeitada com sucesso" };
   });

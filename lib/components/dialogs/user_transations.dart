@@ -6,6 +6,7 @@ import 'package:livrodin/components/cards/transaction_card.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/models/transaction.dart';
 import 'package:livrodin/utils/state_machine.dart';
@@ -33,8 +34,6 @@ enum TransactionTabType {
   }
 }
 
-enum TransactionsType { donate, trade }
-
 class UserTransationsDialog extends StatefulWidget {
   const UserTransationsDialog({
     super.key,
@@ -42,7 +41,7 @@ class UserTransationsDialog extends StatefulWidget {
     this.tab = TransactionTabType.progress,
   });
 
-  final TransactionsType type;
+  final TransactionType type;
   final TransactionTabType tab;
 
   @override
@@ -51,8 +50,16 @@ class UserTransationsDialog extends StatefulWidget {
 
 class _UserTransationsDialogState extends State<UserTransationsDialog> {
   final BookController _bookController = Get.find<BookController>();
+  final AuthController _authController = Get.find<AuthController>();
 
-  RxList<Transaction> transactions = <Transaction>[].obs;
+  RxMap<TransactionTabType, List<Transaction>> transactionsByTab =
+      <TransactionTabType, List<Transaction>>{
+    TransactionTabType.progress: [],
+    TransactionTabType.done: [],
+    TransactionTabType.canceled: [],
+    TransactionTabType.ordersMade: [],
+    TransactionTabType.ordersReceived: [],
+  }.obs;
 
   final Rx<FetchState> stateFetch = FetchState.loading.obs;
 
@@ -60,8 +67,46 @@ class _UserTransationsDialogState extends State<UserTransationsDialog> {
   void initState() {
     super.initState();
     stateFetch.value = FetchState.loading;
-    _bookController.getTransactionsFromUser().then((value) {
-      transactions.value = value;
+    fetchTransactions();
+  }
+
+  void fetchTransactions() {
+    _bookController.getTransactionsFromUser(widget.type).then((transactions) {
+      final inProgress = transactions
+          .where((element) => element.status == TransactionStatus.inProgress)
+          .toList();
+      inspect(inProgress);
+      final done = transactions
+          .where((element) => element.status == TransactionStatus.completed)
+          .toList();
+
+      final canceled = transactions
+          .where((element) => element.status == TransactionStatus.canceled)
+          .toList();
+
+      final ordersMade = transactions
+          .where(
+            (element) =>
+                element.status == TransactionStatus.pending &&
+                element.user2.id == _authController.user.value!.uid,
+          )
+          .toList();
+
+      final ordersReceived = transactions
+          .where(
+            (element) =>
+                element.status == TransactionStatus.pending &&
+                element.user1.id == _authController.user.value!.uid,
+          )
+          .toList();
+      transactionsByTab.value = {
+        TransactionTabType.progress: inProgress,
+        TransactionTabType.done: done,
+        TransactionTabType.canceled: canceled,
+        TransactionTabType.ordersMade: ordersMade,
+        TransactionTabType.ordersReceived: ordersReceived,
+      };
+
       stateFetch.value = FetchState.success;
     }).onError((error, stackTrace) {
       stateFetch.value = FetchState.error;
@@ -74,7 +119,7 @@ class _UserTransationsDialogState extends State<UserTransationsDialog> {
       headerProps: HeaderProps(
         showLogo: false,
         showBackButton: true,
-        title: widget.type == TransactionsType.donate ? 'Doações' : 'Trocas',
+        title: widget.type == TransactionType.donate ? 'Doações' : 'Trocas',
       ),
       child: ClipRRect(
         borderRadius: const BorderRadius.only(
@@ -119,19 +164,44 @@ class _UserTransationsDialogState extends State<UserTransationsDialog> {
                           children: TransactionTabType.values
                               .map(
                                 (e) => ListView.builder(
-                                  itemCount: transactions.length,
+                                  itemCount: transactionsByTab[e]!.length,
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 15, vertical: 20),
-                                  itemBuilder: (context, index) => Padding(
-                                    padding: EdgeInsets.only(
-                                        top: index == 0 ? 0 : 20),
-                                    child: TransactionCard(
-                                      transaction: transactions[index],
-                                      onMessagePressed: () {},
-                                      onConfirmPressed: () {},
-                                      onCancelPressed: () {},
-                                    ),
-                                  ),
+                                  itemBuilder: (context, index) {
+                                    var transaction =
+                                        transactionsByTab[e]![index];
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                          top: index == 0 ? 0 : 20),
+                                      child: TransactionCard(
+                                        transaction: transaction,
+                                        onMessagePressed: () {},
+                                        onConfirmPressed: () async {
+                                          await _bookController
+                                              .confirmTransaction(
+                                            transaction.id,
+                                            null,
+                                          );
+                                          fetchTransactions();
+                                        },
+                                        onCancelPressed: () async {
+                                          if (transaction.status ==
+                                              TransactionStatus.pending) {
+                                            await _bookController
+                                                .rejectTransaction(
+                                              transaction.id,
+                                            );
+                                          } else {
+                                            await _bookController
+                                                .cancelTransaction(
+                                              transaction.id,
+                                            );
+                                          }
+                                          fetchTransactions();
+                                        },
+                                      ),
+                                    );
+                                  },
                                 ),
                               )
                               .toList()),

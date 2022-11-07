@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:livrodin/components/button_option_badge.dart';
 import 'package:livrodin/components/dialogs/user_transations.dart';
 import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/models/transaction.dart';
 
 enum TransactionPanelType {
   donate,
@@ -87,8 +88,8 @@ class TransactionPainel extends StatelessWidget {
                         onTap: () => Get.dialog(
                           UserTransationsDialog(
                             type: type == TransactionPanelType.donate
-                                ? TransactionsType.donate
-                                : TransactionsType.trade,
+                                ? TransactionType.donate
+                                : TransactionType.trade,
                             tab: TransactionTabType.done,
                           ),
                         ),
@@ -135,8 +136,8 @@ class TransactionPainel extends StatelessWidget {
                     onPressed: () => Get.dialog(
                       UserTransationsDialog(
                         type: type == TransactionPanelType.donate
-                            ? TransactionsType.donate
-                            : TransactionsType.trade,
+                            ? TransactionType.donate
+                            : TransactionType.trade,
                         tab: TransactionTabType.ordersReceived,
                       ),
                     ),
@@ -148,8 +149,8 @@ class TransactionPainel extends StatelessWidget {
                     onPressed: () => Get.dialog(
                       UserTransationsDialog(
                         type: type == TransactionPanelType.donate
-                            ? TransactionsType.donate
-                            : TransactionsType.trade,
+                            ? TransactionType.donate
+                            : TransactionType.trade,
                         tab: TransactionTabType.ordersMade,
                       ),
                     ),
@@ -161,8 +162,8 @@ class TransactionPainel extends StatelessWidget {
                     onPressed: () => Get.dialog(
                       UserTransationsDialog(
                         type: type == TransactionPanelType.donate
-                            ? TransactionsType.donate
-                            : TransactionsType.trade,
+                            ? TransactionType.donate
+                            : TransactionType.trade,
                         tab: TransactionTabType.progress,
                       ),
                     ),
