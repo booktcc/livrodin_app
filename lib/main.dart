@@ -40,18 +40,18 @@ Future<void> main() async {
     var host = dotenv.env['FIREBASE_EMULATOR_HOST'];
     if (host != null) {
       debugPrint('Using Firebase Emulator at $host');
-      FirebaseFirestore.instance.useFirestoreEmulator('10.0.2.2', 8080);
+      FirebaseFirestore.instance.useFirestoreEmulator(host, 8080);
       FirebaseFirestore.instance.settings = const Settings(
         sslEnabled: false,
         persistenceEnabled: false,
       );
 
-      FirebaseAuth.instance.useAuthEmulator('10.0.2.2', 9099);
+      FirebaseAuth.instance.useAuthEmulator(host, 9099);
 
       FirebaseFunctions.instanceFor(region: 'southamerica-east1')
-          .useFunctionsEmulator('10.0.2.2', 5001);
+          .useFunctionsEmulator(host, 5001);
 
-      FirebaseStorage.instance.useStorageEmulator('10.0.2.2', 9199);
+      FirebaseStorage.instance.useStorageEmulator(host, 9199);
     }
   }
 
