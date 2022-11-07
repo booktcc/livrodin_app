@@ -3,6 +3,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,11 +12,13 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
+import 'package:livrodin/controllers/book_detail_controller.dart';
 import 'package:livrodin/controllers/login_controller.dart';
 import 'package:livrodin/controllers/profile_edit_controller.dart';
 import 'package:livrodin/controllers/register_controller.dart';
 import 'package:livrodin/controllers/user_transaction_controller.dart';
 import 'package:livrodin/pages/book_availability_page.dart';
+import 'package:livrodin/pages/book_detail_page.dart';
 import 'package:livrodin/pages/home_page.dart';
 import 'package:livrodin/pages/login_page.dart';
 import 'package:livrodin/pages/profile_edit_page.dart';
@@ -29,8 +32,9 @@ import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
-
+  if (kDebugMode) {
+    await dotenv.load(fileName: '.env');
+  }
   initializeDateFormatting('pt_BR', null);
 
   await Firebase.initializeApp(
@@ -122,6 +126,15 @@ class MyApp extends StatelessWidget {
           }),
         ),
         GetPage(
+          name: '/book/detail/:idBook',
+          page: () => const BookDetailPage(),
+          binding: BindingsBuilder(() {
+            Get.put(BookService(firestore: FirebaseFirestore.instance));
+            Get.put(BookController());
+            Get.put(BookDetailController());
+          }),
+        ),
+        GetPage(
           name: '/book/availability',
           page: () => const BookAvailabilityPage(),
           binding: BindingsBuilder(() {
@@ -154,8 +167,10 @@ class MyApp extends StatelessWidget {
         ),
       ],
       initialBinding: BindingsBuilder(() {
-        Get.put(AuthController(firebaseAuth: FirebaseAuth.instance),
-            permanent: true);
+        Get.put(
+          AuthController(firebaseAuth: FirebaseAuth.instance),
+          permanent: true,
+        );
       }),
     );
   }

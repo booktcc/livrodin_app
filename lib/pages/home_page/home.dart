@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/cards/book_card.dart';
-import 'package:livrodin/components/dialogs/book_detail.dart';
+import 'package:livrodin/components/home_banner.dart';
 import 'package:livrodin/components/title.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/book_controller.dart';
@@ -41,9 +41,25 @@ class _HomeState extends State<Home> {
             (boxConstraints.maxHeight - 240) / boxConstraints.maxHeight;
         return Stack(
           children: [
-            // HomeBanner(
-            //   books: const [],
-            // ),
+            Obx(() {
+              if (stateFetch.value == FetchState.loading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (stateFetch.value == FetchState.error) {
+                return const Center(
+                  child: Text('Erro ao carregar livros'),
+                );
+              } else if (books.isEmpty) {
+                return const Center(
+                  child: Text('Nenhum livro disponível'),
+                );
+              } else {
+                return HomeBanner(
+                  books: books,
+                );
+              }
+            }),
             DraggableScrollableSheet(
               initialChildSize: minSize,
               maxChildSize: 1,
@@ -73,7 +89,7 @@ class _HomeState extends State<Home> {
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         sliver: SliverToBoxAdapter(
                           child: SizedBox(
-                            height: 222,
+                            height: 250,
                             child: Obx(
                               () {
                                 if (stateFetch.value == FetchState.success) {
@@ -88,10 +104,8 @@ class _HomeState extends State<Home> {
                                             right: 20),
                                         child: BookCard(
                                           book: books[index],
-                                          onTap: (book) => Get.dialog(
-                                            BookDetailDialog(
-                                              book: book,
-                                            ),
+                                          onTap: (book) => Get.toNamed(
+                                            "/book/detail/${book.id}",
                                           ),
                                         ),
                                       );
