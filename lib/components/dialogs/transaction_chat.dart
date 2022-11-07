@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:livrodin/components/cards/transaction_card.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/controllers/messages_controller.dart';
 import 'package:livrodin/models/message.dart';
 import 'package:livrodin/models/transaction.dart';
 import 'package:livrodin/utils/converters.dart';
 
-class TransactionChat extends StatelessWidget {
+class TransactionChat extends StatefulWidget {
   final Transaction transaction;
-  final List<Message> messages;
   const TransactionChat({
     super.key,
     required this.transaction,
-    required this.messages,
   });
+
+  @override
+  State<TransactionChat> createState() => _TransactionChatState();
+}
+
+class _TransactionChatState extends State<TransactionChat> {
+  late MessagesController messagesController;
+
+  @override
+  void initState() {
+    super.initState();
+    messagesController =
+        Get.put(MessagesController(transaction: widget.transaction));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +46,7 @@ class TransactionChat extends StatelessWidget {
             child: SizedBox(
               width: 258,
               child: TransactionDetail(
-                transaction: transaction,
+                transaction: widget.transaction,
                 color: Colors.white,
               ),
             ),
@@ -72,19 +86,22 @@ class TransactionChat extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 40),
                       child: Expanded(
-                        child: ListView.builder(
-                          itemCount: messages.length,
-                          itemBuilder: (context, index) {
-                            final message = messages[index];
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                left: 10,
-                                right: 10,
-                                top: index == 0 ? 0 : 10,
-                              ),
-                              child: MessageContainer(message: message),
-                            );
-                          },
+                        child: Obx(
+                          () => ListView.builder(
+                            itemCount: messagesController.messages.length,
+                            itemBuilder: (context, index) {
+                              final message =
+                                  messagesController.messages[index];
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                  left: 10,
+                                  right: 10,
+                                  top: index == 0 ? 0 : 10,
+                                ),
+                                child: MessageContainer(message: message),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),

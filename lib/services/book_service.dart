@@ -408,7 +408,7 @@ class BookService extends GetxService {
         FirebaseFunctions.instanceFor(region: 'southamerica-east1')
             .httpsCallable('confirmTransaction');
     var request = <String, dynamic>{
-      "transactionId": transactionId.toString(),
+      "transactionId": transactionId,
       "availability2Id": availability2Id
     };
 
@@ -424,7 +424,25 @@ class BookService extends GetxService {
     HttpsCallable callable =
         FirebaseFunctions.instanceFor(region: 'southamerica-east1')
             .httpsCallable('cancelTransaction');
-    var request = <String, dynamic>{"transactionId": transactionId.toString()};
+    var request = <String, dynamic>{"transactionId": transactionId};
+
+    var result = await callable.call<Map<String, dynamic>>(request);
+    if (result.data["error"]) {
+      throw result.data["message"];
+    }
+  }
+
+  Future<void> sendTransactionMessage(
+      String transactionId, String message) async {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    HttpsCallable callable =
+        FirebaseFunctions.instanceFor(region: 'southamerica-east1')
+            .httpsCallable('sendTransactionMessage');
+    var request = <String, dynamic>{
+      "transactionId": transactionId,
+      "message": message
+    };
 
     var result = await callable.call<Map<String, dynamic>>(request);
     if (result.data["error"]) {
