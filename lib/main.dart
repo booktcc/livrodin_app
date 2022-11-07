@@ -16,6 +16,7 @@ import 'package:livrodin/controllers/profile_edit_controller.dart';
 import 'package:livrodin/controllers/register_controller.dart';
 import 'package:livrodin/controllers/user_transaction_controller.dart';
 import 'package:livrodin/pages/book_availability_page.dart';
+import 'package:livrodin/pages/book_detail_page.dart';
 import 'package:livrodin/pages/home_page.dart';
 import 'package:livrodin/pages/login_page.dart';
 import 'package:livrodin/pages/profile_edit_page.dart';
@@ -116,6 +117,14 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/home',
           page: () => HomePage(),
+          binding: BindingsBuilder(() {
+            Get.put(BookService(firestore: FirebaseFirestore.instance));
+            Get.put(BookController());
+          }),
+        ),
+        GetPage(
+          name: '/book/detail/:idBook',
+          page: () => const BookDetailPage(),
           binding: BindingsBuilder(() {
             Get.put(BookService(firestore: FirebaseFirestore.instance));
             Get.put(BookController());

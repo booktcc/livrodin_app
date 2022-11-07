@@ -23,16 +23,15 @@ enum BookRatingStatus { init, loading, loaded, error }
 
 enum BookDiscussionStatus { init, loading, loaded, error }
 
-class BookDetailDialog extends StatefulWidget {
-  BookDetailDialog({super.key, required Book book}) : _book = book;
-
-  Book _book;
+class BookDetailPage extends StatefulWidget {
+  const BookDetailPage({super.key});
 
   @override
-  State<BookDetailDialog> createState() => _BookDetailDialogState();
+  State<BookDetailPage> createState() => _BookDetailPageState();
 }
 
-class _BookDetailDialogState extends State<BookDetailDialog> {
+class _BookDetailPageState extends State<BookDetailPage> {
+  Book? _book;
   final BookController _bookController = Get.find<BookController>();
   final Rx<BookStatus> _bookStatus = BookStatus.init.obs;
   final Rx<BookRatingStatus> _bookRatingStatus = BookRatingStatus.init.obs;
@@ -42,33 +41,28 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
 
   @override
   void initState() {
-    if (widget._book.synopsis != null ||
-        widget._book.genres != null ||
-        widget._book.isbn10 != null ||
-        widget._book.isbn13 != null) {
-      _bookStatus.value = BookStatus.loaded;
-    }
-
+    String? bookId = Get.parameters['idBook'];
+    _bookStatus.value = BookStatus.loading;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (_bookStatus.value == BookStatus.init) {
-        _bookStatus.value = BookStatus.loading;
-        _bookController.getBookByIdGoogle(widget._book.id).then((value) {
-          widget._book = value;
-          _bookStatus.value = BookStatus.loaded;
-
-          _bookRatingStatus.value = BookRatingStatus.loading;
-          _bookController.fetchBookRating(value).then(
-              (_) => _bookRatingStatus.value = BookRatingStatus.loaded,
-              onError: (_) => _bookRatingStatus.value = BookRatingStatus.error);
-          // _bookController.fetchBookDiscussions(value).then((value) => {
-          _bookController.getBookAvailabityById(value.id).then((value) {
-            _bookAvailabilityList.value = value;
-          }, onError: (_) {});
-          // });
-        }).catchError((error) {
-          _bookStatus.value = BookStatus.error;
-        });
+      if (bookId == null) {
+        Get.toNamed("/home");
       }
+      _bookController.getBookByIdGoogle(bookId!).then((value) {
+        _book = value;
+        _bookStatus.value = BookStatus.loaded;
+
+        _bookRatingStatus.value = BookRatingStatus.loading;
+        _bookController.fetchBookRating(value).then(
+            (_) => _bookRatingStatus.value = BookRatingStatus.loaded,
+            onError: (_) => _bookRatingStatus.value = BookRatingStatus.error);
+        // _bookController.fetchBookDiscussions(value).then((value) => {
+        _bookController.getBookAvailabityById(value.id).then((value) {
+          _bookAvailabilityList.value = value;
+        }, onError: (_) {});
+        // });
+      }).catchError((error) {
+        _bookStatus.value = BookStatus.error;
+      });
     });
 
     super.initState();
@@ -94,16 +88,24 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: Center(
-                    child: LayoutBuilder(builder: (context, constraints) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          widget._book.coverUrl!,
-                          fit: BoxFit.cover,
-                          height: constraints.maxHeight,
-                          width: (constraints.maxHeight * 240) / 360,
-                        ),
-                      );
+                    child: Obx(() {
+                      if (_bookStatus.value == BookStatus.loading) {
+                        return const CircularProgressIndicator();
+                      } else if (_bookStatus.value == BookStatus.error) {
+                        return const SizedBox.shrink();
+                      } else {
+                        return LayoutBuilder(builder: (context, constraints) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              _book!.coverUrl!,
+                              fit: BoxFit.cover,
+                              height: constraints.maxHeight,
+                              width: (constraints.maxHeight * 240) / 360,
+                            ),
+                          );
+                        });
+                      }
                     }),
                   ),
                 ),
@@ -142,14 +144,14 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      widget._book.title!,
+                                      _book!.title!,
                                       style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w800,
                                       ),
                                     ),
                                     Text(
-                                      widget._book.authorsString.toUpperCase(),
+                                      _book!.authorsString.toUpperCase(),
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w300,
@@ -158,7 +160,7 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                     ),
                                     const SizedBox(height: 5),
                                     RatingInfo(
-                                      rating: widget._book.averageRating,
+                                      rating: _book!.averageRating,
                                       isLoading: _bookRatingStatus.value ==
                                               BookDiscussionStatus.loading
                                           ? true
@@ -189,7 +191,7 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                           const Tab(text: "Detalhes"),
                                           Tab(
                                               text:
-                                                  "Avaliações (${widget._book.ratings.length})"),
+                                                  "Avaliações (${_book!.ratings.length})"),
                                           const Tab(text: "Discussões"),
                                         ],
                                       ),
@@ -197,17 +199,17 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                         child: TabBarView(
                                           children: [
                                             TabViewSynopsis(
-                                              book: widget._book,
+                                              book: _book!,
                                               scrollController:
                                                   scrollController,
                                             ),
                                             TabViewDetails(
-                                              book: widget._book,
+                                              book: _book!,
                                               scrollController:
                                                   scrollController,
                                             ),
                                             TabViewRatings(
-                                              book: widget._book,
+                                              book: _book!,
                                               bookRatingStatus:
                                                   _bookRatingStatus,
                                               scrollController:
