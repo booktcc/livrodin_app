@@ -65,29 +65,7 @@ class TransactionCard extends StatelessWidget {
                       height: 5,
                     ),
                     Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          BookCardWithProfile(
-                            user: transaction.user1,
-                            book: transaction.book1,
-                            otherUser: transaction.user2,
-                          ),
-                          Icon(transaction.type == TransactionType.trade
-                              ? Icons.swap_horizontal_circle
-                              : LivrodinIcons.donateIcon),
-                          transaction.type == TransactionType.trade
-                              ? BookCardWithProfile(
-                                  user: transaction.user2,
-                                  book: transaction.book2,
-                                  otherUser: transaction.user1,
-                                )
-                              : ProfileCard(
-                                  user: transaction.user2,
-                                )
-                        ],
-                      ),
+                      child: TransactionDetail(transaction: transaction),
                     )
                   ],
                 ),
@@ -168,6 +146,47 @@ class TransactionCard extends StatelessWidget {
             )
           ],
         ));
+  }
+}
+
+class TransactionDetail extends StatelessWidget {
+  const TransactionDetail({
+    Key? key,
+    required this.transaction,
+    this.color,
+  }) : super(key: key);
+
+  final Transaction transaction;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        BookCardWithProfile(
+          user: transaction.user1,
+          book: transaction.book1,
+          otherUser: transaction.user2,
+        ),
+        Icon(
+          transaction.type == TransactionType.trade
+              ? Icons.swap_horizontal_circle
+              : LivrodinIcons.donateIcon,
+          color: color,
+        ),
+        transaction.type == TransactionType.trade
+            ? BookCardWithProfile(
+                user: transaction.user2,
+                book: transaction.book2,
+                otherUser: transaction.user1,
+              )
+            : ProfileCard(
+                user: transaction.user2,
+              )
+      ],
+    );
   }
 }
 
