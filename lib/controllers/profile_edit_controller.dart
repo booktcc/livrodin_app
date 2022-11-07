@@ -120,7 +120,7 @@ class ProfileEditController extends GetxController {
       final photoUrl = await userService.uploadUserPhoto(file?.path);
       if (photoUrl != null) {
         await authController.updatePhoto(photoUrl);
-        userService.updateUser(
+        await userService.updateUser(
           User(
             id: authController.user.value!.uid,
             name: authController.user.value!.displayName,
