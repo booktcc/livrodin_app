@@ -13,7 +13,7 @@ import 'package:livrodin/components/tabs/book_detail/synopsis.dart';
 import 'package:livrodin/configs/livrodin_icons.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/book_controller.dart';
-import 'package:livrodin/models/availability.dart';
+import 'package:livrodin/controllers/book_detail_controller.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/transaction.dart';
 
@@ -23,52 +23,27 @@ enum BookRatingStatus { init, loading, loaded, error }
 
 enum BookDiscussionStatus { init, loading, loaded, error }
 
-class BookDetailDialog extends StatefulWidget {
-  BookDetailDialog({super.key, required Book book}) : _book = book;
-
-  Book _book;
+class BookDetailPage extends StatefulWidget {
+  const BookDetailPage({super.key});
 
   @override
-  State<BookDetailDialog> createState() => _BookDetailDialogState();
+  State<BookDetailPage> createState() => _BookDetailPageState();
 }
 
-class _BookDetailDialogState extends State<BookDetailDialog> {
+class _BookDetailPageState extends State<BookDetailPage> {
   final BookController _bookController = Get.find<BookController>();
-  final Rx<BookStatus> _bookStatus = BookStatus.init.obs;
-  final Rx<BookRatingStatus> _bookRatingStatus = BookRatingStatus.init.obs;
-  final Rx<BookDiscussionStatus> _bookDiscussionStatus =
-      BookDiscussionStatus.init.obs;
-  final RxList<Availability> _bookAvailabilityList = <Availability>[].obs;
+  final BookDetailController _bookDetailController =
+      Get.find<BookDetailController>();
 
   @override
   void initState() {
-    if (widget._book.synopsis != null ||
-        widget._book.genres != null ||
-        widget._book.isbn10 != null ||
-        widget._book.isbn13 != null) {
-      _bookStatus.value = BookStatus.loaded;
-    }
-
+    String? bookId = Get.parameters['idBook'];
+    _bookDetailController.bookStatus.value = BookStatus.loading;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (_bookStatus.value == BookStatus.init) {
-        _bookStatus.value = BookStatus.loading;
-        _bookController.getBookByIdGoogle(widget._book.id).then((value) {
-          widget._book = value;
-          _bookStatus.value = BookStatus.loaded;
-
-          _bookRatingStatus.value = BookRatingStatus.loading;
-          _bookController.fetchBookRating(value).then(
-              (_) => _bookRatingStatus.value = BookRatingStatus.loaded,
-              onError: (_) => _bookRatingStatus.value = BookRatingStatus.error);
-          // _bookController.fetchBookDiscussions(value).then((value) => {
-          _bookController.getBookAvailabityById(value.id).then((value) {
-            _bookAvailabilityList.value = value;
-          }, onError: (_) {});
-          // });
-        }).catchError((error) {
-          _bookStatus.value = BookStatus.error;
-        });
+      if (bookId == null) {
+        Get.toNamed("/home");
       }
+      _bookDetailController.fetchBook(bookId!);
     });
 
     super.initState();
@@ -94,16 +69,26 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: Center(
-                    child: LayoutBuilder(builder: (context, constraints) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          widget._book.coverUrl!,
-                          fit: BoxFit.cover,
-                          height: constraints.maxHeight,
-                          width: (constraints.maxHeight * 240) / 360,
-                        ),
-                      );
+                    child: Obx(() {
+                      if (_bookDetailController.bookStatus.value ==
+                          BookStatus.loading) {
+                        return const CircularProgressIndicator();
+                      } else if (_bookDetailController.bookStatus.value ==
+                          BookStatus.error) {
+                        return const SizedBox.shrink();
+                      } else {
+                        return LayoutBuilder(builder: (context, constraints) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              _bookDetailController.book!.coverUrl!,
+                              fit: BoxFit.cover,
+                              height: constraints.maxHeight,
+                              width: (constraints.maxHeight * 240) / 360,
+                            ),
+                          );
+                        });
+                      }
                     }),
                   ),
                 ),
@@ -120,11 +105,13 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                     color: lightGrey,
                     child: Obx(
                       () {
-                        if (_bookStatus.value == BookStatus.loading) {
+                        if (_bookDetailController.bookStatus.value ==
+                            BookStatus.loading) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
-                        } else if (_bookStatus.value == BookStatus.error) {
+                        } else if (_bookDetailController.bookStatus.value ==
+                            BookStatus.error) {
                           return const Center(
                             child: Text("Erro ao carregar o livro"),
                           );
@@ -142,14 +129,15 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      widget._book.title!,
+                                      _bookDetailController.book!.title!,
                                       style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w800,
                                       ),
                                     ),
                                     Text(
-                                      widget._book.authorsString.toUpperCase(),
+                                      _bookDetailController.book!.authorsString
+                                          .toUpperCase(),
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w300,
@@ -158,8 +146,10 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                     ),
                                     const SizedBox(height: 5),
                                     RatingInfo(
-                                      rating: widget._book.averageRating,
-                                      isLoading: _bookRatingStatus.value ==
+                                      rating: _bookDetailController
+                                          .book!.averageRating,
+                                      isLoading: _bookDetailController
+                                                  .bookRatingStatus.value ==
                                               BookDiscussionStatus.loading
                                           ? true
                                           : false,
@@ -189,7 +179,7 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                           const Tab(text: "Detalhes"),
                                           Tab(
                                               text:
-                                                  "Avaliações (${widget._book.ratings.length})"),
+                                                  "Avaliações (${_bookDetailController.book!.ratings.length})"),
                                           const Tab(text: "Discussões"),
                                         ],
                                       ),
@@ -197,19 +187,14 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                         child: TabBarView(
                                           children: [
                                             TabViewSynopsis(
-                                              book: widget._book,
                                               scrollController:
                                                   scrollController,
                                             ),
                                             TabViewDetails(
-                                              book: widget._book,
                                               scrollController:
                                                   scrollController,
                                             ),
                                             TabViewRatings(
-                                              book: widget._book,
-                                              bookRatingStatus:
-                                                  _bookRatingStatus,
                                               scrollController:
                                                   scrollController,
                                             ),
@@ -254,24 +239,26 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                         ),
                         Obx(
                           () {
-                            var availabilityForTrade = _bookAvailabilityList
-                                .where(
-                                  (element) =>
-                                      element.availableType ==
-                                          BookAvailableType.trade ||
-                                      element.availableType ==
-                                          BookAvailableType.both,
-                                )
-                                .toList();
-                            var availabilityForDonate = _bookAvailabilityList
-                                .where(
-                                  (element) =>
-                                      element.availableType ==
-                                          BookAvailableType.donate ||
-                                      element.availableType ==
-                                          BookAvailableType.both,
-                                )
-                                .toList();
+                            var availabilityForTrade =
+                                _bookDetailController.bookAvailabilityList
+                                    .where(
+                                      (element) =>
+                                          element.availableType ==
+                                              BookAvailableType.trade ||
+                                          element.availableType ==
+                                              BookAvailableType.both,
+                                    )
+                                    .toList();
+                            var availabilityForDonate =
+                                _bookDetailController.bookAvailabilityList
+                                    .where(
+                                      (element) =>
+                                          element.availableType ==
+                                              BookAvailableType.donate ||
+                                          element.availableType ==
+                                              BookAvailableType.both,
+                                    )
+                                    .toList();
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
