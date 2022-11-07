@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:livrodin/configs/constants.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/models/availability.dart';
+import 'package:livrodin/models/discussion.dart';
 import 'package:livrodin/models/interest.dart';
 import 'package:livrodin/models/rating.dart';
 import 'package:livrodin/models/transaction.dart';
@@ -87,15 +88,6 @@ class BookService extends GetxService {
     return books;
   }
 
-  Future<User?> getUserById(String idUser) async {
-    try {
-      var result = await firestore.collection("Users").doc(idUser).get();
-      return User.fromFireStore(result.id, result.data()!);
-    } catch (e) {
-      return null;
-    }
-  }
-
   Future<List<Book>> getBooksRatingByUser() async {
     if (authController.user.value == null) throw 'User not logged in';
 
@@ -156,9 +148,12 @@ class BookService extends GetxService {
         .where("idBook", isEqualTo: idBook)
         .get();
     List<Rating> ratings = List.empty(growable: true);
+
+    var users = await _getUsersByIds(
+        result.docs.map((e) => (e.data()["idUser"] as String)).toList());
+
     for (var doc in result.docs) {
       var data = doc.data();
-
       if (authController.user.value != null &&
           authController.user.value!.uid == data["idUser"]) {
         ratings.insert(
@@ -175,16 +170,14 @@ class BookService extends GetxService {
           ),
         );
       } else {
-        User? user = await getUserById(data["idUser"]);
+        final user = users.firstWhere(
+          (element) => element.id == data["idUser"],
+          orElse: () => User(id: "", name: "Usuário"),
+        );
         ratings.add(
           Rating(
             id: doc.id,
-            user: user ??
-                User(
-                  id: "-1",
-                  name: "Usuário",
-                  profilePictureUrl: null,
-                ),
+            user: user,
             rating: data['rate'],
             comment: data['comment'] ?? "",
           ),
@@ -430,5 +423,55 @@ class BookService extends GetxService {
     if (result.data["error"]) {
       throw result.data["message"];
     }
+  }
+
+  Future<List<Discussion>> getBookDiscussions(String idBook) async {
+    var result = await firestore
+        .collection(collectionBooks)
+        .doc(idBook)
+        .collection(collectionDiscussions)
+        .get();
+
+    List<Discussion> discussions = List.empty(growable: true);
+
+    var users = await _getUsersByIds(
+        result.docs.map((e) => (e.data()["idUser"] as String)).toList());
+
+    for (var doc in result.docs) {
+      var data = doc.data();
+      var user = users.firstWhere(
+        (element) => element.id == data["idUser"],
+        orElse: () => User(
+          id: "",
+          name: "Usuário",
+        ),
+      );
+      discussions.add(
+        Discussion(
+          id: doc.id,
+          user: user,
+          title: data["title"],
+        ),
+      );
+    }
+
+    return discussions;
+  }
+
+  Future<void> addDiscussion({
+    required Book book,
+    required Discussion discussion,
+  }) async {
+    if (authController.user.value == null) throw 'User not logged in';
+    await firestore
+        .collection(collectionBooks)
+        .doc(book.id)
+        .collection(collectionDiscussions)
+        .add({
+      "idUser": authController.user.value!.uid,
+      "title": discussion.title,
+      "createdAt": FieldValue.serverTimestamp(),
+      "mensagens": [],
+    });
   }
 }

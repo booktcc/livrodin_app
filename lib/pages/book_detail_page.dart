@@ -55,7 +55,14 @@ class _BookDetailPageState extends State<BookDetailPage> {
         _bookController.fetchBookRating(value).then(
             (_) => _bookRatingStatus.value = BookRatingStatus.loaded,
             onError: (_) => _bookRatingStatus.value = BookRatingStatus.error);
-        // _bookController.fetchBookDiscussions(value).then((value) => {
+        _bookController.fetchBookDiscussions(value).then(
+          (_) {
+            _bookDiscussionStatus.value = BookDiscussionStatus.loaded;
+          },
+          onError: (_) {
+            _bookDiscussionStatus.value = BookDiscussionStatus.error;
+          },
+        );
         _bookController.getBookAvailabityById(value.id).then((value) {
           _bookAvailabilityList.value = value;
         }, onError: (_) {});
@@ -218,6 +225,9 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                             TabViewDiscussions(
                                               scrollController:
                                                   scrollController,
+                                              book: _book!,
+                                              bookDiscussionsStatus:
+                                                  _bookDiscussionStatus,
                                             ),
                                           ],
                                         ),

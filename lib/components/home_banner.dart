@@ -31,7 +31,7 @@ class HomeBanner extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             itemCount: books.length,
             itemBuilder: (context, index) => GestureDetector(
-              onTap: () => Get.toNamed('/book/${books[index].id}'),
+              onTap: () => Get.toNamed('/book/detail/${books[index].id}'),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

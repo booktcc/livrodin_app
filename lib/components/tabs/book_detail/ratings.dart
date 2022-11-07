@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/button_action.dart';
 import 'package:livrodin/components/cards/rating_card.dart';
-import 'package:livrodin/components/rate_dialog.dart';
+import 'package:livrodin/components/dialogs/rate_dialog.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/models/book.dart';

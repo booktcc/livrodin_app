@@ -37,7 +37,7 @@ class Book {
   final List<String>? genres;
   List<Rating> ratings;
   List<Availability> availabilities;
-  final List<Discussion> _discussions = List.empty(growable: true);
+  List<Discussion> discussions;
   final BookAvailableType? availableType;
 
   Book({
@@ -55,6 +55,7 @@ class Book {
     this.genres,
     this.ratings = const [],
     this.availabilities = const [],
+    this.discussions = const [],
     this.availableType,
   }) : _id = id;
 
