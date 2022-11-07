@@ -114,16 +114,8 @@ class BookDetailController extends GetxController {
             required rate,
             required comment,
           }) async {
-            _bookController
-                .rateBook(book: book!, rate: rate, comment: comment)
-                .whenComplete(() async {
-              await _bookController.rateBook(
-                book: book!,
-                comment: comment,
-                rate: rate,
-              );
-              reloadBookRating();
-            });
+            _bookController.rateBook(book: book!, rate: rate, comment: comment);
+            reloadBookRating();
           },
         ),
       );
