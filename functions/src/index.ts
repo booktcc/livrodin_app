@@ -201,6 +201,7 @@ export const createTransaction = functions
     const transaction = await db.collection("Transaction").add({
       availabilityId,
       user1Id: bookAvailableData.idUser,
+      idBook1: bookAvailableData.idBook,
       user2Id,
       status: TransactionStatus.PENDING,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -254,6 +255,9 @@ export const confirmTransaction = functions
     await transaction.ref.update({
       status: TransactionStatus.IN_PROGRESS,
       availability2Id: availability2Id || null,
+      idBook2: availability2Id
+        ? await db.collection("BookAvailable").doc(availability2Id).get().then((doc) => doc.data()?.idBook)
+        : null,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 

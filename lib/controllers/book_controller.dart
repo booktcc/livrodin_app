@@ -6,6 +6,7 @@ import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/interest.dart';
+import 'package:livrodin/models/transaction.dart';
 import 'package:livrodin/services/book_service.dart';
 
 import 'auth_controller.dart';
@@ -157,6 +158,16 @@ class BookController extends GetxController {
               colorText: Colors.white,
             ),
           );
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<Transaction>> getTransactionsFromUser() async {
+    try {
+      var result = await bookService.getTransactionsFromUser();
+      return result;
     } catch (e) {
       printError(info: e.toString());
       rethrow;

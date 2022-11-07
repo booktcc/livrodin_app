@@ -1,13 +1,41 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:livrodin/components/cards/transaction_card.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/controllers/book_controller.dart';
+import 'package:livrodin/models/transaction.dart';
+import 'package:livrodin/utils/state_machine.dart';
 
-enum TransactionTabType { progress, done, canceled, ordersMade, ordersReceived }
+enum TransactionTabType {
+  progress,
+  ordersReceived,
+  ordersMade,
+  done,
+  canceled;
+
+  String get name {
+    switch (this) {
+      case TransactionTabType.progress:
+        return "Andamento";
+      case TransactionTabType.done:
+        return "Concluido";
+      case TransactionTabType.canceled:
+        return "Cancelado";
+      case TransactionTabType.ordersMade:
+        return "Pedidos Feitos";
+      case TransactionTabType.ordersReceived:
+        return "Pedidos Recebidos";
+    }
+  }
+}
 
 enum TransactionsType { donate, trade }
 
-class UserTransationsDialog extends StatelessWidget {
+class UserTransationsDialog extends StatefulWidget {
   const UserTransationsDialog({
     super.key,
     required this.type,
@@ -16,14 +44,37 @@ class UserTransationsDialog extends StatelessWidget {
 
   final TransactionsType type;
   final TransactionTabType tab;
-  final int _tabCount = 5;
+
+  @override
+  State<UserTransationsDialog> createState() => _UserTransationsDialogState();
+}
+
+class _UserTransationsDialogState extends State<UserTransationsDialog> {
+  final BookController _bookController = Get.find<BookController>();
+
+  RxList<Transaction> transactions = <Transaction>[].obs;
+
+  final Rx<FetchState> stateFetch = FetchState.loading.obs;
+
+  @override
+  void initState() {
+    super.initState();
+    stateFetch.value = FetchState.loading;
+    _bookController.getTransactionsFromUser().then((value) {
+      transactions.value = value;
+      stateFetch.value = FetchState.success;
+    }).onError((error, stackTrace) {
+      stateFetch.value = FetchState.error;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Layout(
       headerProps: HeaderProps(
         showLogo: false,
         showBackButton: true,
-        title: type == TransactionsType.donate ? 'Doações' : 'Trocas',
+        title: widget.type == TransactionsType.donate ? 'Doações' : 'Trocas',
       ),
       child: ClipRRect(
         borderRadius: const BorderRadius.only(
@@ -35,7 +86,7 @@ class UserTransationsDialog extends StatelessWidget {
           height: double.infinity,
           width: double.infinity,
           child: DefaultTabController(
-            length: _tabCount,
+            length: TransactionTabType.values.length,
             child: Column(
               children: [
                 SizedBox(
@@ -52,14 +103,40 @@ class UserTransationsDialog extends StatelessWidget {
                     ),
                     isScrollable: true,
                     physics: const BouncingScrollPhysics(),
-                    tabs: const [
-                      Tab(text: "Andamento"),
-                      Tab(text: "Pedidos Recebidos"),
-                      Tab(text: "Pedidos Feitos"),
-                      Tab(text: "Concluido"),
-                      Tab(text: "Cancelado"),
-                    ],
+                    tabs: TransactionTabType.values
+                        .map(
+                          (e) => Tab(
+                            text: e.name,
+                          ),
+                        )
+                        .toList(),
                   ),
+                ),
+                Expanded(
+                  child: Builder(builder: (context) {
+                    return Obx(
+                      () => TabBarView(
+                          children: TransactionTabType.values
+                              .map(
+                                (e) => ListView.builder(
+                                  itemCount: transactions.length,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 20),
+                                  itemBuilder: (context, index) => Padding(
+                                    padding: EdgeInsets.only(
+                                        top: index == 0 ? 0 : 20),
+                                    child: TransactionCard(
+                                      transaction: transactions[index],
+                                      onMessagePressed: () {},
+                                      onConfirmPressed: () {},
+                                      onCancelPressed: () {},
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList()),
+                    );
+                  }),
                 )
               ],
             ),

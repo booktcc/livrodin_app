@@ -1,11 +1,15 @@
+import 'dart:developer';
+
 import 'package:books_finder/books_finder.dart' as books_finder;
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
+import 'package:livrodin/configs/constants.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/interest.dart';
 import 'package:livrodin/models/rating.dart';
+import 'package:livrodin/models/transaction.dart';
 import 'package:livrodin/models/user.dart';
 
 import '../models/book.dart';
@@ -228,6 +232,24 @@ class BookService extends GetxService {
         id: e.id,
         name: data["name"],
         profilePictureUrl: data["profilePictureUrl"],
+        isMe: authController.user.value!.uid == e.id,
+      );
+    }).toList();
+  }
+
+  Future<List<Book>> _getBooksByIds(List<String> ids) async {
+    if (ids.isEmpty) return [];
+    var result = await firestore
+        .collection("Book")
+        .where(FieldPath.documentId, whereIn: ids)
+        .get();
+
+    return result.docs.map((e) {
+      var data = e.data();
+      return Book(
+        id: e.id,
+        title: data["title"],
+        coverUrl: data["coverUrl"],
       );
     }).toList();
   }
@@ -290,5 +312,98 @@ class BookService extends GetxService {
     if (result.data["error"]) {
       throw result.data["message"];
     }
+  }
+
+  Future<List<Transaction>> getTransactionsFromUser() async {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    var resultTransactions1 = await firestore
+        .collection(collectionTransaction)
+        .where("user1Id", isEqualTo: authController.user.value!.uid)
+        .get();
+    var resultTransactions2 = await firestore
+        .collection(collectionTransaction)
+        .where("user2Id", isEqualTo: authController.user.value!.uid)
+        .get();
+
+    var resultTransactionsDocs =
+        (resultTransactions1.docs + resultTransactions2.docs);
+
+    List<Transaction> transactions = List.empty(growable: true);
+    List<String> usersIds = List.empty(growable: true);
+
+    for (var doc in resultTransactionsDocs) {
+      var data = doc.data();
+      usersIds.add(data["user1Id"]);
+      usersIds.add(data["user2Id"]);
+    }
+
+    // get all users from transactions
+    var users = await _getUsersByIds(usersIds.toSet().toList());
+
+    // get all book from transactions
+    List<String> booksIds = List.empty(growable: true);
+
+    for (var doc in resultTransactionsDocs) {
+      var data = doc.data();
+      booksIds.add(data["idBook1"]);
+      if (data["idBook2"] != null) booksIds.add(data["idBook2"]);
+    }
+
+    var books = await _getBooksByIds(booksIds.toSet().toList());
+
+    for (var doc in resultTransactionsDocs) {
+      var data = doc.data();
+
+      transactions.add(
+        Transaction(
+          id: doc.id,
+          book1: books.firstWhere(
+            (element) => element.id == data["idBook1"],
+            orElse: () => Book(
+              id: "",
+              title: "Livro",
+            ),
+          ),
+          book2: data["book2Id"] != null
+              ? books.firstWhere(
+                  (element) => element.id == data["idBook2"],
+                  orElse: () => Book(
+                    id: "",
+                    title: "Livro",
+                  ),
+                )
+              : null,
+          user1: users.firstWhere(
+            (element) => element.id == data["user1Id"],
+            orElse: () => User(
+              id: "",
+              name: "Usuário",
+            ),
+          ),
+          user2: users.firstWhere(
+            (element) => element.id == data["user2Id"],
+            orElse: () => User(
+              id: "",
+              name: "Usuário",
+            ),
+          ),
+          createdAt: data["createdAt"].toDate(),
+          updatedAt: data["updatedAt"].toDate(),
+          status: TransactionStatus.values.firstWhere(
+            (element) => element.value == data["status"],
+            orElse: () => TransactionStatus.pending,
+          ),
+          type: BookAvailableType.values.firstWhere(
+            (element) => element.value == data["type"],
+            orElse: () => BookAvailableType.trade,
+          ),
+        ),
+      );
+    }
+    // order by date
+    transactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    return transactions;
   }
 }

@@ -6,6 +6,7 @@ import 'package:livrodin/components/title.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/models/book.dart';
+import 'package:livrodin/utils/state_machine.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -14,23 +15,21 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-enum ResultBooksFetch { success, error, loading }
-
 class _HomeState extends State<Home> {
   final RxList<Book> books = <Book>[].obs;
 
   final BookController _bookController = Get.find<BookController>();
-  final Rx<ResultBooksFetch> result = ResultBooksFetch.loading.obs;
+  final Rx<FetchState> stateFetch = FetchState.loading.obs;
 
   @override
   void initState() {
     super.initState();
-    result.value = ResultBooksFetch.loading;
+    stateFetch.value = FetchState.loading;
     _bookController.getAvailableBooks().then((value) {
       books.value = value;
-      result.value = ResultBooksFetch.success;
+      stateFetch.value = FetchState.success;
     }).onError((error, stackTrace) {
-      result.value = ResultBooksFetch.error;
+      stateFetch.value = FetchState.error;
     });
   }
 
@@ -77,7 +76,7 @@ class _HomeState extends State<Home> {
                             height: 222,
                             child: Obx(
                               () {
-                                if (result.value == ResultBooksFetch.success) {
+                                if (stateFetch.value == FetchState.success) {
                                   return ListView.builder(
                                     physics: const BouncingScrollPhysics(),
                                     scrollDirection: Axis.horizontal,
@@ -98,8 +97,8 @@ class _HomeState extends State<Home> {
                                       );
                                     },
                                   );
-                                } else if (result.value ==
-                                    ResultBooksFetch.loading) {
+                                } else if (stateFetch.value ==
+                                    FetchState.loading) {
                                   return const Center(
                                     child: CircularProgressIndicator(),
                                   );

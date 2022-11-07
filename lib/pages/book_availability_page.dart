@@ -61,9 +61,7 @@ class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
                 leftIcon: const Icon(Icons.search, color: Colors.grey),
                 rightIcon: GestureDetector(
                   child: const Icon(Icons.qr_code_rounded, color: Colors.black),
-                  onTap: () {
-                    debugPrint("onTap");
-                  },
+                  onTap: () {},
                 ),
                 onEditingComplete: (String text) async {
                   var books = await _bookController.searchBook(text);

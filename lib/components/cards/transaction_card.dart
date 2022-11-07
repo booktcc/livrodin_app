@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:livrodin/components/button_option.dart';
 import 'package:livrodin/components/profile_icon.dart';
+import 'package:livrodin/configs/livrodin_icons.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/transaction.dart';
@@ -70,14 +71,16 @@ class TransactionCard extends StatelessWidget {
                         children: [
                           BookCardWithProfile(
                             user: transaction.user1,
-                            book: transaction.availability.book,
+                            book: transaction.book1,
                             otherUser: transaction.user2,
                           ),
-                          const Icon(Icons.swap_horizontal_circle),
+                          Icon(transaction.type == BookAvailableType.trade
+                              ? Icons.swap_horizontal_circle
+                              : LivrodinIcons.donateIcon),
                           transaction.type == BookAvailableType.trade
                               ? BookCardWithProfile(
                                   user: transaction.user2,
-                                  book: transaction.availability2?.book,
+                                  book: transaction.book2,
                                   otherUser: transaction.user1,
                                 )
                               : ProfileCard(
