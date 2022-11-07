@@ -132,7 +132,9 @@ class TransactionCard extends StatelessWidget {
                       ),
                     ),
                     Visibility(
-                      visible: transaction.status == TransactionStatus.pending,
+                      visible:
+                          transaction.status == TransactionStatus.pending &&
+                              transaction.user1.isMe,
                       child: Column(
                         children: [
                           ButtonOption(
@@ -152,7 +154,8 @@ class TransactionCard extends StatelessWidget {
                       ].contains(transaction.status),
                       child: ButtonOption(
                         iconData: Icons.cancel,
-                        text: transaction.status == TransactionStatus.pending
+                        text: transaction.status == TransactionStatus.pending &&
+                                transaction.user1.isMe
                             ? "Rejeitar"
                             : "Cancelar",
                         color: red,

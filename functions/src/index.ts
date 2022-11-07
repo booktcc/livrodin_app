@@ -4,6 +4,7 @@ import fetch from "node-fetch";
 
 type BookAvailable = {
   idBook: string;
+  idUser: string;
   availableType: BookAvailableType;
   createdAt: Date;
 };
@@ -183,14 +184,17 @@ export const createTransaction = functions
     if (!bookAvailable.exists)
       return { message: "Livro não encontrado", error: true };
 
-    const bookAvailableData = bookAvailable.data();
+    const bookAvailableData = bookAvailable.data() as BookAvailable;
 
     if (!bookAvailableData)
       return { message: "Livro não encontrado", error: true };
 
     if (
-      (type === TransactionType.TRADE && !bookAvailableData?.forTrade) ||
-      (type === TransactionType.DONATION && !bookAvailableData?.forDonation)
+      (bookAvailableData?.availableType !== BookAvailableType.BOTH &&
+        type === TransactionType.TRADE &&
+        bookAvailableData?.availableType !== BookAvailableType.FOR_TRADE) ||
+      (type === TransactionType.DONATION &&
+        bookAvailableData?.availableType !== BookAvailableType.FOR_DONATION)
     ) {
       return {
         message: "Livro não disponível para este tipo de transação",
@@ -338,47 +342,14 @@ export const cancelTransaction = functions
     if (transactionData.status === TransactionStatus.COMPLETED)
       return { error: true, message: "Transação já foi concluída" };
 
-    await transaction.ref.update({
-      status: TransactionStatus.CANCELED,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
+    if (transactionData.status === TransactionStatus.PENDING) {
+      await transaction.ref.delete();
+    } else {
+      await transaction.ref.update({
+        status: TransactionStatus.CANCELED,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    }
 
     return { error: false, message: "Transação cancelada com sucesso" };
-  });
-
-export const rejectTransaction = functions
-  .region("southamerica-east1")
-  .https.onCall(async (data, context) => {
-    const db = admin.firestore();
-
-    const user1Id = context.auth?.uid;
-
-    if (!user1Id) return { error: true, message: "Usuário não autenticado" };
-
-    const { transactionId } = data as { transactionId: string };
-
-    const transaction = await db
-      .collection("Transaction")
-      .doc(transactionId)
-      .get();
-
-    if (!transaction.exists)
-      return { error: true, message: "Transação não encontrada" };
-
-    const transactionData = transaction.data();
-
-    if (!transactionData)
-      return { error: true, message: "Transação não encontrada" };
-
-    if (transactionData.status !== TransactionStatus.PENDING)
-      return { error: true, message: "Transação não está pendente" };
-
-    if (transactionData.user1Id !== user1Id)
-      return { error: true, message: "Usuário não é o dono da transação" };
-
-    // delete transaction
-
-    await transaction.ref.delete();
-
-    return { error: false, message: "Transação rejeitada com sucesso" };
   });

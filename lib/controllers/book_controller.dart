@@ -221,7 +221,7 @@ class BookController extends GetxController {
   }
 
   Future<void> rejectTransaction(String transactionId) async {
-    return bookService.rejectTransaction(transactionId).then(
+    return bookService.cancelTransaction(transactionId).then(
       (_) {
         Get.snackbar(
           "Transação Rejeitada",

@@ -439,18 +439,4 @@ class BookService extends GetxService {
       throw result.data["message"];
     }
   }
-
-  Future<void> rejectTransaction(String transactionId) async {
-    if (authController.user.value == null) throw 'User not logged in';
-
-    HttpsCallable callable =
-        FirebaseFunctions.instanceFor(region: 'southamerica-east1')
-            .httpsCallable('rejectTransaction');
-    var request = <String, dynamic>{"transactionId": transactionId.toString()};
-
-    var result = await callable.call<Map<String, dynamic>>(request);
-    if (result.data["error"]) {
-      throw result.data["message"];
-    }
-  }
 }
