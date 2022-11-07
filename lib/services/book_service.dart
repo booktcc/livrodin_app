@@ -332,25 +332,20 @@ class BookService extends GetxService {
 
     List<Transaction> transactions = List.empty(growable: true);
     List<String> usersIds = List.empty(growable: true);
+    List<String> booksIds = List.empty(growable: true);
 
     for (var doc in resultTransactionsDocs) {
       var data = doc.data();
       usersIds.add(data["user1Id"]);
       usersIds.add(data["user2Id"]);
+      booksIds.add(data["idBook1"]);
+      if (data["idBook2"] != null) booksIds.add(data["idBook2"]);
     }
 
     // get all users from transactions
     var users = await _getUsersByIds(usersIds.toSet().toList());
 
-    // get all book from transactions
-    List<String> booksIds = List.empty(growable: true);
-
-    for (var doc in resultTransactionsDocs) {
-      var data = doc.data();
-      booksIds.add(data["idBook1"]);
-      if (data["idBook2"] != null) booksIds.add(data["idBook2"]);
-    }
-
+    // get all books from transactions
     var books = await _getBooksByIds(booksIds.toSet().toList());
 
     for (var doc in resultTransactionsDocs) {

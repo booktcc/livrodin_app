@@ -190,14 +190,20 @@ export const createTransaction = functions
       return { message: "Livro não encontrado", error: true };
 
     if (
-      (bookAvailableData?.availableType !== BookAvailableType.BOTH &&
-        type === TransactionType.TRADE &&
-        bookAvailableData?.availableType !== BookAvailableType.FOR_TRADE) ||
-      (type === TransactionType.DONATION &&
-        bookAvailableData?.availableType !== BookAvailableType.FOR_DONATION)
+      bookAvailableData?.availableType === BookAvailableType.FOR_TRADE &&
+      type !== TransactionType.TRADE
     ) {
       return {
-        message: "Livro não disponível para este tipo de transação",
+        message: "O Livro está disponível apenas para troca",
+        error: true,
+      };
+    }
+    if (
+      bookAvailableData?.availableType === BookAvailableType.FOR_DONATION &&
+      type !== TransactionType.DONATION
+    ) {
+      return {
+        message: "O Livro está disponível apenas para doação",
         error: true,
       };
     }
