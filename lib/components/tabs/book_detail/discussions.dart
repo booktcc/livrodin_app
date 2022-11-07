@@ -2,32 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/button_action.dart';
 import 'package:livrodin/components/cards/discussions_card.dart';
-import 'package:livrodin/components/dialogs/discussion_dialog.dart';
-import 'package:livrodin/controllers/auth_controller.dart';
-import 'package:livrodin/controllers/book_controller.dart';
-import 'package:livrodin/models/book.dart';
-import 'package:livrodin/models/discussion.dart';
+import 'package:livrodin/components/cards/reply_card.dart';
+import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/controllers/book_detail_controller.dart';
 import 'package:livrodin/pages/book_detail_page.dart';
 
 class TabViewDiscussions extends StatelessWidget {
-  final AuthController _authController = Get.find<AuthController>();
-  final BookController _bookController = Get.find<BookController>();
+  final BookDetailController bookDetailController =
+      Get.find<BookDetailController>();
 
   TabViewDiscussions({
     super.key,
     required this.scrollController,
-    required this.bookDiscussionsStatus,
-    required this.book,
   });
 
-  final Rx<BookDiscussionStatus> bookDiscussionsStatus;
-  final Book book;
   final ScrollController scrollController;
+  final BookDetailController _bookDetailController =
+      Get.find<BookDetailController>();
+
   @override
   Widget build(BuildContext context) {
+    return PageView(
+      controller: _bookDetailController.pageViewController,
+      physics: const NeverScrollableScrollPhysics(),
+      children: [
+        _page1(),
+        _page2(),
+      ],
+    );
+  }
+
+  Widget _page1() {
     return Obx(
       () {
-        if (bookDiscussionsStatus.value == BookDiscussionStatus.loaded) {
+        if (_bookDetailController.bookDiscussionStatus.value ==
+            BookDiscussionStatus.loaded) {
           return CustomScrollView(
             physics: const BouncingScrollPhysics(),
             controller: scrollController,
@@ -51,22 +60,7 @@ class TabViewDiscussions extends StatelessWidget {
                           height: 10,
                         ),
                         ButtonAction(
-                          onPressed: () => Get.dialog(
-                            DiscussionDialog(
-                              title: "Criar Discussão",
-                              onConfirm: ({
-                                required Discussion discussion,
-                              }) =>
-                                  _bookController
-                                      .createDiscussion(
-                                book: book,
-                                discussion: discussion,
-                              )
-                                      .whenComplete(() async {
-                                _reloadBookDiscussions();
-                              }),
-                            ),
-                          ),
+                          onPressed: _bookDetailController.addDiscussion,
                           label: "Criar Discussão",
                         ),
                       ],
@@ -75,7 +69,7 @@ class TabViewDiscussions extends StatelessWidget {
                 ),
               ),
               SliverVisibility(
-                visible: book.discussions.isNotEmpty,
+                visible: _bookDetailController.book!.discussions.isNotEmpty,
                 sliver: const SliverPadding(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   sliver: SliverToBoxAdapter(
@@ -91,10 +85,19 @@ class TabViewDiscussions extends StatelessWidget {
                 sliver: SliverList(
                   delegate: SliverChildListDelegate(
                     List.generate(
-                      book.discussions.length,
+                      _bookDetailController.book!.discussions.length,
                       (index) => DiscussionCard(
-                        discussion: book.discussions[index],
+                        seeMore: true,
+                        discussion:
+                            _bookDetailController.book!.discussions[index],
                         margin: const EdgeInsets.only(bottom: 10),
+                        onTap: () {
+                          _bookDetailController.selectedDiscussion.value =
+                              _bookDetailController.book!.discussions[index];
+                          _bookDetailController.fetchDiscussionReplies();
+                          _bookDetailController.pageViewController
+                              .jumpToPage(1);
+                        },
                       ),
                     ),
                   ),
@@ -102,14 +105,15 @@ class TabViewDiscussions extends StatelessWidget {
               ),
             ],
           );
-        } else if (bookDiscussionsStatus.value == BookDiscussionStatus.error) {
+        } else if (_bookDetailController.bookDiscussionStatus.value ==
+            BookDiscussionStatus.error) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text("Ocorreu um erro ao carregar as discussões"),
                 ButtonAction(
-                  onPressed: _reloadBookDiscussions,
+                  onPressed: _bookDetailController.reloadBookDiscussions,
                   label: "Tentar novamente",
                 ),
               ],
@@ -124,13 +128,115 @@ class TabViewDiscussions extends StatelessWidget {
     );
   }
 
-  Future _reloadBookDiscussions() async {
-    bookDiscussionsStatus.value = BookDiscussionStatus.loading;
-    try {
-      await _bookController.fetchBookDiscussions(book);
-      bookDiscussionsStatus.value = BookDiscussionStatus.loaded;
-    } catch (e) {
-      bookDiscussionsStatus.value = BookDiscussionStatus.error;
-    }
+  Widget _page2() {
+    return Obx(
+      () {
+        if (_bookDetailController.bookDiscussionStatus.value ==
+            BookDiscussionStatus.loaded) {
+          return CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            controller: scrollController,
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                sliver: SliverToBoxAdapter(
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 10,
+                      ),
+                      child: Row(
+                        children: [
+                          ButtonAction(
+                            onPressed: () {
+                              _bookDetailController.pageViewController
+                                  .jumpToPage(0);
+                            },
+                            icon: Icons.arrow_back,
+                            color: lightGrey,
+                            textColor: red,
+                            elevation: 0,
+                            minHeight: 40,
+                            minWidth: 40,
+                          ),
+                        ],
+                      )),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      DiscussionCard(
+                        discussion:
+                            _bookDetailController.selectedDiscussion.value!,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        seeMore: false,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                sliver: SliverToBoxAdapter(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Respostas",
+                        style: TextStyle(fontWeight: FontWeight.w800),
+                      ),
+                      ButtonAction(
+                        onPressed: _bookDetailController.addDiscussionReply,
+                        icon: Icons.add,
+                        minHeight: 30,
+                        minWidth: 30,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate(
+                    List.generate(
+                      _bookDetailController
+                          .selectedDiscussion.value!.replies.length,
+                      (index) => ReplyCard(
+                        comment: _bookDetailController
+                            .selectedDiscussion.value!.replies[index],
+                        margin: const EdgeInsets.only(bottom: 10),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        } else if (_bookDetailController.bookDiscussionStatus.value ==
+            BookDiscussionStatus.error) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Ocorreu um erro ao carregar as discussões"),
+                ButtonAction(
+                  onPressed: _bookDetailController.fetchDiscussionReplies,
+                  label: "Tentar novamente",
+                ),
+              ],
+            ),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
   }
 }

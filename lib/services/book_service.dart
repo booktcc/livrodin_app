@@ -8,6 +8,7 @@ import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/discussion.dart';
 import 'package:livrodin/models/interest.dart';
 import 'package:livrodin/models/rating.dart';
+import 'package:livrodin/models/reply.dart';
 import 'package:livrodin/models/transaction.dart';
 import 'package:livrodin/models/user.dart';
 
@@ -425,10 +426,10 @@ class BookService extends GetxService {
     }
   }
 
-  Future<List<Discussion>> getBookDiscussions(String idBook) async {
+  Future<List<Discussion>> getBookDiscussions(Book book) async {
     var result = await firestore
         .collection(collectionBooks)
-        .doc(idBook)
+        .doc(book.id)
         .collection(collectionDiscussions)
         .get();
 
@@ -447,15 +448,43 @@ class BookService extends GetxService {
         ),
       );
       discussions.add(
-        Discussion(
-          id: doc.id,
-          user: user,
-          title: data["title"],
-        ),
+        Discussion.fromFirestore(doc, user, book),
       );
     }
 
     return discussions;
+  }
+
+  // fetch discussion replies
+  Future<List<Reply>> getDiscussionReplies(Discussion discussion) async {
+    var result = await firestore
+        .collection(collectionBooks)
+        .doc(discussion.book.id)
+        .collection(collectionDiscussions)
+        .doc(discussion.id)
+        .collection(collectionReplies)
+        .get();
+
+    List<Reply> replies = List.empty(growable: true);
+
+    var users = await _getUsersByIds(
+        result.docs.map((e) => (e.data()["idUser"] as String)).toList());
+
+    for (var doc in result.docs) {
+      var data = doc.data();
+      var user = users.firstWhere(
+        (element) => element.id == data["idUser"],
+        orElse: () => User(
+          id: "",
+          name: "Usuário",
+        ),
+      );
+      replies.add(
+        Reply.fromFirestore(doc, discussion, user),
+      );
+    }
+
+    return replies;
   }
 
   Future<void> addDiscussion({
@@ -467,11 +496,20 @@ class BookService extends GetxService {
         .collection(collectionBooks)
         .doc(book.id)
         .collection(collectionDiscussions)
-        .add({
-      "idUser": authController.user.value!.uid,
-      "title": discussion.title,
-      "createdAt": FieldValue.serverTimestamp(),
-      "mensagens": [],
-    });
+        .add(discussion.toFirestore());
+  }
+
+  Future<void> createDiscussionReply(
+      {required Book book,
+      required Reply reply,
+      required Discussion parentDiscussion}) async {
+    if (authController.user.value == null) throw 'User not logged in';
+    await firestore
+        .collection(collectionBooks)
+        .doc(book.id)
+        .collection(collectionDiscussions)
+        .doc(parentDiscussion.id)
+        .collection(collectionReplies)
+        .add(reply.toFirestore());
   }
 }

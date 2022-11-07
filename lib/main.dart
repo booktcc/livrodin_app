@@ -11,6 +11,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
+import 'package:livrodin/controllers/book_detail_controller.dart';
 import 'package:livrodin/controllers/login_controller.dart';
 import 'package:livrodin/controllers/profile_edit_controller.dart';
 import 'package:livrodin/controllers/register_controller.dart';
@@ -128,6 +129,7 @@ class MyApp extends StatelessWidget {
           binding: BindingsBuilder(() {
             Get.put(BookService(firestore: FirebaseFirestore.instance));
             Get.put(BookController());
+            Get.put(BookDetailController());
           }),
         ),
         GetPage(
@@ -163,8 +165,10 @@ class MyApp extends StatelessWidget {
         ),
       ],
       initialBinding: BindingsBuilder(() {
-        Get.put(AuthController(firebaseAuth: FirebaseAuth.instance),
-            permanent: true);
+        Get.put(
+          AuthController(firebaseAuth: FirebaseAuth.instance),
+          permanent: true,
+        );
       }),
     );
   }

@@ -13,7 +13,7 @@ import 'package:livrodin/components/tabs/book_detail/synopsis.dart';
 import 'package:livrodin/configs/livrodin_icons.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/book_controller.dart';
-import 'package:livrodin/models/availability.dart';
+import 'package:livrodin/controllers/book_detail_controller.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/transaction.dart';
 
@@ -31,45 +31,19 @@ class BookDetailPage extends StatefulWidget {
 }
 
 class _BookDetailPageState extends State<BookDetailPage> {
-  Book? _book;
   final BookController _bookController = Get.find<BookController>();
-  final Rx<BookStatus> _bookStatus = BookStatus.init.obs;
-  final Rx<BookRatingStatus> _bookRatingStatus = BookRatingStatus.init.obs;
-  final Rx<BookDiscussionStatus> _bookDiscussionStatus =
-      BookDiscussionStatus.init.obs;
-  final RxList<Availability> _bookAvailabilityList = <Availability>[].obs;
+  final BookDetailController _bookDetailController =
+      Get.find<BookDetailController>();
 
   @override
   void initState() {
     String? bookId = Get.parameters['idBook'];
-    _bookStatus.value = BookStatus.loading;
+    _bookDetailController.bookStatus.value = BookStatus.loading;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (bookId == null) {
         Get.toNamed("/home");
       }
-      _bookController.getBookByIdGoogle(bookId!).then((value) {
-        _book = value;
-        _bookStatus.value = BookStatus.loaded;
-
-        _bookRatingStatus.value = BookRatingStatus.loading;
-        _bookController.fetchBookRating(value).then(
-            (_) => _bookRatingStatus.value = BookRatingStatus.loaded,
-            onError: (_) => _bookRatingStatus.value = BookRatingStatus.error);
-        _bookController.fetchBookDiscussions(value).then(
-          (_) {
-            _bookDiscussionStatus.value = BookDiscussionStatus.loaded;
-          },
-          onError: (_) {
-            _bookDiscussionStatus.value = BookDiscussionStatus.error;
-          },
-        );
-        _bookController.getBookAvailabityById(value.id).then((value) {
-          _bookAvailabilityList.value = value;
-        }, onError: (_) {});
-        // });
-      }).catchError((error) {
-        _bookStatus.value = BookStatus.error;
-      });
+      _bookDetailController.fetchBook(bookId!);
     });
 
     super.initState();
@@ -96,16 +70,18 @@ class _BookDetailPageState extends State<BookDetailPage> {
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: Center(
                     child: Obx(() {
-                      if (_bookStatus.value == BookStatus.loading) {
+                      if (_bookDetailController.bookStatus.value ==
+                          BookStatus.loading) {
                         return const CircularProgressIndicator();
-                      } else if (_bookStatus.value == BookStatus.error) {
+                      } else if (_bookDetailController.bookStatus.value ==
+                          BookStatus.error) {
                         return const SizedBox.shrink();
                       } else {
                         return LayoutBuilder(builder: (context, constraints) {
                           return ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
-                              _book!.coverUrl!,
+                              _bookDetailController.book!.coverUrl!,
                               fit: BoxFit.cover,
                               height: constraints.maxHeight,
                               width: (constraints.maxHeight * 240) / 360,
@@ -129,11 +105,13 @@ class _BookDetailPageState extends State<BookDetailPage> {
                     color: lightGrey,
                     child: Obx(
                       () {
-                        if (_bookStatus.value == BookStatus.loading) {
+                        if (_bookDetailController.bookStatus.value ==
+                            BookStatus.loading) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
-                        } else if (_bookStatus.value == BookStatus.error) {
+                        } else if (_bookDetailController.bookStatus.value ==
+                            BookStatus.error) {
                           return const Center(
                             child: Text("Erro ao carregar o livro"),
                           );
@@ -151,14 +129,15 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      _book!.title!,
+                                      _bookDetailController.book!.title!,
                                       style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w800,
                                       ),
                                     ),
                                     Text(
-                                      _book!.authorsString.toUpperCase(),
+                                      _bookDetailController.book!.authorsString
+                                          .toUpperCase(),
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w300,
@@ -167,8 +146,10 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                     ),
                                     const SizedBox(height: 5),
                                     RatingInfo(
-                                      rating: _book!.averageRating,
-                                      isLoading: _bookRatingStatus.value ==
+                                      rating: _bookDetailController
+                                          .book!.averageRating,
+                                      isLoading: _bookDetailController
+                                                  .bookRatingStatus.value ==
                                               BookDiscussionStatus.loading
                                           ? true
                                           : false,
@@ -198,7 +179,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                           const Tab(text: "Detalhes"),
                                           Tab(
                                               text:
-                                                  "Avaliações (${_book!.ratings.length})"),
+                                                  "Avaliações (${_bookDetailController.book!.ratings.length})"),
                                           const Tab(text: "Discussões"),
                                         ],
                                       ),
@@ -206,28 +187,20 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                         child: TabBarView(
                                           children: [
                                             TabViewSynopsis(
-                                              book: _book!,
                                               scrollController:
                                                   scrollController,
                                             ),
                                             TabViewDetails(
-                                              book: _book!,
                                               scrollController:
                                                   scrollController,
                                             ),
                                             TabViewRatings(
-                                              book: _book!,
-                                              bookRatingStatus:
-                                                  _bookRatingStatus,
                                               scrollController:
                                                   scrollController,
                                             ),
                                             TabViewDiscussions(
                                               scrollController:
                                                   scrollController,
-                                              book: _book!,
-                                              bookDiscussionsStatus:
-                                                  _bookDiscussionStatus,
                                             ),
                                           ],
                                         ),
@@ -266,24 +239,26 @@ class _BookDetailPageState extends State<BookDetailPage> {
                         ),
                         Obx(
                           () {
-                            var availabilityForTrade = _bookAvailabilityList
-                                .where(
-                                  (element) =>
-                                      element.availableType ==
-                                          BookAvailableType.trade ||
-                                      element.availableType ==
-                                          BookAvailableType.both,
-                                )
-                                .toList();
-                            var availabilityForDonate = _bookAvailabilityList
-                                .where(
-                                  (element) =>
-                                      element.availableType ==
-                                          BookAvailableType.donate ||
-                                      element.availableType ==
-                                          BookAvailableType.both,
-                                )
-                                .toList();
+                            var availabilityForTrade =
+                                _bookDetailController.bookAvailabilityList
+                                    .where(
+                                      (element) =>
+                                          element.availableType ==
+                                              BookAvailableType.trade ||
+                                          element.availableType ==
+                                              BookAvailableType.both,
+                                    )
+                                    .toList();
+                            var availabilityForDonate =
+                                _bookDetailController.bookAvailabilityList
+                                    .where(
+                                      (element) =>
+                                          element.availableType ==
+                                              BookAvailableType.donate ||
+                                          element.availableType ==
+                                              BookAvailableType.both,
+                                    )
+                                    .toList();
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [

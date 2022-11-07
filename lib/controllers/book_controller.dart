@@ -7,6 +7,7 @@ import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/discussion.dart';
 import 'package:livrodin/models/interest.dart';
+import 'package:livrodin/models/reply.dart';
 import 'package:livrodin/models/transaction.dart';
 import 'package:livrodin/services/book_service.dart';
 
@@ -188,7 +189,7 @@ class BookController extends GetxController {
 
   Future<void> fetchBookDiscussions(Book book) async {
     try {
-      final result = await bookService.getBookDiscussions(book.id);
+      final result = await bookService.getBookDiscussions(book);
       book.discussions = result;
     } catch (e) {
       printError(info: e.toString());
@@ -261,5 +262,32 @@ class BookController extends GetxController {
         );
       },
     );
+  }
+
+  Future<void> fetchBookDiscussionsReplis(Discussion discussion) async {
+    try {
+      final result = await bookService.getDiscussionReplies(discussion);
+      discussion.replies = result;
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> createDiscussionReply({
+    required Book book,
+    required Reply reply,
+    required Discussion parentDiscussion,
+  }) async {
+    try {
+      await bookService.createDiscussionReply(
+        book: book,
+        reply: reply,
+        parentDiscussion: parentDiscussion,
+      );
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
   }
 }

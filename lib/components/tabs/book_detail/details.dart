@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:livrodin/models/book.dart';
+import 'package:get/get.dart';
+import 'package:livrodin/controllers/book_detail_controller.dart';
 
 class TabViewDetails extends StatelessWidget {
-  const TabViewDetails({
+  TabViewDetails({
     super.key,
-    required this.book,
     required this.scrollController,
   });
 
   final ScrollController scrollController;
-  final Book book;
+  final BookDetailController _bookDetailController =
+      Get.find<BookDetailController>();
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
@@ -22,39 +23,40 @@ class TabViewDetails extends StatelessWidget {
               children: [
                 _detail(
                   "Data de Lançamento",
-                  book.publishedDate != null
-                      ? "${book.publishedDate!.day}/${book.publishedDate!.month}/${book.publishedDate!.year}"
+                  _bookDetailController.book!.publishedDate != null
+                      ? "${_bookDetailController.book!.publishedDate!.day}/${_bookDetailController.book!.publishedDate!.month}/${_bookDetailController.book!.publishedDate!.year}"
                       : "Sem Data",
                 ),
                 const SizedBox(height: 10),
                 _detail(
                   "Páginas",
-                  book.pageCount?.toString() ?? "",
+                  _bookDetailController.book!.pageCount?.toString() ?? "",
                 ),
                 const SizedBox(height: 10),
                 _detail(
                   "Idioma",
-                  book.language?.toString() ?? "",
+                  _bookDetailController.book!.language?.toString() ?? "",
                 ),
                 const SizedBox(height: 10),
                 _detail(
                   "Gêneros",
-                  book.genresString,
+                  _bookDetailController.book!.genresString,
                 ),
                 const SizedBox(height: 10),
                 _detail(
                   "Editora",
-                  book.publisher?.toString() ?? "Sem Informação",
+                  _bookDetailController.book!.publisher?.toString() ??
+                      "Sem Informação",
                 ),
                 const SizedBox(height: 10),
                 _detail(
                   "ISBN-10",
-                  book.isbn10 ?? "",
+                  _bookDetailController.book!.isbn10 ?? "",
                 ),
                 const SizedBox(height: 10),
                 _detail(
                   "ISBN-13",
-                  book.isbn13 ?? "",
+                  _bookDetailController.book!.isbn13 ?? "",
                 ),
               ],
             ),

@@ -3,16 +3,27 @@ import 'package:livrodin/components/profile_icon.dart';
 import 'package:livrodin/models/discussion.dart';
 
 class DiscussionCard extends StatelessWidget {
-  const DiscussionCard({super.key, required this.discussion, this.margin});
+  const DiscussionCard({
+    super.key,
+    required this.discussion,
+    this.margin,
+    this.onTap,
+    this.onTapProfile,
+    this.seeMore = true,
+  });
 
   final Discussion discussion;
   final EdgeInsetsGeometry? margin;
+  final Function()? onTap;
+  final Function()? onTapProfile;
+  final bool seeMore;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: margin,
+      height: seeMore ? 120 : null,
       width: double.infinity,
-      height: 120,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: Colors.white,
@@ -26,55 +37,67 @@ class DiscussionCard extends StatelessWidget {
         ],
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment:
+            seeMore ? CrossAxisAlignment.center : CrossAxisAlignment.start,
         children: [
           GestureDetector(
-            onTap: () {},
-            child: SizedBox(
-              width: 120,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ProfileIcon(
-                    image: discussion.user.profilePictureUrl,
-                    size: ProfileSize.lg,
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    discussion.user.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w800,
+            onTap: onTapProfile,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: SizedBox(
+                width: 120,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ProfileIcon(
+                      image: discussion.user.profilePictureUrl,
+                      size: ProfileSize.lg,
                     ),
-                  ),
-                ],
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      discussion.user.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
           Expanded(
             child: GestureDetector(
+              onTap: onTap,
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          discussion.title,
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
+                    Flexible(
+                      fit: seeMore ? FlexFit.tight : FlexFit.loose,
+                      child: Text(
+                        discussion.title,
+                        style: const TextStyle(
+                          fontSize: 16,
                         ),
+                        maxLines: seeMore ? 4 : null,
+                        overflow: seeMore ? TextOverflow.ellipsis : null,
                       ),
                     ),
-                    const Text(
-                      "Clique para ver mais",
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
+                    Visibility(
+                      visible: seeMore,
+                      child: const Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Text(
+                          "Clique para participar",
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
                       ),
                     )
                   ],

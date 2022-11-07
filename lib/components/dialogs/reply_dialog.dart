@@ -4,29 +4,27 @@ import 'package:livrodin/components/button_action.dart';
 import 'package:livrodin/components/input.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
-import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/discussion.dart';
+import 'package:livrodin/models/reply.dart';
 import 'package:livrodin/models/user.dart';
 
-class DiscussionDialog extends StatefulWidget {
+class ReplyDialog extends StatefulWidget {
   final String title;
   final void Function({
-    required Discussion discussion,
+    required Reply reply,
   })? onConfirm;
-  final Book book;
-  const DiscussionDialog({
-    super.key,
-    required this.title,
-    this.onConfirm,
-    required this.book,
-  });
+  final Discussion discussion;
+  const ReplyDialog(
+      {super.key,
+      required this.title,
+      this.onConfirm,
+      required this.discussion});
 
   @override
-  State<DiscussionDialog> createState() => _DiscussionDialogState();
+  State<ReplyDialog> createState() => _ReplyDialogState();
 }
 
-class _DiscussionDialogState extends State<DiscussionDialog> {
-  int rate = 3;
+class _ReplyDialogState extends State<ReplyDialog> {
   final TextEditingController _commentController =
       TextEditingController(text: "");
 
@@ -47,7 +45,7 @@ class _DiscussionDialogState extends State<DiscussionDialog> {
           key: _formKey,
           child: Input(
             controller: _commentController,
-            hintText: "Titulo da discussão",
+            hintText: "Responda a discussão",
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return "Campo obrigatório";
@@ -67,10 +65,9 @@ class _DiscussionDialogState extends State<DiscussionDialog> {
         ButtonAction(
           onPressed: () {
             if (_formKey.currentState!.validate()) {
-              final Discussion discussion = Discussion(
-                book: widget.book,
-                id: "",
-                title: _commentController.text,
+              final Reply reply = Reply(
+                discussion: widget.discussion,
+                text: _commentController.text,
                 user: User(
                   id: authController.user.value!.uid,
                   name: authController.user.value?.displayName ?? "",
@@ -78,7 +75,7 @@ class _DiscussionDialogState extends State<DiscussionDialog> {
                   profilePictureUrl: authController.user.value!.photoURL,
                 ),
               );
-              widget.onConfirm?.call(discussion: discussion);
+              widget.onConfirm?.call(reply: reply);
               Get.back();
             }
           },

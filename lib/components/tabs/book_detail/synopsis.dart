@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:livrodin/models/book.dart';
+import 'package:get/get.dart';
+import 'package:livrodin/controllers/book_detail_controller.dart';
 
 class TabViewSynopsis extends StatelessWidget {
-  const TabViewSynopsis({
+  TabViewSynopsis({
     super.key,
-    required this.book,
     required this.scrollController,
   });
 
   final ScrollController scrollController;
-  final Book book;
+  final BookDetailController _bookDetailController =
+      Get.find<BookDetailController>();
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
@@ -19,7 +20,7 @@ class TabViewSynopsis extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           sliver: SliverToBoxAdapter(
             child: Text(
-              book.synopsis ?? "",
+              _bookDetailController.book!.synopsis ?? "",
               textAlign: TextAlign.justify,
               style: const TextStyle(
                 fontSize: 14,
