@@ -1,7 +1,6 @@
 import 'package:livrodin/components/cards/transaction_card.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
-import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/transaction.dart';
 import 'package:livrodin/models/user.dart';
@@ -37,16 +36,10 @@ class TransactionCardStories extends StatelessWidget {
           child: TransactionCard(
         transaction: Transaction(
           id: "",
-          availability: Availability(
-            id: "",
-            book: fakeBook,
-            user: user1,
-            dateAvailable: DateTime.now(),
-            availableType: BookAvailableType.trade,
-          ),
+          book1: fakeBook,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          type: BookAvailableType.trade,
+          type: TransactionType.trade,
           status: TransactionStatus.pending,
           user1: user1,
           user2: user2,

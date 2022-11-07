@@ -15,6 +15,7 @@ import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
+import 'package:livrodin/models/transaction.dart';
 
 enum BookStatus { init, loading, loaded, error }
 
@@ -293,7 +294,7 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                           if (!value!) return;
                                           _bookController.requestBook(
                                             availabilityId,
-                                            BookAvailableType.donate,
+                                            TransactionType.donate,
                                           );
                                         });
                                       }
@@ -325,7 +326,7 @@ class _BookDetailDialogState extends State<BookDetailDialog> {
                                           if (!value!) return;
                                           _bookController.requestBook(
                                             availabilityId,
-                                            BookAvailableType.trade,
+                                            TransactionType.trade,
                                           );
                                         });
                                       }

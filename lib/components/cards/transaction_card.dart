@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:livrodin/components/button_option.dart';
 import 'package:livrodin/components/profile_icon.dart';
+import 'package:livrodin/configs/livrodin_icons.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/transaction.dart';
@@ -70,14 +71,16 @@ class TransactionCard extends StatelessWidget {
                         children: [
                           BookCardWithProfile(
                             user: transaction.user1,
-                            book: transaction.availability.book,
+                            book: transaction.book1,
                             otherUser: transaction.user2,
                           ),
-                          const Icon(Icons.swap_horizontal_circle),
-                          transaction.type == BookAvailableType.trade
+                          Icon(transaction.type == TransactionType.trade
+                              ? Icons.swap_horizontal_circle
+                              : LivrodinIcons.donateIcon),
+                          transaction.type == TransactionType.trade
                               ? BookCardWithProfile(
                                   user: transaction.user2,
-                                  book: transaction.availability2?.book,
+                                  book: transaction.book2,
                                   otherUser: transaction.user1,
                                 )
                               : ProfileCard(
@@ -103,30 +106,61 @@ class TransactionCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(top: 13.5, bottom: 13.5),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ButtonOption(
-                      iconData: Icons.message,
-                      text: "Mensagem",
-                      onPressed:
-                          transaction.status == TransactionStatus.inProgress
-                              ? onMessagePressed
-                              : null,
+                    Visibility(
+                      visible: [
+                        TransactionStatus.inProgress,
+                        TransactionStatus.completed,
+                        TransactionStatus.canceled,
+                      ].contains(transaction.status),
+                      child: Column(
+                        children: [
+                          ButtonOption(
+                            iconData: Icons.message,
+                            text: "Mensagem",
+                            onPressed: onMessagePressed,
+                          ),
+                          Visibility(
+                            visible: ![
+                              TransactionStatus.completed,
+                              TransactionStatus.canceled,
+                            ].contains(transaction.status),
+                            child: const SizedBox(height: 15),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 15),
-                    ButtonOption(
-                      iconData: Icons.check_circle,
-                      text: "Confirmar",
-                      color: green,
-                      onPressed: transaction.status == TransactionStatus.pending
-                          ? onConfirmPressed
-                          : null,
+                    Visibility(
+                      visible:
+                          transaction.status == TransactionStatus.pending &&
+                              transaction.user1.isMe,
+                      child: Column(
+                        children: [
+                          ButtonOption(
+                            iconData: Icons.check_circle,
+                            text: "Confirmar",
+                            color: green,
+                            onPressed: onConfirmPressed,
+                          ),
+                          const SizedBox(height: 15),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 15),
-                    ButtonOption(
-                      iconData: Icons.cancel,
-                      text: "Cancelar",
-                      color: red,
-                      onPressed: onCancelPressed,
+                    Visibility(
+                      visible: [
+                        TransactionStatus.inProgress,
+                        TransactionStatus.pending,
+                      ].contains(transaction.status),
+                      child: ButtonOption(
+                        iconData: Icons.cancel,
+                        text: transaction.status == TransactionStatus.pending &&
+                                transaction.user1.isMe
+                            ? "Rejeitar"
+                            : "Cancelar",
+                        color: red,
+                        onPressed: onCancelPressed,
+                      ),
                     ),
                   ],
                 ),

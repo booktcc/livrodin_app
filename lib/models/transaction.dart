@@ -1,4 +1,3 @@
-import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/user.dart';
 
@@ -22,26 +21,40 @@ enum TransactionStatus {
   }
 }
 
+enum TransactionType {
+  trade,
+  donate;
+
+  String get value {
+    switch (this) {
+      case TransactionType.trade:
+        return "FOR_TRADE";
+      case TransactionType.donate:
+        return "FOR_DONATION";
+    }
+  }
+}
+
 class Transaction {
   final String id;
-  final Availability availability;
-  final Availability? availability2;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final BookAvailableType type;
+  final TransactionType type;
   final TransactionStatus status;
   final User user1;
   final User user2;
+  final Book book1;
+  final Book? book2;
 
   Transaction({
     required this.id,
-    required this.availability,
-    this.availability2,
     required this.createdAt,
     required this.updatedAt,
     required this.type,
     required this.status,
     required this.user1,
     required this.user2,
+    required this.book1,
+    this.book2,
   });
 }

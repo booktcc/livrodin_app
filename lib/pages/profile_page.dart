@@ -8,6 +8,7 @@ import 'package:livrodin/components/profile_info.dart';
 import 'package:livrodin/components/transaction_painel.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
+import 'package:livrodin/models/transaction.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
@@ -52,12 +53,12 @@ class ProfilePage extends StatelessWidget {
                   }),
                 ),
                 const SizedBox(height: 24),
-                const TransactionPainel(
-                  type: TransactionPanelType.donate,
+                TransactionPainel(
+                  type: TransactionType.donate,
                 ),
                 const SizedBox(height: 10),
-                const TransactionPainel(
-                  type: TransactionPanelType.trade,
+                TransactionPainel(
+                  type: TransactionType.trade,
                 ),
                 const SizedBox(height: 10),
                 const BottomProfile(),

@@ -4,6 +4,7 @@ import fetch from "node-fetch";
 
 type BookAvailable = {
   idBook: string;
+  idUser: string;
   availableType: BookAvailableType;
   createdAt: Date;
 };
@@ -22,8 +23,8 @@ enum TransactionStatus {
 }
 
 enum TransactionType {
-  TRADE = "TRADE",
-  DONATION = "DONATION",
+  TRADE = "FOR_TRADE",
+  DONATION = "FOR_DONATION",
 }
 
 admin.initializeApp();
@@ -164,7 +165,6 @@ export const createTransaction = functions
       .where("status", "in", [
         TransactionStatus.IN_PROGRESS,
         TransactionStatus.PENDING,
-        TransactionStatus.COMPLETED,
       ])
       .get();
 
@@ -183,17 +183,26 @@ export const createTransaction = functions
     if (!bookAvailable.exists)
       return { message: "Livro não encontrado", error: true };
 
-    const bookAvailableData = bookAvailable.data();
+    const bookAvailableData = bookAvailable.data() as BookAvailable;
 
     if (!bookAvailableData)
       return { message: "Livro não encontrado", error: true };
 
     if (
-      (type === TransactionType.TRADE && !bookAvailableData?.forTrade) ||
-      (type === TransactionType.DONATION && !bookAvailableData?.forDonation)
+      bookAvailableData?.availableType === BookAvailableType.FOR_TRADE &&
+      type !== TransactionType.TRADE
     ) {
       return {
-        message: "Livro não disponível para este tipo de transação",
+        message: "O Livro está disponível apenas para troca",
+        error: true,
+      };
+    }
+    if (
+      bookAvailableData?.availableType === BookAvailableType.FOR_DONATION &&
+      type !== TransactionType.DONATION
+    ) {
+      return {
+        message: "O Livro está disponível apenas para doação",
         error: true,
       };
     }
@@ -201,6 +210,7 @@ export const createTransaction = functions
     const transaction = await db.collection("Transaction").add({
       availabilityId,
       user1Id: bookAvailableData.idUser,
+      idBook1: bookAvailableData.idBook,
       user2Id,
       status: TransactionStatus.PENDING,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -254,6 +264,13 @@ export const confirmTransaction = functions
     await transaction.ref.update({
       status: TransactionStatus.IN_PROGRESS,
       availability2Id: availability2Id || null,
+      idBook2: availability2Id
+        ? await db
+            .collection("BookAvailable")
+            .doc(availability2Id)
+            .get()
+            .then((doc) => doc.data()?.idBook)
+        : null,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
@@ -330,13 +347,14 @@ export const cancelTransaction = functions
     if (transactionData.status === TransactionStatus.COMPLETED)
       return { error: true, message: "Transação já foi concluída" };
 
-    if (transactionData.user1Id !== user1Id)
-      return { error: true, message: "Usuário não é o dono da transação" };
-
-    await transaction.ref.update({
-      status: TransactionStatus.CANCELED,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
+    if (transactionData.status === TransactionStatus.PENDING) {
+      await transaction.ref.delete();
+    } else {
+      await transaction.ref.update({
+        status: TransactionStatus.CANCELED,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    }
 
     return { error: false, message: "Transação cancelada com sucesso" };
   });
