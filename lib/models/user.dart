@@ -30,7 +30,7 @@ class User {
       "name": name,
       "lastName": lastName,
       "email": email,
-      "profilePictureUrl": email,
+      "profilePictureUrl": profilePictureUrl,
     };
   }
 }
