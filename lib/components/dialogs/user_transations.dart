@@ -4,43 +4,19 @@ import 'package:livrodin/components/cards/transaction_card.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/configs/themes.dart';
-import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
+import 'package:livrodin/controllers/user_transaction_controller.dart';
 import 'package:livrodin/models/transaction.dart';
-import 'package:livrodin/utils/state_machine.dart';
-
-enum TransactionTabType {
-  progress,
-  ordersReceived,
-  ordersMade,
-  done,
-  canceled;
-
-  String get name {
-    switch (this) {
-      case TransactionTabType.progress:
-        return "Andamento";
-      case TransactionTabType.done:
-        return "Concluido";
-      case TransactionTabType.canceled:
-        return "Cancelado";
-      case TransactionTabType.ordersMade:
-        return "Pedidos Feitos";
-      case TransactionTabType.ordersReceived:
-        return "Pedidos Recebidos";
-    }
-  }
-}
 
 class UserTransationsDialog extends StatefulWidget {
   const UserTransationsDialog({
     super.key,
     required this.type,
-    this.tab = TransactionTabType.progress,
+    this.tab = TransactionCategoryType.progress,
   });
 
   final TransactionType type;
-  final TransactionTabType tab;
+  final TransactionCategoryType tab;
 
   @override
   State<UserTransationsDialog> createState() => _UserTransationsDialogState();
@@ -49,73 +25,20 @@ class UserTransationsDialog extends StatefulWidget {
 class _UserTransationsDialogState extends State<UserTransationsDialog>
     with TickerProviderStateMixin {
   final BookController _bookController = Get.find<BookController>();
-  final AuthController _authController = Get.find<AuthController>();
-
-  RxMap<TransactionTabType, List<Transaction>> transactionsByTab =
-      <TransactionTabType, List<Transaction>>{
-    TransactionTabType.progress: [],
-    TransactionTabType.done: [],
-    TransactionTabType.canceled: [],
-    TransactionTabType.ordersMade: [],
-    TransactionTabType.ordersReceived: [],
-  }.obs;
-
-  final Rx<FetchState> stateFetch = FetchState.loading.obs;
 
   late final TabController _tabController;
+
+  final UserTransactionController _userTransactionController =
+      Get.find<UserTransactionController>();
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(
-      length: TransactionTabType.values.length,
+      length: TransactionCategoryType.values.length,
       vsync: this,
-      initialIndex: TransactionTabType.values.indexOf(widget.tab),
+      initialIndex: TransactionCategoryType.values.indexOf(widget.tab),
     );
-    stateFetch.value = FetchState.loading;
-    fetchTransactions();
-  }
-
-  void fetchTransactions() {
-    _bookController.getTransactionsFromUser(widget.type).then((transactions) {
-      final inProgress = transactions
-          .where((element) => element.status == TransactionStatus.inProgress)
-          .toList();
-      final done = transactions
-          .where((element) => element.status == TransactionStatus.completed)
-          .toList();
-
-      final canceled = transactions
-          .where((element) => element.status == TransactionStatus.canceled)
-          .toList();
-
-      final ordersMade = transactions
-          .where(
-            (element) =>
-                element.status == TransactionStatus.pending &&
-                element.user2.id == _authController.user.value!.uid,
-          )
-          .toList();
-
-      final ordersReceived = transactions
-          .where(
-            (element) =>
-                element.status == TransactionStatus.pending &&
-                element.user1.id == _authController.user.value!.uid,
-          )
-          .toList();
-      transactionsByTab.value = {
-        TransactionTabType.progress: inProgress,
-        TransactionTabType.done: done,
-        TransactionTabType.canceled: canceled,
-        TransactionTabType.ordersMade: ordersMade,
-        TransactionTabType.ordersReceived: ordersReceived,
-      };
-
-      stateFetch.value = FetchState.success;
-    }).onError((error, stackTrace) {
-      stateFetch.value = FetchState.error;
-    });
   }
 
   @override
@@ -151,7 +74,7 @@ class _UserTransationsDialogState extends State<UserTransationsDialog>
                   ),
                   isScrollable: true,
                   physics: const BouncingScrollPhysics(),
-                  tabs: TransactionTabType.values
+                  tabs: TransactionCategoryType.values
                       .map(
                         (e) => Tab(
                           text: e.name,
@@ -164,52 +87,57 @@ class _UserTransationsDialogState extends State<UserTransationsDialog>
               Expanded(
                 child: Builder(builder: (context) {
                   return Obx(
-                    () => TabBarView(
-                        controller: _tabController,
-                        children: TransactionTabType.values
-                            .map(
-                              (e) => ListView.builder(
-                                itemCount: transactionsByTab[e]!.length,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 20),
-                                itemBuilder: (context, index) {
-                                  var transaction =
-                                      transactionsByTab[e]![index];
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                        top: index == 0 ? 0 : 20),
-                                    child: TransactionCard(
-                                      transaction: transaction,
-                                      onMessagePressed: () {},
-                                      onConfirmPressed: () async {
-                                        await _bookController
-                                            .confirmTransaction(
-                                          transaction.id,
-                                          null,
-                                        );
-                                        fetchTransactions();
-                                      },
-                                      onCancelPressed: () async {
-                                        if (transaction.status ==
-                                            TransactionStatus.pending) {
+                    () {
+                      var transactions = _userTransactionController
+                          .transactionsByCategory[widget.type]!;
+                      return TabBarView(
+                          controller: _tabController,
+                          children: TransactionCategoryType.values
+                              .map(
+                                (e) => ListView.builder(
+                                  itemCount: transactions[e]!.length,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 20),
+                                  itemBuilder: (context, index) {
+                                    var transaction = transactions[e]![index];
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                          top: index == 0 ? 0 : 20),
+                                      child: TransactionCard(
+                                        transaction: transaction,
+                                        onMessagePressed: () {},
+                                        onConfirmPressed: () async {
                                           await _bookController
-                                              .rejectTransaction(
+                                              .confirmTransaction(
                                             transaction.id,
+                                            null,
                                           );
-                                        } else {
-                                          await _bookController
-                                              .cancelTransaction(
-                                            transaction.id,
-                                          );
-                                        }
-                                        fetchTransactions();
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
-                            )
-                            .toList()),
+                                          _userTransactionController
+                                              .fetchTransactions();
+                                        },
+                                        onCancelPressed: () async {
+                                          if (transaction.status ==
+                                              TransactionStatus.pending) {
+                                            await _bookController
+                                                .rejectTransaction(
+                                              transaction.id,
+                                            );
+                                          } else {
+                                            await _bookController
+                                                .cancelTransaction(
+                                              transaction.id,
+                                            );
+                                          }
+                                          _userTransactionController
+                                              .fetchTransactions();
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                              .toList());
+                    },
                   );
                 }),
               )

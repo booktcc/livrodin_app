@@ -164,10 +164,9 @@ class BookController extends GetxController {
     }
   }
 
-  Future<List<Transaction>> getTransactionsFromUser(
-      TransactionType type) async {
+  Future<List<Transaction>> getTransactionsFromUser() async {
     try {
-      var result = await bookService.getTransactionsFromUser(type);
+      var result = await bookService.getTransactionsFromUser();
       return result;
     } catch (e) {
       printError(info: e.toString());

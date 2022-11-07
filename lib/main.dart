@@ -14,6 +14,7 @@ import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/controllers/login_controller.dart';
 import 'package:livrodin/controllers/profile_edit_controller.dart';
 import 'package:livrodin/controllers/register_controller.dart';
+import 'package:livrodin/controllers/user_transaction_controller.dart';
 import 'package:livrodin/pages/book_availability_page.dart';
 import 'package:livrodin/pages/home_page.dart';
 import 'package:livrodin/pages/login_page.dart';
@@ -132,6 +133,7 @@ class MyApp extends StatelessWidget {
           page: () => ProfilePage(),
           binding: BindingsBuilder(() {
             Get.put(BookController());
+            Get.put(UserTransactionController());
           }),
         ),
         GetPage(

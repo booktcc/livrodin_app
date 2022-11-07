@@ -312,19 +312,16 @@ class BookService extends GetxService {
     }
   }
 
-  Future<List<Transaction>> getTransactionsFromUser(
-      TransactionType type) async {
+  Future<List<Transaction>> getTransactionsFromUser() async {
     if (authController.user.value == null) throw 'User not logged in';
 
     var resultTransactions1 = await firestore
         .collection(collectionTransaction)
         .where("user1Id", isEqualTo: authController.user.value!.uid)
-        .where("type", isEqualTo: type.value)
         .get();
     var resultTransactions2 = await firestore
         .collection(collectionTransaction)
         .where("user2Id", isEqualTo: authController.user.value!.uid)
-        .where("type", isEqualTo: type.value)
         .get();
 
     var resultTransactionsDocs =
