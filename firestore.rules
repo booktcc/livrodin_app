@@ -10,6 +10,6 @@ service cloud.firestore {
   }
   match /Transaction/{transactionId} {
     allow read: if request.auth.uid != null;
-    allow write: false;
+    allow write: if false;
   }
 }
