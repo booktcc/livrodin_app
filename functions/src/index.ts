@@ -188,6 +188,20 @@ export const createTransaction = functions
     if (!bookAvailableData)
       return { message: "Livro não encontrado", error: true };
 
+    if (type === TransactionType.TRADE) {
+      const userBooksAvailable = await db
+        .collection("BookAvailable")
+        .where("userId", "==", user2Id)
+        .get();
+
+      if (userBooksAvailable.docs.length === 0) {
+        return {
+          message: "Você não possui livros disponíveis para troca",
+          error: true,
+        };
+      }
+    }
+
     if (
       bookAvailableData?.availableType === BookAvailableType.FOR_TRADE &&
       type !== TransactionType.TRADE
@@ -357,4 +371,49 @@ export const cancelTransaction = functions
     }
 
     return { error: false, message: "Transação cancelada com sucesso" };
+  });
+
+export const sendTransactionMessage = functions
+  .region("southamerica-east1")
+  .https.onCall(async (data, context) => {
+    const db = admin.firestore();
+
+    const userId = context.auth?.uid;
+
+    if (!userId) return { error: true, message: "Usuário não autenticado" };
+
+    const { transactionId, message } = data as {
+      transactionId: string;
+      message: string;
+    };
+
+    const transaction = await db
+      .collection("Transaction")
+      .doc(transactionId)
+      .get();
+
+    if (!transaction.exists)
+      return { error: true, message: "Transação não encontrada" };
+
+    const transactionData = transaction.data();
+
+    if (!transactionData)
+      return { error: true, message: "Transação não encontrada" };
+
+    if (transactionData.status !== TransactionStatus.IN_PROGRESS)
+      return { error: true, message: "Transação não está em andamento" };
+
+    if (
+      transactionData.user1Id !== userId &&
+      transactionData.user2Id !== userId
+    )
+      return { error: true, message: "Usuário não é parte da transação" };
+
+    await transaction.ref.collection("Messages").add({
+      text: message,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      userId,
+    });
+
+    return { error: false, message: "Mensagem enviada com sucesso" };
   });

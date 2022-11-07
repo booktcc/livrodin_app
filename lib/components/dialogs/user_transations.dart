@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/cards/transaction_card.dart';
+import 'package:livrodin/components/dialogs/transaction_chat.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/configs/themes.dart';
@@ -105,7 +106,10 @@ class _UserTransationsDialogState extends State<UserTransationsDialog>
                                           top: index == 0 ? 0 : 20),
                                       child: TransactionCard(
                                         transaction: transaction,
-                                        onMessagePressed: () {},
+                                        onMessagePressed: () {
+                                          Get.dialog(TransactionChat(
+                                              transaction: transaction));
+                                        },
                                         onConfirmPressed: () async {
                                           await _bookController
                                               .confirmTransaction(

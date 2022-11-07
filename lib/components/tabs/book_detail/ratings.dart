@@ -6,18 +6,25 @@ import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_detail_controller.dart';
 import 'package:livrodin/pages/book_detail_page.dart';
 
-class TabViewRatings extends StatelessWidget {
-  final AuthController _authController = Get.find<AuthController>();
-
-  TabViewRatings({
+class TabViewRatings extends StatefulWidget {
+  const TabViewRatings({
     super.key,
     required this.scrollController,
   });
 
+  final ScrollController scrollController;
+
+  @override
+  State<TabViewRatings> createState() => _TabViewRatingsState();
+}
+
+class _TabViewRatingsState extends State<TabViewRatings> {
+  final AuthController _authController = Get.find<AuthController>();
+
   final BookDetailController _bookDetailController =
       Get.find<BookDetailController>();
+
   bool userComented = true;
-  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +39,7 @@ class TabViewRatings extends StatelessWidget {
         }
         return CustomScrollView(
           physics: const BouncingScrollPhysics(),
-          controller: scrollController,
+          controller: widget.scrollController,
           slivers: [
             SliverPadding(
               padding: const EdgeInsets.all(10),

@@ -22,6 +22,7 @@ import 'components/profile_icon.stories.dart';
 import 'components/profile_info.stories.dart';
 import 'components/toggle_offer_status.stories.dart';
 import 'components/transaction_card.stories.dart';
+import 'components/transaction_chat_stories.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -177,6 +178,12 @@ class _StorybookAppState extends State<StorybookApp> {
             name: 'Components/TradeCard',
             builder: (context) {
               return const TransactionCardStories();
+            },
+          ),
+          Story(
+            name: 'Components/TransactionChat',
+            builder: (context) {
+              return const TransactionChatStories();
             },
           ),
         ],
