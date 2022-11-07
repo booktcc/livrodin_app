@@ -80,7 +80,7 @@ class BookDetailController extends GetxController {
             }),
       );
     } catch (e) {
-      print(e);
+      printError(info: e.toString());
     }
   }
 
@@ -101,7 +101,7 @@ class BookDetailController extends GetxController {
             }),
       );
     } catch (e) {
-      print(e);
+      printError(info: e.toString());
     }
   }
 
@@ -128,7 +128,7 @@ class BookDetailController extends GetxController {
         ),
       );
     } catch (e) {
-      print(e);
+      printError(info: e.toString());
     }
   }
 

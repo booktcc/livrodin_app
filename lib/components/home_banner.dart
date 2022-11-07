@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/state_manager.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/models/book.dart';
 

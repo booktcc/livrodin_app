@@ -10,7 +10,6 @@ class TransactionChatStories extends StatelessWidget {
   Widget build(BuildContext context) {
     return TransactionChat(
       transaction: fakeTransaction,
-      messages: [fakeMessage, fakeMessage2],
     );
   }
 }
