@@ -42,11 +42,11 @@ class _HomeState extends State<Home> {
         return Stack(
           children: [
             Obx(() {
-              if (result.value == ResultBooksFetch.loading) {
+              if (stateFetch.value == FetchState.loading) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
-              } else if (result.value == ResultBooksFetch.error) {
+              } else if (stateFetch.value == FetchState.error) {
                 return const Center(
                   child: Text('Erro ao carregar livros'),
                 );
