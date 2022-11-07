@@ -191,7 +191,7 @@ export const createTransaction = functions
     if (type === TransactionType.TRADE) {
       const userBooksAvailable = await db
         .collection("BookAvailable")
-        .where("userId", "==", user2Id)
+        .where("idUser", "==", user2Id)
         .get();
 
       if (userBooksAvailable.docs.length === 0) {

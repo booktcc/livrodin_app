@@ -67,10 +67,10 @@ class BookController extends GetxController {
     }
   }
 
-  Future<Book> getBookByIdGoogle(String id) async {
+  Future<Book> getBookOnGoogleApi(String bookId) async {
     try {
-      var result = await bookService.searchBooksOnGoogleApi(id);
-      return result[0];
+      var result = await bookService.getBookOnGoogleApi(bookId);
+      return result;
     } catch (e) {
       printError(info: e.toString());
       rethrow;

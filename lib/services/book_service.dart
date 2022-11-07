@@ -28,6 +28,12 @@ class BookService extends GetxService {
     return results.map(Book.fromApi).toList();
   }
 
+  Future<Book> getBookOnGoogleApi(String bookId) async {
+    var result = await books_finder.getSpecificBook(bookId);
+
+    return Book.fromApi(result);
+  }
+
   Future<void> addBookAvailable(
       Book book, BookAvailableType offerStatus) async {
     if (authController.user.value == null) throw 'User not logged in';

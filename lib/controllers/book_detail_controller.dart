@@ -26,7 +26,7 @@ class BookDetailController extends GetxController {
   Future fetchBook(String bookId) async {
     bookStatus.value = BookStatus.loading;
     try {
-      book = await _bookController.getBookByIdGoogle(bookId);
+      book = await _bookController.getBookOnGoogleApi(bookId);
       bookStatus.value = BookStatus.loaded;
       reloadBookDiscussions();
       reloadBookRating();
