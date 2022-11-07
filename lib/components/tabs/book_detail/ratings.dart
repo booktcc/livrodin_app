@@ -66,7 +66,6 @@ class TabViewRatings extends StatelessWidget {
                                                 rate: rate,
                                                 comment: comment)
                                             .whenComplete(() async {
-                                          Get.back();
                                           _reloadBookRating();
                                         });
                                       },
