@@ -4,6 +4,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
+import 'package:livrodin/models/user.dart';
 import 'package:livrodin/services/user_service.dart';
 
 class RegisterController extends GetxController {
@@ -47,7 +48,15 @@ class RegisterController extends GetxController {
     if (photoUrl != null) await authController.updatePhoto(photoUrl);
     await authController.updateProfile(nameController.text);
 
-    await userService.createUser();
+    await userService.createUser(
+      User(
+        id: authController.user.value!.uid,
+        name: nameController.text,
+        lastName: lastNameController.text,
+        email: emailController.text,
+        profilePictureUrl: photoUrl,
+      ),
+    );
     await Get.offAllNamed("/home");
   }
 
