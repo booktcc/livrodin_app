@@ -75,7 +75,6 @@ class _UserTransationsDialogState extends State<UserTransationsDialog> {
       final inProgress = transactions
           .where((element) => element.status == TransactionStatus.inProgress)
           .toList();
-      inspect(inProgress);
       final done = transactions
           .where((element) => element.status == TransactionStatus.completed)
           .toList();
