@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/models/message.dart';
@@ -14,6 +15,9 @@ class MessagesController extends GetxController {
 
   final BookController _bookController = Get.find<BookController>();
 
+  final TextEditingController textInputController =
+      TextEditingController(text: "");
+
   @override
   void onInit() {
     super.onInit();
@@ -26,7 +30,7 @@ class MessagesController extends GetxController {
         .collection('Transaction')
         .doc(transaction.id)
         .collection('Messages')
-        .orderBy('createdAt', descending: true)
+        .orderBy('createdAt', descending: false)
         .snapshots()
         .listen((event) {
       messages.value = event.docs.map((e) {
@@ -36,7 +40,9 @@ class MessagesController extends GetxController {
     });
   }
 
-  void sendMessage(String text) {
-    _bookController.sendTransactionMessage(transaction.id, text);
+  void sendMessage() {
+    _bookController.sendTransactionMessage(
+        transaction.id, textInputController.text);
+    textInputController.clear();
   }
 }

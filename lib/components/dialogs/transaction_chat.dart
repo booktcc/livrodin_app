@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/cards/transaction_card.dart';
 import 'package:livrodin/components/header.dart';
+import 'package:livrodin/components/input.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/messages_controller.dart';
@@ -21,12 +22,12 @@ class TransactionChat extends StatefulWidget {
 }
 
 class _TransactionChatState extends State<TransactionChat> {
-  late MessagesController messagesController;
+  late MessagesController _messagesController;
 
   @override
   void initState() {
     super.initState();
-    messagesController =
+    _messagesController =
         Get.put(MessagesController(transaction: widget.transaction));
   }
 
@@ -38,6 +39,7 @@ class _TransactionChatState extends State<TransactionChat> {
         showBackButton: true,
         title: 'Mensagem',
       ),
+      resizeToAvoidBottomInset: true,
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -61,37 +63,18 @@ class _TransactionChatState extends State<TransactionChat> {
                 color: lightGrey,
                 height: double.infinity,
                 width: double.infinity,
-                child: Stack(
-                  alignment: Alignment.topCenter,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Positioned(
-                      top: 11,
-                      child: Container(
-                        width: 200,
-                        height: 20,
-                        decoration: const BoxDecoration(
-                          color: dark,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        child: const Text(
-                          "29 de Fevereiro de 2022",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 40),
-                      child: Expanded(
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 15),
                         child: Obx(
                           () => ListView.builder(
-                            itemCount: messagesController.messages.length,
+                            itemCount: _messagesController.messages.length,
                             itemBuilder: (context, index) {
                               final message =
-                                  messagesController.messages[index];
+                                  _messagesController.messages[index];
                               return Padding(
                                 padding: EdgeInsets.only(
                                   left: 10,
@@ -103,6 +86,20 @@ class _TransactionChatState extends State<TransactionChat> {
                             },
                           ),
                         ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: Input(
+                            controller: _messagesController.textInputController,
+                          )),
+                          IconButton(
+                              onPressed: _messagesController.sendMessage,
+                              icon: const Icon(Icons.send))
+                        ],
                       ),
                     ),
                   ],

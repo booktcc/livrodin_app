@@ -7,12 +7,14 @@ class Layout extends StatelessWidget {
   final bool showBottomMenu;
   final Widget child;
   final HeaderProps? headerProps;
+  final bool? resizeToAvoidBottomInset;
   const Layout(
       {super.key,
       this.showBottomMenu = false,
       required this.child,
       this.headerProps,
-      this.pageController});
+      this.pageController,
+      this.resizeToAvoidBottomInset = false});
 
   final PageController? pageController;
 
@@ -31,7 +33,7 @@ class Layout extends StatelessWidget {
             )
           : null,
       extendBody: true,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       body: child,
     );
   }
