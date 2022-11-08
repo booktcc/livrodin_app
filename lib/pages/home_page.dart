@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
-import 'package:livrodin/pages/home_page/genrer.dart';
+import 'package:livrodin/pages/home_page/genrer_view.dart';
 import 'package:livrodin/pages/home_page/home.dart';
 import 'package:livrodin/pages/home_page/notifications_view.dart';
 

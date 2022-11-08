@@ -9,7 +9,7 @@ import 'package:livrodin/components/cards/book_card.dart';
 import 'package:livrodin/components/cards/genrer_card.dart';
 import 'package:livrodin/components/transaction_painel.dart';
 import 'package:livrodin/configs/themes.dart';
-import 'package:livrodin/models/genrer.dart';
+import 'package:livrodin/models/Genrer.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/transaction.dart';
 import 'package:livrodin/pages/home_page.dart';

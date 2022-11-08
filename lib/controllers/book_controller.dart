@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:livrodin/components/confirm_dialog.dart';
 import 'package:livrodin/components/dialogs/rate_dialog.dart';
 import 'package:livrodin/configs/themes.dart';
-import 'package:livrodin/models/genrer.dart';
+import 'package:livrodin/models/Genrer.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/discussion.dart';

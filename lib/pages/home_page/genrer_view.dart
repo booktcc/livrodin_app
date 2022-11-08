@@ -6,7 +6,7 @@ import 'package:livrodin/components/filter_option.dart';
 import 'package:livrodin/components/title.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/book_controller.dart';
-import 'package:livrodin/models/genrer.dart';
+import 'package:livrodin/models/Genrer.dart';
 import 'package:livrodin/models/book.dart';
 
 enum GenrerStatus { loading, success, error }

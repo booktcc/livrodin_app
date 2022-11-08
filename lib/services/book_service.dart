@@ -4,7 +4,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/configs/constants.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
-import 'package:livrodin/models/genrer.dart';
+import 'package:livrodin/models/Genrer.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/discussion.dart';
 import 'package:livrodin/models/interest.dart';
