@@ -110,9 +110,13 @@ class TransactionCard extends StatelessWidget {
                       ),
                     ),
                     Visibility(
-                      visible:
-                          transaction.status == TransactionStatus.pending &&
-                              transaction.user1.isMe,
+                      visible: [
+                            TransactionStatus.pending,
+                            TransactionStatus.inProgress
+                          ].contains(transaction.status) &&
+                          (transaction.status == TransactionStatus.pending
+                              ? transaction.user1.isMe
+                              : true),
                       child: Column(
                         children: [
                           ButtonOption(

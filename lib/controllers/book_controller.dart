@@ -220,6 +220,28 @@ class BookController extends GetxController {
     );
   }
 
+  Future<void> completeTransaction(String transactionId) async {
+    return bookService.completeTransaction(transactionId).then(
+      (message) {
+        Get.snackbar(
+          "Sucesso",
+          message,
+          backgroundColor: green,
+          colorText: Colors.white,
+        );
+      },
+    ).catchError(
+      (e) {
+        Get.snackbar(
+          "Erro",
+          e.toString(),
+          backgroundColor: red,
+          colorText: Colors.white,
+        );
+      },
+    );
+  }
+
   Future<void> cancelTransaction(String transactionId) async {
     return bookService.cancelTransaction(transactionId).then(
       (_) {

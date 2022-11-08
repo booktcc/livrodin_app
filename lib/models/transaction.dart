@@ -45,6 +45,8 @@ class Transaction {
   final User user2;
   final Book book1;
   final Book? book2;
+  final bool? user1Confirm;
+  final bool? user2Confirm;
 
   Transaction({
     required this.id,
@@ -56,5 +58,7 @@ class Transaction {
     required this.user2,
     required this.book1,
     this.book2,
+    this.user1Confirm,
+    this.user2Confirm,
   });
 }

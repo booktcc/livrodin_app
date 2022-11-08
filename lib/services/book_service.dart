@@ -391,6 +391,8 @@ class BookService extends GetxService {
             (element) => element.value == data["type"],
             orElse: () => TransactionType.trade,
           ),
+          user1Confirm: data["user1Confirm"],
+          user2Confirm: data["user2Confirm"],
         ),
       );
     }
@@ -416,6 +418,24 @@ class BookService extends GetxService {
     if (result.data["error"]) {
       throw result.data["message"];
     }
+  }
+
+  Future<String> completeTransaction(String transactionId) async {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    HttpsCallable callable =
+        FirebaseFunctions.instanceFor(region: 'southamerica-east1')
+            .httpsCallable('completeTransaction');
+    var request = <String, dynamic>{
+      "transactionId": transactionId,
+    };
+
+    var result = await callable.call<Map<String, dynamic>>(request);
+    if (result.data["error"]) {
+      throw result.data["message"];
+    }
+
+    return result.data["message"];
   }
 
   Future<void> cancelTransaction(String transactionId) async {
