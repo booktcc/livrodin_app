@@ -573,7 +573,8 @@ class BookService extends GetxService {
       if (book == null) {
         book = Book(
           id: data["idBook"],
-          title: "",
+          title: data["nameBook"],
+          coverUrl: data["coverUrl"],
         );
         books.add(book);
       }
