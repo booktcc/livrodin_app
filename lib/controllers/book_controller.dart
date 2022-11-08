@@ -384,4 +384,31 @@ class BookController extends GetxController {
       rethrow;
     }
   }
+
+  Future<bool> isUserBookInterest(String idBook) async {
+    try {
+      return await bookService.isUserBookInterest(idBook);
+    } catch (e) {
+      printError(info: e.toString());
+      return false;
+    }
+  }
+
+  Future<void> addBookInterest(Book book) async {
+    try {
+      await bookService.addBookToInterestList(book);
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> removeBookInterest(String idBook) async {
+    try {
+      await bookService.removeBookOfInterestList(idBook);
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
 }
