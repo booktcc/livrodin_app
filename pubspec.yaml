@@ -30,6 +30,7 @@ dependencies:
   image_cropper: ^3.0.1
   intl: ^0.17.0
   google_sign_in: ^5.4.2
+  mobile_scanner: ^2.0.0
 
 dev_dependencies:
   flutter_test:

@@ -8,6 +8,7 @@ import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 enum SearchStatus { initial, loading, complete, error }
 
@@ -61,9 +62,41 @@ class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
                 leftIcon: const Icon(Icons.search, color: Colors.grey),
                 rightIcon: GestureDetector(
                   child: const Icon(Icons.qr_code_rounded, color: Colors.black),
-                  onTap: () {},
+                  onTap: () async {
+                    primaryFocus?.unfocus();
+                    var result = await Get.dialog(
+                      Layout(
+                        headerProps: HeaderProps(
+                          showBackButton: true,
+                          showLogo: true,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(pageRadius),
+                          ),
+                          child: MobileScanner(
+                              allowDuplicates: false,
+                              onDetect: (barcode, args) {
+                                if (barcode.type == BarcodeType.isbn) {
+                                  final String isbn = barcode.rawValue!;
+                                  Get.back(result: isbn);
+                                }
+                              }),
+                        ),
+                      ),
+                    );
+                    if (result != null) {
+                      _searchStatus.value = SearchStatus.loading;
+                      var books = await _bookController.searchBook(result);
+
+                      _searchedBooks.value = books;
+
+                      _searchStatus.value = SearchStatus.complete;
+                    }
+                  },
                 ),
                 onEditingComplete: (String text) async {
+                  _searchStatus.value = SearchStatus.loading;
                   var books = await _bookController.searchBook(text);
                   _searchedBooks.value = books;
 
