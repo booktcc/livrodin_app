@@ -20,11 +20,18 @@ class BookService extends GetxService {
 
   BookService({required this.firestore});
 
-  Future<List<Book>> searchBooksOnGoogleApi(String query) async {
-    var results = await books_finder.queryBooks(query,
-        maxResults: 10,
-        langRestrict: "pt,en",
-        orderBy: books_finder.OrderBy.relevance);
+  Future<List<Book>> searchBooksOnGoogleApi(
+    String query, {
+    int maxResults = 10,
+    int startIndex = 0,
+  }) async {
+    var results = await books_finder.queryBooks(
+      query,
+      startIndex: startIndex,
+      maxResults: maxResults,
+      langRestrict: "pt,en",
+      orderBy: books_finder.OrderBy.relevance,
+    );
     return results.map(Book.fromApi).toList();
   }
 
