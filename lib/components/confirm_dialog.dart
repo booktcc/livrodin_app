@@ -1,6 +1,7 @@
-import 'package:livrodin/configs/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:livrodin/components/button_action.dart';
+import 'package:livrodin/configs/themes.dart';
 
 class ConfirmDialog extends StatelessWidget {
   final String title;
@@ -12,17 +13,19 @@ class ConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      backgroundColor: lightGrey,
       title: Text(title),
       content: Text(content),
       actions: [
-        TextButton(
-          onPressed: () => Get.back(result: false),
-          child: const Text('Não', style: TextStyle(color: azure)),
-        ),
-        TextButton(
-          onPressed: onConfirm?.call,
-          child: const Text('Sim', style: TextStyle(color: azure)),
-        ),
+        ButtonAction(onPressed: () => Get.back(result: false), label: 'Não'),
+        ButtonAction(
+            onPressed: () async {
+              onConfirm?.call();
+            },
+            label: 'Sim'),
       ],
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:livrodin/components/cards/rating_card.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/configs/themes.dart';
@@ -35,16 +36,29 @@ class UserListRatingDialig extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final ratings = snapshot.data as List<Book>;
-                return ListView.builder(
+                return CustomScrollView(
                   physics: const BouncingScrollPhysics(),
-                  itemCount: ratings.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(ratings[index].title!),
-                      subtitle:
-                          Text(ratings[index].ratings[0].rating.toString()),
-                    );
-                  },
+                  slivers: [
+                    SliverPadding(
+                      padding: const EdgeInsets.all(10),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            return GestureDetector(
+                              onTap: () => Get.toNamed(
+                                "/book/detail/${ratings[index].id}",
+                              ),
+                              child: RatingCard(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                rating: ratings[index].ratings[0],
+                              ),
+                            );
+                          },
+                          childCount: ratings.length,
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               } else {
                 return const Center(

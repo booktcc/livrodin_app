@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/cards/book_card.dart';
+import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/user_book_available_controller.dart';
 import 'package:livrodin/models/user.dart';
 
@@ -28,10 +29,15 @@ class _BookListAvailableFromUserState extends State<BookListAvailableFromUser> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Selecione um livro'),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      backgroundColor: lightGrey,
       content: Obx(
         () => SizedBox(
           width: 300,
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Column(
               children: _userBookAvailable.availabilityList
                   .map((e) => BookCard(

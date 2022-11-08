@@ -64,13 +64,25 @@ class HomeBanner extends StatelessWidget {
                           Visibility(
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.handshake_rounded,
-                                  color: Colors.green[600],
+                                Visibility(
+                                  visible: books[index].availableType ==
+                                          BookAvailableType.both ||
+                                      books[index].availableType ==
+                                          BookAvailableType.donate,
+                                  child: Icon(
+                                    Icons.handshake_rounded,
+                                    color: Colors.green[600],
+                                  ),
                                 ),
-                                Icon(
-                                  Icons.swap_horizontal_circle_rounded,
-                                  color: Colors.green[600],
+                                Visibility(
+                                  visible: books[index].availableType ==
+                                          BookAvailableType.both ||
+                                      books[index].availableType ==
+                                          BookAvailableType.trade,
+                                  child: Icon(
+                                    Icons.swap_horizontal_circle_rounded,
+                                    color: Colors.green[600],
+                                  ),
                                 ),
                               ],
                             ),
