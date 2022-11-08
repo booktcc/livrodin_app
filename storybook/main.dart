@@ -9,7 +9,7 @@ import 'package:livrodin/components/cards/book_card.dart';
 import 'package:livrodin/components/cards/genrer_card.dart';
 import 'package:livrodin/components/transaction_painel.dart';
 import 'package:livrodin/configs/themes.dart';
-import 'package:livrodin/models/Genrer.dart';
+import 'package:livrodin/models/genrer.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/transaction.dart';
 import 'package:livrodin/pages/home_page.dart';
@@ -23,7 +23,6 @@ import 'components/profile_icon.stories.dart';
 import 'components/profile_info.stories.dart';
 import 'components/toggle_offer_status.stories.dart';
 import 'components/transaction_card.stories.dart';
-import 'components/transaction_chat_stories.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -183,12 +182,6 @@ class _StorybookAppState extends State<StorybookApp> {
             name: 'Components/TradeCard',
             builder: (context) {
               return const TransactionCardStories();
-            },
-          ),
-          Story(
-            name: 'Components/TransactionChat',
-            builder: (context) {
-              return const TransactionChatStories();
             },
           ),
         ],

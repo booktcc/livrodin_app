@@ -4,7 +4,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/configs/constants.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
-import 'package:livrodin/models/Genrer.dart';
+import 'package:livrodin/models/genrer.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/discussion.dart';
 import 'package:livrodin/models/interest.dart';
@@ -51,7 +51,7 @@ class BookService extends GetxService {
       Book book, BookAvailableType offerStatus) async {
     if (authController.user.value == null) throw 'User not logged in';
 
-    await firestore.collection("BookAvailable").doc().set(
+    await firestore.collection(collectionAvailable).doc().set(
           book.toFireStore(
             idUser: authController.user.value!.uid,
             availableType: offerStatus,
@@ -63,7 +63,7 @@ class BookService extends GetxService {
       {required Book book, required int rate, required String comment}) async {
     if (authController.user.value == null) throw 'User not logged in';
 
-    await firestore.collection("BookRate").doc().set({
+    await firestore.collection(collectionRatings).doc().set({
       "idBook": book.id,
       "nameBook": book.title,
       "coverUrl": book.coverUrl,
@@ -123,7 +123,7 @@ class BookService extends GetxService {
     if (authController.user.value == null) throw 'User not logged in';
 
     var result = await firestore
-        .collection("BookRate")
+        .collection(collectionRatings)
         .where("idUser", isEqualTo: authController.user.value!.uid)
         .get();
 
@@ -149,7 +149,7 @@ class BookService extends GetxService {
     if (authController.user.value == null) throw 'User not logged in';
 
     var result = await firestore
-        .collection("BookAvailable")
+        .collection(collectionAvailable)
         .where("idUser", isEqualTo: authController.user.value!.uid)
         .get();
 
@@ -161,7 +161,7 @@ class BookService extends GetxService {
         id: e.id,
         book: book,
         user: User(id: authController.user.value!.uid, name: "Eu"),
-        dateAvailable: data["createdAt"].toDate(),
+        createdAt: data["createdAt"].toDate(),
         availableType: data["forDonation"] && data["forTrade"]
             ? BookAvailableType.both
             : (data["forDonation"]
@@ -175,12 +175,12 @@ class BookService extends GetxService {
 
   Future<List<Rating>> getBookRating(String idBook) async {
     var result = await firestore
-        .collection("BookRate")
+        .collection(collectionRatings)
         .where("idBook", isEqualTo: idBook)
         .get();
     List<Rating> ratings = List.empty(growable: true);
 
-    var users = await _getUsersByIds(
+    var users = await getUsersByIds(
         result.docs.map((e) => (e.data()["idUser"] as String)).toList());
 
     for (var doc in result.docs) {
@@ -222,7 +222,7 @@ class BookService extends GetxService {
     if (authController.user.value == null) throw 'User not logged in';
 
     var result = await firestore
-        .collection("InterestList")
+        .collection(collectionInterestList)
         .where("idUser", isEqualTo: authController.user.value!.uid)
         .get();
 
@@ -241,10 +241,10 @@ class BookService extends GetxService {
     ).toList();
   }
 
-  Future<List<User>> _getUsersByIds(List<String> ids) async {
+  Future<List<User>> getUsersByIds(List<String> ids) async {
     if (ids.isEmpty) return [];
     var result = await firestore
-        .collection("Users")
+        .collection(collectionUsers)
         .where(FieldPath.documentId, whereIn: ids)
         .get();
 
@@ -259,10 +259,10 @@ class BookService extends GetxService {
     }).toList();
   }
 
-  Future<List<Book>> _getBooksByIds(List<String> ids) async {
+  Future<List<Book>> getBooksByIds(List<String> ids) async {
     if (ids.isEmpty) return [];
     var result = await firestore
-        .collection("Book")
+        .collection(collectionBooks)
         .where(FieldPath.documentId, whereIn: ids)
         .get();
 
@@ -278,14 +278,14 @@ class BookService extends GetxService {
 
   Future<List<Availability>> getBookAvailabityById(String idBook) async {
     var result = await firestore
-        .collection("BookAvailable")
+        .collection(collectionAvailable)
         .where("idBook", isEqualTo: idBook)
         .where("idUser", isNotEqualTo: authController.user.value?.uid)
         .get();
 
     List<Availability> availabilities = List.empty(growable: true);
 
-    var users = await _getUsersByIds(
+    var users = await getUsersByIds(
         result.docs.map((e) => (e.data()["idUser"] as String)).toList());
 
     for (var doc in result.docs) {
@@ -306,7 +306,7 @@ class BookService extends GetxService {
             coverUrl: data["coverUrl"],
           ),
           user: user,
-          dateAvailable: data["createdAt"].toDate(),
+          createdAt: data["createdAt"].toDate(),
           availableType: data["availableType"] == "FOR_TRADE"
               ? BookAvailableType.trade
               : data["availableType"] == "FOR_DONATION"
@@ -364,10 +364,10 @@ class BookService extends GetxService {
     }
 
     // get all users from transactions
-    var users = await _getUsersByIds(usersIds.toSet().toList());
+    var users = await getUsersByIds(usersIds.toSet().toList());
 
     // get all books from transactions
-    var books = await _getBooksByIds(booksIds.toSet().toList());
+    var books = await getBooksByIds(booksIds.toSet().toList());
 
     for (var doc in resultTransactionsDocs) {
       var data = doc.data();
@@ -382,7 +382,7 @@ class BookService extends GetxService {
               title: "Livro",
             ),
           ),
-          book2: data["book2Id"] != null
+          book2: data["idBook2"] != null
               ? books.firstWhere(
                   (element) => element.id == data["idBook2"],
                   orElse: () => Book(
@@ -415,6 +415,8 @@ class BookService extends GetxService {
             (element) => element.value == data["type"],
             orElse: () => TransactionType.trade,
           ),
+          user1Confirm: data["user1Confirm"],
+          user2Confirm: data["user2Confirm"],
         ),
       );
     }
@@ -440,6 +442,24 @@ class BookService extends GetxService {
     if (result.data["error"]) {
       throw result.data["message"];
     }
+  }
+
+  Future<String> completeTransaction(String transactionId) async {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    HttpsCallable callable =
+        FirebaseFunctions.instanceFor(region: 'southamerica-east1')
+            .httpsCallable('completeTransaction');
+    var request = <String, dynamic>{
+      "transactionId": transactionId,
+    };
+
+    var result = await callable.call<Map<String, dynamic>>(request);
+    if (result.data["error"]) {
+      throw result.data["message"];
+    }
+
+    return result.data["message"];
   }
 
   Future<void> cancelTransaction(String transactionId) async {
@@ -483,7 +503,7 @@ class BookService extends GetxService {
 
     List<Discussion> discussions = List.empty(growable: true);
 
-    var users = await _getUsersByIds(
+    var users = await getUsersByIds(
         result.docs.map((e) => (e.data()["idUser"] as String)).toList());
 
     for (var doc in result.docs) {
@@ -515,7 +535,7 @@ class BookService extends GetxService {
 
     List<Reply> replies = List.empty(growable: true);
 
-    var users = await _getUsersByIds(
+    var users = await getUsersByIds(
         result.docs.map((e) => (e.data()["idUser"] as String)).toList());
 
     for (var doc in result.docs) {
@@ -592,5 +612,51 @@ class BookService extends GetxService {
     }
     books.sort((a, b) => b.averageRating.compareTo(a.averageRating));
     return books;
+  }
+
+  Future<List<Availability>> getAvailableBooksFromUser(User user) async {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    var availability = await firestore
+        .collection(collectionAvailable)
+        .where("idUser", isEqualTo: user.id)
+        .where("availableType", whereIn: [
+      BookAvailableType.both.value,
+      BookAvailableType.trade.value,
+    ]).get();
+
+    List<String> bookIds = List.empty(growable: true);
+
+    for (var doc in availability.docs) {
+      bookIds.add(doc.data()["idBook"]);
+    }
+
+    var books = await getBooksByIds(bookIds);
+
+    List<Availability> availableBooks = List.empty(growable: true);
+
+    for (var doc in availability.docs) {
+      var data = doc.data();
+      availableBooks.add(
+        Availability(
+          id: doc.id,
+          book: books.firstWhere(
+            (element) => element.id == data["idBook"],
+            orElse: () => Book(
+              id: "",
+              title: "Livro",
+            ),
+          ),
+          availableType: BookAvailableType.values.firstWhere(
+            (element) => element.value == data["availableType"],
+            orElse: () => BookAvailableType.both,
+          ),
+          createdAt: data["createdAt"].toDate(),
+          user: user,
+        ),
+      );
+    }
+
+    return availableBooks;
   }
 }

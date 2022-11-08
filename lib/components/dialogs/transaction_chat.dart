@@ -84,6 +84,7 @@ class _TransactionChatState extends State<TransactionChat> {
                                 child: MessageContainer(message: message),
                               );
                             },
+                            reverse: true,
                           ),
                         ),
                       ),

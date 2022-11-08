@@ -11,6 +11,7 @@ import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/controllers/book_detail_controller.dart';
 import 'package:livrodin/controllers/login_controller.dart';
+import 'package:livrodin/controllers/notification_controller.dart';
 import 'package:livrodin/controllers/profile_edit_controller.dart';
 import 'package:livrodin/controllers/register_controller.dart';
 import 'package:livrodin/controllers/user_transaction_controller.dart';
@@ -46,8 +47,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     var userLogged = FirebaseAuth.instance.currentUser;
     var isLogged = userLogged != null;
+
+    Get.put(AuthController(firebaseAuth: FirebaseAuth.instance),
+        permanent: true);
+    Get.put(NotificationController(), permanent: true);
+
     return GetMaterialApp(
-      enableLog: false,
+      enableLog: true,
       debugShowCheckedModeBanner: false,
       title: 'App Book',
       theme: themeData,
