@@ -17,6 +17,19 @@ type Notification = {
   message: string;
 };
 
+type Message = {
+  systemMessage?: SystemMessage;
+  userId: string;
+  createdAt: admin.firestore.FieldValue;
+  message?: string;
+};
+
+enum SystemMessage {
+  CONFIRMED = "CONFIRMED",
+  CANCELED = "CANCELED",
+  FINISHED = "FINISHED",
+}
+
 enum NotificationType {
   MESSAGE = "MESSAGE",
   TRANSACTION = "TRANSACTION",
@@ -375,8 +388,21 @@ export const completeTransaction = functions
           .doc(transactionData.availability2Id)
           .delete();
       }
+
+      transaction.ref.collection("Messages").add({
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        systemMessage: SystemMessage.FINISHED,
+        userId: userId,
+      } as Message);
+
       return { error: false, message: "Transação concluída com sucesso" };
     }
+
+    transaction.ref.collection("Messages").add({
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      systemMessage: SystemMessage.CONFIRMED,
+      userId: userId,
+    } as Message);
 
     return { error: false, message: "Você confirmou a transação" };
   });
@@ -386,9 +412,9 @@ export const cancelTransaction = functions
   .https.onCall(async (data, context) => {
     const db = admin.firestore();
 
-    const user1Id = context.auth?.uid;
+    const userId = context.auth?.uid;
 
-    if (!user1Id) return { error: true, message: "Usuário não autenticado" };
+    if (!userId) return { error: true, message: "Usuário não autenticado" };
 
     const { transactionId } = data as { transactionId: string };
 
@@ -415,6 +441,12 @@ export const cancelTransaction = functions
         status: TransactionStatus.CANCELED,
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
+
+      transaction.ref.collection("Messages").add({
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        systemMessage: SystemMessage.CANCELED,
+        userId: userId,
+      } as Message);
     }
 
     return { error: false, message: "Transação cancelada com sucesso" };

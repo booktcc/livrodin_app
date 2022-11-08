@@ -130,7 +130,19 @@ class _UserTransationsDialogState extends State<UserTransationsDialog>
                                                     null,
                                                   );
                                                   _userTransactionController
-                                                      .fetchTransactions();
+                                                      .fetchTransactions()
+                                                      .then(
+                                                        (value) =>
+                                                            _tabController
+                                                                .animateTo(
+                                                          TransactionCategoryType
+                                                              .values
+                                                              .indexOf(
+                                                            TransactionCategoryType
+                                                                .progress,
+                                                          ),
+                                                        ),
+                                                      );
                                                 }
                                                 if (transaction.status ==
                                                     TransactionStatus

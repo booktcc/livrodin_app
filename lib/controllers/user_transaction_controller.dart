@@ -101,8 +101,8 @@ class UserTransactionController extends GetxController {
     };
   }
 
-  void fetchTransactions() {
-    _bookController.getTransactionsFromUser().then((transactions) {
+  Future<void> fetchTransactions() {
+    return _bookController.getTransactionsFromUser().then((transactions) {
       transactionsByCategory.value =
           <TransactionType, Map<TransactionCategoryType, List<Transaction>>>{
         TransactionType.donate: getTransactionsCategory(
