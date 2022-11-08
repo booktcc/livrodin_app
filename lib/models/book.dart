@@ -38,7 +38,7 @@ class Book {
   List<Rating> ratings;
   List<Availability> availabilities;
   List<Discussion> discussions;
-  final BookAvailableType? availableType;
+  BookAvailableType? availableType;
 
   Book({
     required String id,

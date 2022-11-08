@@ -5,7 +5,6 @@ import 'package:livrodin/components/dialogs/book_list_available_from_user.dart';
 import 'package:livrodin/components/profile_icon.dart';
 import 'package:livrodin/configs/livrodin_icons.dart';
 import 'package:livrodin/configs/themes.dart';
-import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/transaction.dart';

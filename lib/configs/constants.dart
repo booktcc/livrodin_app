@@ -1,6 +1,6 @@
 const collectionUsers = 'Users';
 const collectionBooks = 'Book';
-const collectionRatings = 'BookRating';
+const collectionRatings = 'BookRate';
 const collectionAvailable = 'BookAvailable';
 const collectionTransaction = 'Transaction';
 const collectionDiscussions = 'Discussions';

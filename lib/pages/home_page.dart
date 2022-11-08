@@ -34,10 +34,10 @@ class _HomePageState extends State<HomePage> {
       child: PageView(
         physics: const NeverScrollableScrollPhysics(),
         controller: widget._pageController,
-        children: [
-          const Home(),
-          Genrer(),
-          const NotificationsView(),
+        children: const [
+          Home(),
+          GenrerView(),
+          NotificationsView(),
         ],
       ),
     );

@@ -4,7 +4,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/configs/constants.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
-import 'package:livrodin/models/Genrer.dart';
+import 'package:livrodin/models/genrer.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/discussion.dart';
 import 'package:livrodin/models/interest.dart';
@@ -30,7 +30,7 @@ class BookService extends GetxService {
       query,
       startIndex: startIndex,
       maxResults: maxResults,
-      langRestrict: "pt,en",
+      printType: books_finder.PrintType.books,
       orderBy: books_finder.OrderBy.relevance,
     );
     return results.map(Book.fromApi).toList();
@@ -75,19 +75,26 @@ class BookService extends GetxService {
     });
   }
 
-  Future<List<Book>> getAvailableBooks({int? limit, int? page}) async {
-    if (authController.user.value == null) throw 'User not logged in';
-
+  Future<List<Book>> getAvailableBooks(
+      {List<String>? booksIds, int? limit, int? page}) async {
     List<Book> books = List.empty(growable: true);
-    var result = await firestore
-        .collection(collectionBooks)
-        .where(
-          "lastAvailabilityUpdated",
-          isNull: false,
-        )
-        .orderBy("lastAvailabilityUpdated", descending: true)
-        .limit(limit ?? 100)
-        .get();
+    late QuerySnapshot<Map<String, dynamic>> result;
+    if (booksIds != null) {
+      result = await firestore
+          .collection("Book")
+          .where(FieldPath.documentId, whereIn: booksIds)
+          .get();
+    } else {
+      result = await firestore
+          .collection("Book")
+          .where(
+            "lastAvailabilityUpdated",
+            isNull: false,
+          )
+          .orderBy("lastAvailabilityUpdated", descending: true)
+          .limit(limit ?? 100)
+          .get();
+    }
     for (var doc in result.docs) {
       var data = doc.data();
       if (!books.any((element) => element.id == data["idBook"])) {
@@ -101,7 +108,9 @@ class BookService extends GetxService {
                 ? BookAvailableType.trade
                 : data['availableType'] == "FOR_DONATION"
                     ? BookAvailableType.donate
-                    : BookAvailableType.both,
+                    : data['availableType'] != null
+                        ? BookAvailableType.both
+                        : null,
           ),
         );
       }
@@ -570,6 +579,39 @@ class BookService extends GetxService {
         .doc(parentDiscussion.id)
         .collection(collectionReplies)
         .add(reply.toFirestore());
+  }
+
+  Future<List<Book>> getRecomendBooks() async {
+    var result = await firestore.collection(collectionRatings).get();
+
+    List<Book> books = List.empty(growable: true);
+
+    for (var doc in result.docs) {
+      var data = doc.data();
+      var book =
+          books.firstWhereOrNull((element) => element.id == data["idBook"]);
+      if (book == null) {
+        book = Book(
+          id: data["idBook"],
+          title: data["nameBook"],
+          coverUrl: data["coverUrl"],
+        );
+        books.add(book);
+      }
+      book.ratings = [
+        ...book.ratings,
+        ...[
+          Rating(
+            id: doc.id,
+            user: User(id: "", name: "Usuário"),
+            rating: data["rate"],
+            comment: data["comment"],
+          )
+        ]
+      ];
+    }
+    books.sort((a, b) => b.averageRating.compareTo(a.averageRating));
+    return books;
   }
 
   Future<List<Availability>> getAvailableBooksFromUser(User user) async {

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:livrodin/components/confirm_dialog.dart';
 import 'package:livrodin/components/dialogs/rate_dialog.dart';
 import 'package:livrodin/configs/themes.dart';
-import 'package:livrodin/models/Genrer.dart';
+import 'package:livrodin/models/genrer.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/discussion.dart';
@@ -74,9 +74,25 @@ class BookController extends GetxController {
     }
   }
 
-  Future<List<Book>> searchBook(String q) async {
+  Future<List<Book>> searchBook(
+    String q, {
+    bool isAvailable = false,
+    int maxResults = 10,
+    int startIndex = 0,
+  }) async {
+    List<Book> result = [];
     try {
-      var result = await bookService.searchBooksOnGoogleApi(q);
+      result = await bookService.searchBooksOnGoogleApi(q,
+          maxResults: maxResults, startIndex: startIndex);
+      if (isAvailable) {
+        var books = await bookService.getAvailableBooks(
+            booksIds: result.map((e) => e.id).toList());
+        for (var book in books) {
+          Book bookFound =
+              result.firstWhere((element) => element.id == book.id);
+          bookFound.availableType = book.availableType;
+        }
+      }
       return result;
     } catch (e) {
       printError(info: e.toString());
@@ -340,6 +356,15 @@ class BookController extends GetxController {
         reply: reply,
         parentDiscussion: parentDiscussion,
       );
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<Book>> getRecomendBooks() async {
+    try {
+      return await bookService.getRecomendBooks();
     } catch (e) {
       printError(info: e.toString());
       rethrow;

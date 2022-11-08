@@ -6,8 +6,10 @@ import 'package:livrodin/components/button_action.dart';
 import 'package:livrodin/components/button_option.dart';
 import 'package:livrodin/components/button_option_badge.dart';
 import 'package:livrodin/components/cards/book_card.dart';
+import 'package:livrodin/components/cards/genrer_card.dart';
 import 'package:livrodin/components/transaction_painel.dart';
 import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/models/genrer.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/transaction.dart';
 import 'package:livrodin/pages/home_page.dart';
@@ -100,6 +102,17 @@ class _StorybookAppState extends State<StorybookApp> {
             builder: (context) {
               return const ToggleOfferStatusStories();
             },
+          ),
+          Story(
+            name: 'Components/GenrerCard',
+            builder: (context) => Scaffold(
+              backgroundColor: lightGrey,
+              body: Center(
+                  child: GenrerCard(
+                genrer: Genrer(id: "", name: "", coverUrl: "coverUrl"),
+                onTap: (_) {},
+              )),
+            ),
           ),
           Story(
             name: 'Components/ProfileIcon',
