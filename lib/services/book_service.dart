@@ -80,6 +80,7 @@ class BookService extends GetxService {
     List<Book> books = List.empty(growable: true);
     late QuerySnapshot<Map<String, dynamic>> result;
     if (booksIds != null) {
+      if (booksIds.isEmpty) return [];
       result = await firestore
           .collection("Book")
           .where(FieldPath.documentId, whereIn: booksIds)
