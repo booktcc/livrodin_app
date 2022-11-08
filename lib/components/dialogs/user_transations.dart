@@ -108,7 +108,8 @@ class _UserTransationsDialogState extends State<UserTransationsDialog>
                                         transaction: transaction,
                                         onMessagePressed: () {
                                           Get.dialog(TransactionChat(
-                                              transaction: transaction));
+                                            transaction: transaction,
+                                          ));
                                         },
                                         onConfirmPressed: () async {
                                           await _bookController

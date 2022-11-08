@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -11,6 +12,7 @@ import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/controllers/book_detail_controller.dart';
 import 'package:livrodin/controllers/login_controller.dart';
+import 'package:livrodin/controllers/notification_controller.dart';
 import 'package:livrodin/controllers/profile_edit_controller.dart';
 import 'package:livrodin/controllers/register_controller.dart';
 import 'package:livrodin/controllers/user_transaction_controller.dart';
@@ -36,6 +38,17 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  FirebaseFirestore.instance.useFirestoreEmulator('10.0.2.2', 8080);
+  FirebaseFirestore.instance.settings = const Settings(
+    sslEnabled: false,
+    persistenceEnabled: false,
+  );
+
+  FirebaseAuth.instance.useAuthEmulator('10.0.2.2', 9099);
+
+  FirebaseFunctions.instanceFor(region: 'southamerica-east1')
+      .useFunctionsEmulator('10.0.2.2', 5001);
+
   runApp(const MyApp());
 }
 
@@ -46,8 +59,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     var userLogged = FirebaseAuth.instance.currentUser;
     var isLogged = userLogged != null;
+
+    Get.put(AuthController(firebaseAuth: FirebaseAuth.instance),
+        permanent: true);
+    Get.put(NotificationController(), permanent: true);
+
     return GetMaterialApp(
-      enableLog: false,
+      enableLog: true,
       debugShowCheckedModeBanner: false,
       title: 'App Book',
       theme: themeData,

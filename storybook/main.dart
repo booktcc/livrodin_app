@@ -6,7 +6,6 @@ import 'package:livrodin/components/button_action.dart';
 import 'package:livrodin/components/button_option.dart';
 import 'package:livrodin/components/button_option_badge.dart';
 import 'package:livrodin/components/cards/book_card.dart';
-import 'package:livrodin/components/cards/genrer_card.dart';
 import 'package:livrodin/components/transaction_painel.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/models/book.dart';
@@ -22,7 +21,6 @@ import 'components/profile_icon.stories.dart';
 import 'components/profile_info.stories.dart';
 import 'components/toggle_offer_status.stories.dart';
 import 'components/transaction_card.stories.dart';
-import 'components/transaction_chat_stories.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -104,13 +102,6 @@ class _StorybookAppState extends State<StorybookApp> {
             },
           ),
           Story(
-            name: 'Components/GenrerCard',
-            builder: (context) => const Scaffold(
-              backgroundColor: lightGrey,
-              body: Center(child: GenrerCard()),
-            ),
-          ),
-          Story(
             name: 'Components/ProfileIcon',
             builder: (context) => const ProfileIconStories(),
           ),
@@ -178,12 +169,6 @@ class _StorybookAppState extends State<StorybookApp> {
             name: 'Components/TradeCard',
             builder: (context) {
               return const TransactionCardStories();
-            },
-          ),
-          Story(
-            name: 'Components/TransactionChat',
-            builder: (context) {
-              return const TransactionChatStories();
             },
           ),
         ],
