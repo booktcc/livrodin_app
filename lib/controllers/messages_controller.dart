@@ -51,6 +51,7 @@ class MessagesController extends GetxController {
   }
 
   void sendMessage() {
+    if (textInputController.text.trim().isEmpty) return;
     _bookController.sendTransactionMessage(
         transaction.id, textInputController.text);
     textInputController.clear();
