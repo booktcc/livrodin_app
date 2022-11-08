@@ -4,6 +4,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/configs/constants.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
+import 'package:livrodin/models/Genrer.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/discussion.dart';
 import 'package:livrodin/models/interest.dart';
@@ -39,6 +40,11 @@ class BookService extends GetxService {
     var result = await books_finder.getSpecificBook(bookId);
 
     return Book.fromApi(result);
+  }
+
+  Future<List<Genrer>> getGenres() async {
+    var result = await firestore.collection(collectionGenres).get();
+    return result.docs.map(Genrer.fromFirestore).toList();
   }
 
   Future<void> addBookAvailable(

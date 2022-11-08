@@ -5,4 +5,5 @@ const collectionAvailabe = 'BookAvailable';
 const collectionTransaction = 'Transaction';
 const collectionDiscussions = 'Discussions';
 const collectionReplies = 'Replies';
+const collectionGenres = 'Genres';
 const storageUsers = 'Users';

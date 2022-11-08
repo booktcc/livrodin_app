@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/pages/home_page/genrer.dart';
 import 'package:livrodin/pages/home_page/home.dart';
 import 'package:livrodin/pages/home_page/notifications.dart';
-import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key, int initialIndex = 0})
@@ -34,10 +34,10 @@ class _HomePageState extends State<HomePage> {
       child: PageView(
         physics: const NeverScrollableScrollPhysics(),
         controller: widget._pageController,
-        children: const [
-          Home(),
+        children: [
+          const Home(),
           Genrer(),
-          Notifications(),
+          const Notifications(),
         ],
       ),
     );

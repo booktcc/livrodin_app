@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:livrodin/components/confirm_dialog.dart';
 import 'package:livrodin/components/dialogs/rate_dialog.dart';
 import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/models/Genrer.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/discussion.dart';
@@ -16,6 +17,13 @@ import 'auth_controller.dart';
 class BookController extends GetxController {
   var authController = Get.find<AuthController>();
   var bookService = Get.find<BookService>();
+  Rx<List<Genrer>> genres = Rx([]);
+
+  @override
+  void onInit() {
+    fetchGenres();
+    super.onInit();
+  }
 
   Future<bool?> makeBookAvailable(
       Book book, BookAvailableType offerStatus) async {
@@ -44,6 +52,14 @@ class BookController extends GetxController {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<void> fetchGenres() async {
+    try {
+      genres.value = await bookService.getGenres();
+    } catch (e) {
+      genres.value = [];
     }
   }
 
