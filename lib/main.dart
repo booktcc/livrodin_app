@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       enableLog: true,
       debugShowCheckedModeBanner: false,
-      title: 'App Book',
+      title: 'Livrodin',
       theme: themeData,
       initialRoute: isLogged ? '/home' : '/login',
       defaultTransition: Transition.fade,
