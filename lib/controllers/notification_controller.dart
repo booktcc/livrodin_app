@@ -65,7 +65,7 @@ class NotificationController extends GetxController {
   }
 
   deleteAllNotifications() async {
-    firestore
+    await firestore
         .collection(collectionUsers)
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('Notification')
@@ -75,6 +75,8 @@ class NotificationController extends GetxController {
         ds.reference.delete();
       }
     });
+
+    notificationsFilled.value = [];
   }
 
   deleteNotification(String id) async {
