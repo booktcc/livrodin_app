@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:get/get.dart';
+import 'package:livrodin/configs/constants.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/controllers/login_controller.dart';
@@ -78,7 +79,7 @@ void main() async {
 
     final firestore = FakeFirebaseFirestore();
 
-    await firestore.collection("BookAvailable").doc().set(
+    await firestore.collection(collectionAvailable).doc().set(
           fakeBook.toFireStore(
             idUser: mockedUser.uid,
             availableType: BookAvailableType.both,

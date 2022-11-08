@@ -135,6 +135,15 @@ class _UserTransationsDialogState extends State<UserTransationsDialog>
                                           _userTransactionController
                                               .fetchTransactions();
                                         },
+                                        onChooseBook: (availability) async {
+                                          await _bookController
+                                              .confirmTransaction(
+                                            transaction.id,
+                                            availability.id,
+                                          );
+                                          _userTransactionController
+                                              .fetchTransactions();
+                                        },
                                       ),
                                     );
                                   },
