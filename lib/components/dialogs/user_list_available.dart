@@ -44,7 +44,7 @@ class UserListAvailableDialog extends StatelessWidget {
                       return ListTile(
                         title: Text(availabilities[index].book.title!),
                         subtitle: Text(
-                          availabilities[index].dateAvailable.toString(),
+                          availabilities[index].createdAt.toString(),
                         ),
                       );
                     },

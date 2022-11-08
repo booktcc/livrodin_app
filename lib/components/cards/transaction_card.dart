@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:livrodin/components/button_option.dart';
+import 'package:livrodin/components/dialogs/book_list_available_from_user.dart';
 import 'package:livrodin/components/profile_icon.dart';
 import 'package:livrodin/configs/livrodin_icons.dart';
 import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/controllers/book_controller.dart';
+import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/transaction.dart';
 import 'package:livrodin/models/user.dart';
@@ -14,6 +18,7 @@ class TransactionCard extends StatelessWidget {
   final Function()? onMessagePressed;
   final Function()? onConfirmPressed;
   final Function()? onCancelPressed;
+  final Function(Availability)? onChooseBook;
 
   const TransactionCard({
     super.key,
@@ -21,6 +26,7 @@ class TransactionCard extends StatelessWidget {
     this.onMessagePressed,
     this.onConfirmPressed,
     this.onCancelPressed,
+    this.onChooseBook,
   });
 
   @override
@@ -65,7 +71,10 @@ class TransactionCard extends StatelessWidget {
                       height: 5,
                     ),
                     Expanded(
-                      child: TransactionDetail(transaction: transaction),
+                      child: TransactionDetail(
+                        transaction: transaction,
+                        onChooseBook: onChooseBook,
+                      ),
                     )
                   ],
                 ),
@@ -154,14 +163,14 @@ class TransactionCard extends StatelessWidget {
 }
 
 class TransactionDetail extends StatelessWidget {
-  const TransactionDetail({
-    Key? key,
-    required this.transaction,
-    this.color,
-  }) : super(key: key);
+  const TransactionDetail(
+      {Key? key, required this.transaction, this.color, this.onChooseBook})
+      : super(key: key);
 
   final Transaction transaction;
   final Color? color;
+
+  final Function(Availability)? onChooseBook;
 
   @override
   Widget build(BuildContext context) {
@@ -185,6 +194,9 @@ class TransactionDetail extends StatelessWidget {
                 user: transaction.user2,
                 book: transaction.book2,
                 otherUser: transaction.user1,
+                onChooseBook: (availability) {
+                  onChooseBook?.call(availability);
+                },
               )
             : ProfileCard(
                 user: transaction.user2,
@@ -231,11 +243,13 @@ class BookCardWithProfile extends StatelessWidget {
   final Book? book;
   final User user;
   final User otherUser;
+  final Function(Availability)? onChooseBook;
   const BookCardWithProfile({
     Key? key,
     required this.user,
     required this.otherUser,
     this.book,
+    this.onChooseBook,
   }) : super(key: key);
 
   @override
@@ -246,27 +260,44 @@ class BookCardWithProfile extends StatelessWidget {
       children: [
         Column(
           children: [
-            Container(
-              height: 125,
-              width: 87,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(5),
-                image: book != null
-                    ? DecorationImage(
-                        image: NetworkImage(book!.coverUrl!),
-                        fit: BoxFit.cover,
-                      )
-                    : null,
-              ),
-              child: Visibility(
-                visible: book == null,
-                child: Center(
-                  child: Text(
-                    "Aguardando\n${otherUser.name}\nEscolher",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w600, fontSize: 10, color: grey),
-                    textAlign: TextAlign.center,
+            GestureDetector(
+              onTap: book == null
+                  ? () async {
+                      var result = await Get.dialog<Availability?>(
+                        BookListAvailableFromUser(
+                          user: user,
+                        ),
+                      );
+
+                      if (result != null) {
+                        onChooseBook?.call(result);
+                      }
+                    }
+                  : null,
+              child: Container(
+                height: 125,
+                width: 87,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(5),
+                  image: book != null
+                      ? DecorationImage(
+                          image: NetworkImage(book!.coverUrl!),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                ),
+                child: Visibility(
+                  visible: book == null,
+                  child: Center(
+                    child: Text(
+                      "Aguardando\n${otherUser.isMe ? "Você" : otherUser.name}\nEscolher",
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 10,
+                          color: grey),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ),
