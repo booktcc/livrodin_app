@@ -65,7 +65,7 @@ class _HomeState extends State<Home> {
                 );
               } else {
                 return HomeBanner(
-                  books: books,
+                  books: books.sublist(0, books.length > 5 ? 5 : books.length),
                 );
               }
             }),
