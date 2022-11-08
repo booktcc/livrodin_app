@@ -76,10 +76,10 @@ class _TransactionChatState extends State<TransactionChat> {
                               final message =
                                   _messagesController.messages[index];
                               return Padding(
-                                padding: EdgeInsets.only(
+                                padding: const EdgeInsets.only(
                                   left: 10,
                                   right: 10,
-                                  top: index == 0 ? 0 : 10,
+                                  bottom: 10,
                                 ),
                                 child: MessageContainer(message: message),
                               );
@@ -119,6 +119,8 @@ class _TransactionChatState extends State<TransactionChat> {
   }
 }
 
+const _textColor = Color.fromARGB(255, 90, 87, 87);
+
 class MessageContainer extends StatelessWidget {
   const MessageContainer({
     Key? key,
@@ -129,6 +131,42 @@ class MessageContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (message.systemMessage != null) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            constraints: const BoxConstraints(maxWidth: 300),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFF00C170),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '${message.user.isMe ? "Você" : message.user.name} ${message.systemMessage!.label} a transação',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  formatDate(message.createdAt),
+                  style: const TextStyle(
+                    color: grey,
+                    fontSize: 10,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
     return Row(
       mainAxisAlignment:
           message.user.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -142,14 +180,14 @@ class MessageContainer extends StatelessWidget {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(5.0),
+            padding: const EdgeInsets.all(8.0),
             child: Stack(
               children: [
                 Text(
-                  message.text,
+                  message.text ?? "",
                   style: const TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFFB8B8B8),
+                    fontSize: 14,
+                    color: _textColor,
                   ),
                 ),
                 Positioned(
@@ -158,9 +196,9 @@ class MessageContainer extends StatelessWidget {
                   child: Text(
                     dateToHour(message.createdAt),
                     style: const TextStyle(
-                      fontSize: 6,
+                      fontSize: 8,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFFB8B8B8),
+                      color: _textColor,
                     ),
                   ),
                 ),
