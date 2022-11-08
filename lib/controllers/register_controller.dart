@@ -44,7 +44,7 @@ class RegisterController extends GetxController {
       isLoading.value = false;
       return;
     }
-    final photoUrl = await userService.uploadUserPhoto(image.value!.path);
+    final photoUrl = await userService.uploadUserPhoto(image.value?.path);
     if (photoUrl != null) await authController.updatePhoto(photoUrl);
     await authController.updateProfile(nameController.text);
 
