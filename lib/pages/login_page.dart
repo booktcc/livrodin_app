@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: loginController.loginAnonymous,
                           style: TextButton.styleFrom(
                             splashFactory: NoSplash.splashFactory,
                           ),
@@ -188,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                               children: [
                                 IconButton(
                                   iconSize: 40,
-                                  onPressed: () {},
+                                  onPressed: () => authController.loginGoogle(),
                                   icon: const Icon(
                                     Icons.facebook_rounded,
                                     color: grey,

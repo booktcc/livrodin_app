@@ -9,6 +9,50 @@
       "client_info": {
         "mobilesdk_app_id": "1:322063612294:android:719ff6d7e204043df95407",
         "android_client_info": {
+          "package_name": "com.example.app_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "322063612294-dkakmqj77mdp29eouvit33qo2ho42f6e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.app_flutter",
+            "certificate_hash": "6ff329e95e51eec9021b4aee77df29c6b6879c1e"
+          }
+        },
+        {
+          "client_id": "322063612294-32vp4ole5bqgoosbaeq29cf6mioq0486.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAL1jhAIrk9t-eCrguJhI_5SJE1KPj_EHA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "322063612294-32vp4ole5bqgoosbaeq29cf6mioq0486.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "322063612294-ougaehh7jrdfhf056v51n6ukfcbpp5bt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.appFlutter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:322063612294:android:a218365832497faef95407",
+        "android_client_info": {
           "package_name": "com.livrodin.livrodinApp"
         }
       },
@@ -29,6 +73,13 @@
             {
               "client_id": "322063612294-32vp4ole5bqgoosbaeq29cf6mioq0486.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "322063612294-ougaehh7jrdfhf056v51n6ukfcbpp5bt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.appFlutter"
+              }
             }
           ]
         }

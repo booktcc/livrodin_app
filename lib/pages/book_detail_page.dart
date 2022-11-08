@@ -12,6 +12,7 @@ import 'package:livrodin/components/tabs/book_detail/ratings.dart';
 import 'package:livrodin/components/tabs/book_detail/synopsis.dart';
 import 'package:livrodin/configs/livrodin_icons.dart';
 import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/controllers/book_detail_controller.dart';
 import 'package:livrodin/models/book.dart';
@@ -49,6 +50,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
     super.initState();
   }
 
+  final AuthController authController = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return Layout(
@@ -231,7 +233,10 @@ class _BookDetailPageState extends State<BookDetailPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         ButtonAction(
-                          onPressed: () {},
+                          onPressed: () =>
+                              authController.user.value!.isAnonymous
+                                  ? Get.offAllNamed("/login")
+                                  : null,
                           color: Colors.white,
                           icon: Icons.bookmark_add,
                           iconSize: 24,
@@ -268,27 +273,31 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                 Visibility(
                                   visible: availabilityForDonate.isNotEmpty,
                                   child: ButtonAction(
-                                    onPressed: () =>
-                                        Get.dialog<String>(BookListAvailable(
-                                      title: "Selecione para pedir",
-                                      availabilityList: availabilityForDonate,
-                                    )).then((availabilityId) {
-                                      if (availabilityId != null) {
-                                        Get.dialog<bool>(ConfirmDialog(
-                                          title: "Pedir",
-                                          content: "Deseja pedir o livro?",
-                                          onConfirm: () {
-                                            Get.back(result: true);
-                                          },
-                                        )).then((value) async {
-                                          if (!value!) return;
-                                          _bookController.requestBook(
-                                            availabilityId,
-                                            TransactionType.donate,
-                                          );
-                                        });
-                                      }
-                                    }),
+                                    onPressed: () => authController
+                                            .user.value!.isAnonymous
+                                        ? Get.offAllNamed("/login")
+                                        : Get.dialog<String>(BookListAvailable(
+                                            title: "Selecione para pedir",
+                                            availabilityList:
+                                                availabilityForDonate,
+                                          )).then((availabilityId) {
+                                            if (availabilityId != null) {
+                                              Get.dialog<bool>(ConfirmDialog(
+                                                title: "Pedir",
+                                                content:
+                                                    "Deseja pedir o livro?",
+                                                onConfirm: () {
+                                                  Get.back(result: true);
+                                                },
+                                              )).then((value) async {
+                                                if (!value!) return;
+                                                _bookController.requestBook(
+                                                  availabilityId,
+                                                  TransactionType.donate,
+                                                );
+                                              });
+                                            }
+                                          }),
                                     label: "PEDIR",
                                     icon: LivrodinIcons.donateIcon,
                                   ),
@@ -300,27 +309,31 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                 Visibility(
                                   visible: availabilityForTrade.isNotEmpty,
                                   child: ButtonAction(
-                                    onPressed: () =>
-                                        Get.dialog<String>(BookListAvailable(
-                                      title: "Selecione para trocar",
-                                      availabilityList: availabilityForTrade,
-                                    )).then((availabilityId) {
-                                      if (availabilityId != null) {
-                                        Get.dialog<bool>(ConfirmDialog(
-                                          title: "Trocar",
-                                          content: "Deseja trocar o livro?",
-                                          onConfirm: () {
-                                            Get.back(result: true);
-                                          },
-                                        )).then((value) async {
-                                          if (!value!) return;
-                                          _bookController.requestBook(
-                                            availabilityId,
-                                            TransactionType.trade,
-                                          );
-                                        });
-                                      }
-                                    }),
+                                    onPressed: () => authController
+                                            .user.value!.isAnonymous
+                                        ? Get.offAllNamed("/login")
+                                        : Get.dialog<String>(BookListAvailable(
+                                            title: "Selecione para trocar",
+                                            availabilityList:
+                                                availabilityForTrade,
+                                          )).then((availabilityId) {
+                                            if (availabilityId != null) {
+                                              Get.dialog<bool>(ConfirmDialog(
+                                                title: "Trocar",
+                                                content:
+                                                    "Deseja trocar o livro?",
+                                                onConfirm: () {
+                                                  Get.back(result: true);
+                                                },
+                                              )).then((value) async {
+                                                if (!value!) return;
+                                                _bookController.requestBook(
+                                                  availabilityId,
+                                                  TransactionType.trade,
+                                                );
+                                              });
+                                            }
+                                          }),
                                     label: "TROCAR",
                                     icon: Icons.swap_horizontal_circle,
                                   ),

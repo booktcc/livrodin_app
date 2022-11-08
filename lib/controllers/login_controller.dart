@@ -24,6 +24,29 @@ class LoginController extends GetxController {
       }
       await Get.offAllNamed("/home");
     }
+    isLoading.value = false;
+  }
+
+  // login with google
+  Future<void> loginWithGoogle() async {
+    isLoading.value = true;
+    var result = await authController.loginGoogle();
+    if (result == null) {
+      isLoading.value = false;
+      return;
+    }
+    await Get.offAllNamed("/home");
+  }
+
+  Future<void> loginAnonymous() async {
+    isLoading.value = true;
+    try {
+      await authController.loginAnonymous();
+      await Get.offAllNamed("/home");
+    } catch (e) {
+      isLoading.value = false;
+      return;
+    }
   }
 
   Future<void> forgotPassword() async {

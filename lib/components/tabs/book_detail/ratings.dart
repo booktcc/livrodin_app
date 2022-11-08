@@ -25,7 +25,7 @@ class _TabViewRatingsState extends State<TabViewRatings> {
       Get.find<BookDetailController>();
 
   bool userComented = true;
-
+  final AuthController authController = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -56,7 +56,10 @@ class _TabViewRatingsState extends State<TabViewRatings> {
                                 'Já leu esse livro? Faça uma avaliação!',
                               ),
                               ButtonAction(
-                                onPressed: _bookDetailController.addRate,
+                                onPressed: () =>
+                                    authController.user.value!.isAnonymous
+                                        ? Get.offAllNamed("/login")
+                                        : _bookDetailController.addRate(),
                                 label: "Avaliar",
                               ),
                             ],

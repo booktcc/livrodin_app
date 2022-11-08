@@ -26,7 +26,7 @@ class DefaultFirebaseOptions {
         return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
+          'DefaultFirebaseOptions have not been configured for macos - '
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
@@ -57,7 +57,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAL1jhAIrk9t-eCrguJhI_5SJE1KPj_EHA',
-    appId: '1:322063612294:android:719ff6d7e204043df95407',
+    appId: '1:322063612294:android:a218365832497faef95407',
     messagingSenderId: '322063612294',
     projectId: 'tcc-book',
     storageBucket: 'tcc-book.appspot.com',
@@ -65,12 +65,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCxUdv8qZd1Bs54kEeR9hegI1ZvbFLGyNY',
-    appId: '1:322063612294:ios:5a3f644e3974be9ff95407',
+    appId: '1:322063612294:ios:94f8b22c27e84c14f95407',
     messagingSenderId: '322063612294',
     projectId: 'tcc-book',
     storageBucket: 'tcc-book.appspot.com',
-    iosClientId:
-        '322063612294-ougaehh7jrdfhf056v51n6ukfcbpp5bt.apps.googleusercontent.com',
-    iosBundleId: 'com.example.appFlutter',
+    androidClientId: '322063612294-dkakmqj77mdp29eouvit33qo2ho42f6e.apps.googleusercontent.com',
+    iosClientId: '322063612294-e4h2ojn8i54l35avv7gdj2jelr3vkgb9.apps.googleusercontent.com',
+    iosBundleId: 'com.livrodin.livrodinApp',
   );
 }
