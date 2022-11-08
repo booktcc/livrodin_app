@@ -101,6 +101,15 @@ class _UserTransationsDialogState extends State<UserTransationsDialog>
                                       horizontal: 15, vertical: 20),
                                   itemBuilder: (context, index) {
                                     var transaction = transactions[e]![index];
+
+                                    var confirmButtonDisabled = transaction
+                                                    .status ==
+                                                TransactionStatus.inProgress &&
+                                            (transaction.user1Confirm == true &&
+                                                transaction.user1.isMe) ||
+                                        (transaction.user2Confirm == true &&
+                                            transaction.user2.isMe);
+
                                     return Padding(
                                       padding: EdgeInsets.only(
                                           top: index == 0 ? 0 : 20),
@@ -111,15 +120,30 @@ class _UserTransationsDialogState extends State<UserTransationsDialog>
                                             transaction: transaction,
                                           ));
                                         },
-                                        onConfirmPressed: () async {
-                                          await _bookController
-                                              .confirmTransaction(
-                                            transaction.id,
-                                            null,
-                                          );
-                                          _userTransactionController
-                                              .fetchTransactions();
-                                        },
+                                        onConfirmPressed: !confirmButtonDisabled
+                                            ? () async {
+                                                if (transaction.status ==
+                                                    TransactionStatus.pending) {
+                                                  await _bookController
+                                                      .confirmTransaction(
+                                                    transaction.id,
+                                                    null,
+                                                  );
+                                                  _userTransactionController
+                                                      .fetchTransactions();
+                                                }
+                                                if (transaction.status ==
+                                                    TransactionStatus
+                                                        .inProgress) {
+                                                  await _bookController
+                                                      .completeTransaction(
+                                                    transaction.id,
+                                                  );
+                                                  _userTransactionController
+                                                      .fetchTransactions();
+                                                }
+                                              }
+                                            : null,
                                         onCancelPressed: () async {
                                           if (transaction.status ==
                                               TransactionStatus.pending) {
@@ -133,6 +157,15 @@ class _UserTransationsDialogState extends State<UserTransationsDialog>
                                               transaction.id,
                                             );
                                           }
+                                          _userTransactionController
+                                              .fetchTransactions();
+                                        },
+                                        onChooseBook: (availability) async {
+                                          await _bookController
+                                              .confirmTransaction(
+                                            transaction.id,
+                                            availability.id,
+                                          );
                                           _userTransactionController
                                               .fetchTransactions();
                                         },

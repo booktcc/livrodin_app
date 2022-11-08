@@ -5,14 +5,14 @@ class Availability {
   final String _id;
   final Book book;
   final User user;
-  final DateTime dateAvailable;
+  final DateTime createdAt;
   final BookAvailableType availableType;
 
   Availability({
     required String id,
     required this.book,
     required this.user,
-    required this.dateAvailable,
+    required this.createdAt,
     required this.availableType,
   }) : _id = id;
 

@@ -10,6 +10,7 @@ import 'package:livrodin/models/discussion.dart';
 import 'package:livrodin/models/interest.dart';
 import 'package:livrodin/models/reply.dart';
 import 'package:livrodin/models/transaction.dart';
+import 'package:livrodin/models/user.dart';
 import 'package:livrodin/services/book_service.dart';
 
 import 'auth_controller.dart';
@@ -236,6 +237,28 @@ class BookController extends GetxController {
     );
   }
 
+  Future<void> completeTransaction(String transactionId) async {
+    return bookService.completeTransaction(transactionId).then(
+      (message) {
+        Get.snackbar(
+          "Sucesso",
+          message,
+          backgroundColor: green,
+          colorText: Colors.white,
+        );
+      },
+    ).catchError(
+      (e) {
+        Get.snackbar(
+          "Erro",
+          e.toString(),
+          backgroundColor: red,
+          colorText: Colors.white,
+        );
+      },
+    );
+  }
+
   Future<void> cancelTransaction(String transactionId) async {
     return bookService.cancelTransaction(transactionId).then(
       (_) {
@@ -317,6 +340,16 @@ class BookController extends GetxController {
         reply: reply,
         parentDiscussion: parentDiscussion,
       );
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<Availability>> getAvailableBooksFromUser(User user) async {
+    try {
+      final result = await bookService.getAvailableBooksFromUser(user);
+      return result;
     } catch (e) {
       printError(info: e.toString());
       rethrow;

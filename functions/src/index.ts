@@ -42,6 +42,8 @@ enum TransactionType {
 
 admin.initializeApp();
 
+admin.firestore().settings({ ignoreUndefinedProperties: true });
+
 const baseBookApi = "https://www.googleapis.com/books/v1/volumes/";
 
 const fetchBook = async (bookId: string) => {
@@ -309,9 +311,9 @@ export const completeTransaction = functions
   .https.onCall(async (data, context) => {
     const db = admin.firestore();
 
-    const user1Id = context.auth?.uid;
+    const userId = context.auth?.uid;
 
-    if (!user1Id) return { error: true, message: "Usuário não autenticado" };
+    if (!userId) return { error: true, message: "Usuário não autenticado" };
 
     const { transactionId } = data as { transactionId: string };
 
@@ -331,20 +333,52 @@ export const completeTransaction = functions
     if (transactionData.status !== TransactionStatus.IN_PROGRESS)
       return { error: true, message: "Transação não está em andamento" };
 
-    if (transactionData.user1Id !== user1Id)
-      return { error: true, message: "Usuário não é o dono da transação" };
+    if (
+      transactionData.user1Id !== userId &&
+      transactionData.user2Id !== userId
+    ) {
+      return { error: true, message: "Você não faz parte da transação" };
+    }
+    // check if user has confirmed
+
+    if (
+      (transactionData.user1Id === userId && transactionData.user1Confirm) ||
+      (transactionData.user2Id === userId && transactionData.user2Confirm)
+    ) {
+      return {
+        error: true,
+        message: "Você já confirmou a transação. Aguarde o outro usuário.",
+      };
+    }
+
+    const user1Confirm =
+      transactionData.user1Id === userId || transactionData.user1Confirm;
+
+    const user2Confirm =
+      transactionData.user2Id === userId || transactionData.user2Confirm;
+
+    const usersConfirmed = Boolean(user1Confirm && user2Confirm);
 
     await transaction.ref.update({
-      status: TransactionStatus.COMPLETED,
+      status: usersConfirmed ? TransactionStatus.COMPLETED : undefined,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      user1Confirm,
+      user2Confirm,
     });
 
-    await db
-      .collection("BookAvailable")
-      .doc(transactionData.bookAvailableId)
-      .delete();
+    if (usersConfirmed) {
+      db.collection("BookAvailable")
+        .doc(transactionData.availabilityId)
+        .delete();
+      if (transactionData.availability2Id) {
+        db.collection("BookAvailable")
+          .doc(transactionData.availability2Id)
+          .delete();
+      }
+      return { error: false, message: "Transação concluída com sucesso" };
+    }
 
-    return { error: false, message: "Transação concluída com sucesso" };
+    return { error: false, message: "Você confirmou a transação" };
   });
 
 export const cancelTransaction = functions
