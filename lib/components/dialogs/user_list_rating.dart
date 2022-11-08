@@ -36,6 +36,7 @@ class UserListRatingDialig extends StatelessWidget {
               if (snapshot.hasData) {
                 final ratings = snapshot.data as List<Book>;
                 return ListView.builder(
+                  physics: const BouncingScrollPhysics(),
                   itemCount: ratings.length,
                   itemBuilder: (context, index) {
                     return ListTile(

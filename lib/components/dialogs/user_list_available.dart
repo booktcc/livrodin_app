@@ -39,6 +39,7 @@ class UserListAvailableDialog extends StatelessWidget {
                   );
                 } else {
                   return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
                     itemCount: availabilities.length,
                     itemBuilder: (context, index) {
                       return ListTile(

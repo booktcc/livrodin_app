@@ -96,6 +96,7 @@ class _UserTransationsDialogState extends State<UserTransationsDialog>
                           children: TransactionCategoryType.values
                               .map(
                                 (e) => ListView.builder(
+                                  physics: const BouncingScrollPhysics(),
                                   itemCount: transactions[e]!.length,
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 15, vertical: 20),

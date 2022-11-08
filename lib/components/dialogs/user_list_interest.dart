@@ -41,6 +41,7 @@ class UserListInterestDialig extends StatelessWidget {
                   );
                 } else {
                   return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
                     itemCount: interests.length,
                     itemBuilder: (context, index) {
                       return ListTile(

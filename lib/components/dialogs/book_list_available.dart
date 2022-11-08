@@ -18,6 +18,7 @@ class BookListAvailable extends StatelessWidget {
         height: 300,
         width: 300,
         child: ListView.builder(
+          physics: const BouncingScrollPhysics(),
           itemCount: availabilityList.length,
           itemBuilder: (context, index) {
             var availability = availabilityList[index];
