@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
         controller: widget._pageController,
         children: [
           const Home(),
-          Genrer(),
+          GenrerView(),
           const Notifications(),
         ],
       ),

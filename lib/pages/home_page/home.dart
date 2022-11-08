@@ -71,6 +71,7 @@ class _HomeState extends State<Home> {
                 child: Container(
                   color: lightGrey,
                   child: CustomScrollView(
+                    physics: const BouncingScrollPhysics(),
                     controller: scrollController,
                     slivers: [
                       SliverToBoxAdapter(

@@ -73,9 +73,25 @@ class BookController extends GetxController {
     }
   }
 
-  Future<List<Book>> searchBook(String q) async {
+  Future<List<Book>> searchBook(
+    String q, {
+    bool isAvailable = false,
+    int maxResults = 10,
+    int startIndex = 0,
+  }) async {
+    List<Book> result = [];
     try {
-      var result = await bookService.searchBooksOnGoogleApi(q);
+      result = await bookService.searchBooksOnGoogleApi(q,
+          maxResults: maxResults, startIndex: startIndex);
+      if (isAvailable) {
+        var books = await bookService.getAvailableBooks(
+            booksIds: result.map((e) => e.id).toList());
+        for (var book in books) {
+          Book bookFound =
+              result.firstWhere((element) => element.id == book.id);
+          bookFound.availableType = book.availableType;
+        }
+      }
       return result;
     } catch (e) {
       printError(info: e.toString());

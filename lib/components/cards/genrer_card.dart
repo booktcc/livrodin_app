@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:livrodin/models/Genrer.dart';
 
 class GenrerCard extends StatelessWidget {
-  const GenrerCard({super.key, required this.genrer});
+  const GenrerCard({super.key, required this.genrer, this.onTap});
 
+  final Function(Genrer)? onTap;
   final Genrer genrer;
   final double radius = 20;
   final double width = 200;
@@ -14,7 +15,7 @@ class GenrerCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {},
+        onTap: () => onTap?.call(genrer),
         borderRadius: BorderRadius.circular(radius),
         child: Ink(
           width: width,

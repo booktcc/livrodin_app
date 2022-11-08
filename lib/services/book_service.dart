@@ -30,7 +30,7 @@ class BookService extends GetxService {
       query,
       startIndex: startIndex,
       maxResults: maxResults,
-      langRestrict: "pt,en",
+      printType: books_finder.PrintType.books,
       orderBy: books_finder.OrderBy.relevance,
     );
     return results.map(Book.fromApi).toList();
@@ -75,17 +75,26 @@ class BookService extends GetxService {
     });
   }
 
-  Future<List<Book>> getAvailableBooks({int? limit, int? page}) async {
+  Future<List<Book>> getAvailableBooks(
+      {List<String>? booksIds, int? limit, int? page}) async {
     List<Book> books = List.empty(growable: true);
-    var result = await firestore
-        .collection("Book")
-        .where(
-          "lastAvailabilityUpdated",
-          isNull: false,
-        )
-        .orderBy("lastAvailabilityUpdated", descending: true)
-        .limit(limit ?? 100)
-        .get();
+    late QuerySnapshot<Map<String, dynamic>> result;
+    if (booksIds != null) {
+      result = await firestore
+          .collection("Book")
+          .where(FieldPath.documentId, whereIn: booksIds)
+          .get();
+    } else {
+      result = await firestore
+          .collection("Book")
+          .where(
+            "lastAvailabilityUpdated",
+            isNull: false,
+          )
+          .orderBy("lastAvailabilityUpdated", descending: true)
+          .limit(limit ?? 100)
+          .get();
+    }
     for (var doc in result.docs) {
       var data = doc.data();
       if (!books.any((element) => element.id == data["idBook"])) {
@@ -99,7 +108,9 @@ class BookService extends GetxService {
                 ? BookAvailableType.trade
                 : data['availableType'] == "FOR_DONATION"
                     ? BookAvailableType.donate
-                    : BookAvailableType.both,
+                    : data['availableType'] != null
+                        ? BookAvailableType.both
+                        : null,
           ),
         );
       }

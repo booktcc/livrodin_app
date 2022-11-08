@@ -167,6 +167,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                       TabBar(
                                         enableFeedback: true,
                                         labelColor: dark,
+                                        physics: const BouncingScrollPhysics(),
                                         labelStyle: const TextStyle(
                                           fontWeight: FontWeight.w800,
                                         ),
@@ -185,6 +186,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                       ),
                                       Flexible(
                                         child: TabBarView(
+                                          physics:
+                                              const BouncingScrollPhysics(),
                                           children: [
                                             TabViewSynopsis(
                                               scrollController:
