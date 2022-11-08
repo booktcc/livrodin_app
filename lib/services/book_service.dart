@@ -589,7 +589,7 @@ class BookService extends GetxService {
       bookIds.add(doc.data()["idBook"]);
     }
 
-    var books = await _getBooksByIds(bookIds);
+    var books = await getBooksByIds(bookIds);
 
     List<Availability> availableBooks = List.empty(growable: true);
 
