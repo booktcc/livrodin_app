@@ -1,3 +1,5 @@
+<p align="center"><a href="https://vuejs.org" target="_blank" rel="noopener noreferrer"><img width="100" src="https://i.imgur.com/v6KM03e.png" alt="Vue logo"></a></p>
+
 # Livrodin
 
 Uma aplicação em Flutter para troca e doação de livros
