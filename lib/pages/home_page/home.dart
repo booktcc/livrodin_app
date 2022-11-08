@@ -17,7 +17,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final RxList<Book> books = <Book>[].obs;
-
+  final RxList<Book> booksRecommend = <Book>[].obs;
+  final Rx<FetchState> stateFetchRecomend = Rx(FetchState.loading);
   final BookController _bookController = Get.find<BookController>();
   final Rx<FetchState> stateFetch = FetchState.loading.obs;
 
@@ -30,6 +31,14 @@ class _HomeState extends State<Home> {
       stateFetch.value = FetchState.success;
     }).onError((error, stackTrace) {
       stateFetch.value = FetchState.error;
+    });
+
+    stateFetchRecomend.value = FetchState.loading;
+    _bookController.getRecomendBooks().then((value) {
+      booksRecommend.value = value;
+      stateFetchRecomend.value = FetchState.success;
+    }).onError((error, stackTrace) {
+      stateFetchRecomend.value = FetchState.error;
     });
   }
 
@@ -134,23 +143,41 @@ class _HomeState extends State<Home> {
                       SliverPadding(
                         padding: const EdgeInsets.only(
                             top: 10, bottom: 90, left: 20, right: 20),
-                        sliver: SliverGrid.count(
-                          childAspectRatio: 0.73,
-                          mainAxisSpacing: 0,
-                          crossAxisSpacing: 10,
-                          crossAxisCount: 2,
-                          children: List.generate(
-                            10,
-                            (index) => BookCard(
-                              book: Book(
-                                id: "1",
-                                title: "O Senhor dos Anéis",
-                                coverUrl:
-                                    "https://books.google.com/books/content?id=GgQmDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+                        sliver: Obx(() {
+                          if (stateFetch.value == FetchState.success) {
+                            return SliverGrid(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 0,
+                                crossAxisSpacing: 10,
+                                childAspectRatio: 0.73,
                               ),
+                              delegate: SliverChildBuilderDelegate(
+                                (BuildContext context, int index) {
+                                  return BookCard(
+                                    book: booksRecommend[index],
+                                    onTap: (_) => Get.toNamed(
+                                      "/book/detail/${booksRecommend[index].id}",
+                                    ),
+                                  );
+                                },
+                                childCount: booksRecommend.length,
+                              ),
+                            );
+                          } else if (stateFetch.value == FetchState.loading) {
+                            return const SliverFillRemaining(
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          return const SliverFillRemaining(
+                            child: Center(
+                              child: Text("Erro ao carregar livros"),
                             ),
-                          ),
-                        ),
+                          );
+                        }),
                       ),
                     ],
                   ),

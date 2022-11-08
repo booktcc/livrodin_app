@@ -338,4 +338,13 @@ class BookController extends GetxController {
       rethrow;
     }
   }
+
+  Future<List<Book>> getRecomendBooks() async {
+    try {
+      return await bookService.getRecomendBooks();
+    } catch (e) {
+      printError(info: e.toString());
+      rethrow;
+    }
+  }
 }

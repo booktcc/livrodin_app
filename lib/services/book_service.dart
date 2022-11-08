@@ -560,4 +560,36 @@ class BookService extends GetxService {
         .collection(collectionReplies)
         .add(reply.toFirestore());
   }
+
+  Future<List<Book>> getRecomendBooks() async {
+    var result = await firestore.collection(collectionRatings).get();
+
+    List<Book> books = List.empty(growable: true);
+
+    for (var doc in result.docs) {
+      var data = doc.data();
+      var book =
+          books.firstWhereOrNull((element) => element.id == data["idBook"]);
+      if (book == null) {
+        book = Book(
+          id: data["idBook"],
+          title: "",
+        );
+        books.add(book);
+      }
+      book.ratings = [
+        ...book.ratings,
+        ...[
+          Rating(
+            id: doc.id,
+            user: User(id: "", name: "Usuário"),
+            rating: data["rate"],
+            comment: data["comment"],
+          )
+        ]
+      ];
+    }
+    books.sort((a, b) => b.averageRating.compareTo(a.averageRating));
+    return books;
+  }
 }

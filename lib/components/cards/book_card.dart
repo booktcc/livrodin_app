@@ -1,7 +1,7 @@
-import 'package:livrodin/configs/themes.dart';
-import 'package:livrodin/models/book.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/models/book.dart';
 
 class BookCard extends StatelessWidget {
   const BookCard({super.key, this.onTap, required this.book});
@@ -48,7 +48,8 @@ class BookCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(radius),
                         image: DecorationImage(
-                          image: NetworkImage(book.coverUrl!),
+                          image: NetworkImage(book.coverUrl ??
+                              "https://books.google.com/books/content?id=GgQmDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"),
                           fit: BoxFit.cover,
                         ),
                       ),
