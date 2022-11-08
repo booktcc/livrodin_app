@@ -4,7 +4,7 @@ Uma aplicação em Flutter para troca e doação de livros
 
 ## Downloads
 
-- [Github Releases]()
+- [Github Releases](https://github.com/booktcc/livrodin_app/releases/download/v1.0.0/livrodin-1.0.0.apk)
 
 ### Instalando dependências
 
