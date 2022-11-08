@@ -136,7 +136,10 @@ class BookService extends GetxService {
         ratings: [
           Rating(
             id: e.id,
-            user: User(id: authController.user.value!.uid, name: "Eu"),
+            user: User(
+                id: authController.user.value!.uid,
+                name: "Eu",
+                profilePictureUrl: authController.user.value?.photoURL),
             rating: data["rate"],
             comment: data["comment"] ?? "",
           )
@@ -153,20 +156,23 @@ class BookService extends GetxService {
         .where("idUser", isEqualTo: authController.user.value!.uid)
         .get();
 
+    var books = await getAvailableBooks(
+        booksIds:
+            result.docs.map((e) => (e.data()["idBook"] as String)).toList());
     return result.docs.map((e) {
       var data = e.data();
-      var book = Book(
-          id: data["idBook"], title: data["title"], coverUrl: data["coverUrl"]);
+
+      var book = books.firstWhere((element) => element.id == data["idBook"]);
       var availability = Availability(
         id: e.id,
         book: book,
         user: User(id: authController.user.value!.uid, name: "Eu"),
         createdAt: data["createdAt"].toDate(),
-        availableType: data["forDonation"] && data["forTrade"]
-            ? BookAvailableType.both
-            : (data["forDonation"]
+        availableType: data['availableType'] == "FOR_TRADE"
+            ? BookAvailableType.trade
+            : data['availableType'] == "FOR_DONATION"
                 ? BookAvailableType.donate
-                : BookAvailableType.trade),
+                : BookAvailableType.both,
       );
       book.availabilities = [availability];
       return availability;

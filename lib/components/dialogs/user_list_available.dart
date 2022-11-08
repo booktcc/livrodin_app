@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:livrodin/components/cards/book_card.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/configs/themes.dart';
@@ -38,17 +39,33 @@ class UserListAvailableDialog extends StatelessWidget {
                     child: Text('Nenhum livro está sendo disponibilizado'),
                   );
                 } else {
-                  return ListView.builder(
+                  return CustomScrollView(
                     physics: const BouncingScrollPhysics(),
-                    itemCount: availabilities.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(availabilities[index].book.title!),
-                        subtitle: Text(
-                          availabilities[index].createdAt.toString(),
+                    slivers: [
+                      SliverPadding(
+                        padding: const EdgeInsets.all(10),
+                        sliver: SliverGrid(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 10,
+                            childAspectRatio: 0.7,
+                          ),
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              return BookCard(
+                                book: availabilities[index].book,
+                                onTap: (_) => Get.toNamed(
+                                  "/book/detail/${availabilities[index].book.id}",
+                                ),
+                              );
+                            },
+                            childCount: availabilities.length,
+                          ),
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   );
                 }
               } else {

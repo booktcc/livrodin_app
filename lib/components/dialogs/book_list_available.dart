@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/profile_icon.dart';
+import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/models/availability.dart';
 
 class BookListAvailable extends StatelessWidget {
@@ -13,6 +14,10 @@ class BookListAvailable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      backgroundColor: lightGrey,
       title: Text(title),
       content: SizedBox(
         height: 300,

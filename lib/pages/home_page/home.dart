@@ -83,16 +83,9 @@ class _HomeState extends State<Home> {
                     physics: const BouncingScrollPhysics(),
                     controller: scrollController,
                     slivers: [
-                      SliverToBoxAdapter(
+                      const SliverToBoxAdapter(
                         child: PageTitle(
                           title: "Últimos Disponibilizados",
-                          actions: [
-                            IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: const Icon(Icons.more_rounded),
-                              onPressed: () {},
-                            ),
-                          ],
                         ),
                       ),
                       SliverPadding(
