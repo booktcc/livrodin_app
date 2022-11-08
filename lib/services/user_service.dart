@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/configs/constants.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
+import 'package:livrodin/models/user.dart';
 
 class UserService extends GetxService {
   var authController = Get.find<AuthController>();
@@ -13,28 +14,18 @@ class UserService extends GetxService {
 
   UserService({required this.firestore, required this.storage});
 
-  Future<void> createUser() async {
+  Future<void> createUser(User user) async {
     await firestore
         .collection(collectionUsers)
         .doc(authController.user.value!.uid)
-        .set({
-      "name": authController.user.value?.displayName,
-      "lastName": "",
-      "email": authController.user.value?.email,
-      "profilePictureUrl": authController.user.value?.photoURL,
-    });
+        .set(user.toFirestore());
   }
 
-  Future<void> updateUser() async {
+  Future<void> updateUser(User user) async {
     await firestore
         .collection(collectionUsers)
         .doc(authController.user.value!.uid)
-        .update({
-      "name": authController.user.value?.displayName,
-      "lastName": "",
-      "email": authController.user.value?.email,
-      "profilePictureUrl": authController.user.value?.photoURL,
-    });
+        .update(user.toFirestore());
   }
 
   Future<String?> uploadUserPhoto(String? file) async {

@@ -6,6 +6,7 @@ import 'package:livrodin/components/dialogs/edit_profile.dart';
 import 'package:livrodin/components/input.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
+import 'package:livrodin/models/user.dart';
 import 'package:livrodin/services/user_service.dart';
 
 class ProfileEditController extends GetxController {
@@ -59,7 +60,14 @@ class ProfileEditController extends GetxController {
     if (photoUrl != null) await authController.updatePhoto(photoUrl);
     await authController.updateProfile(nameController.text);
 
-    await userService.createUser();
+    await userService.createUser(
+      User(
+        id: authController.user.value!.uid,
+        name: nameController.text,
+        email: emailController.text,
+        profilePictureUrl: photoUrl,
+      ),
+    );
     await Get.offAllNamed("/home");
   }
 
@@ -112,7 +120,14 @@ class ProfileEditController extends GetxController {
       final photoUrl = await userService.uploadUserPhoto(file?.path);
       if (photoUrl != null) {
         await authController.updatePhoto(photoUrl);
-        userService.updateUser();
+        await userService.updateUser(
+          User(
+            id: authController.user.value!.uid,
+            name: authController.user.value!.displayName,
+            email: authController.user.value!.email!,
+            profilePictureUrl: photoUrl,
+          ),
+        );
         image.value = file;
       }
     } catch (e) {
@@ -157,7 +172,15 @@ class ProfileEditController extends GetxController {
             final result =
                 await authController.updateProfile(nameController.text);
             if (result) {
-              await userService.updateUser();
+              await userService.updateUser(
+                User(
+                  id: authController.user.value!.uid,
+                  name: nameController.text,
+                  lastName: lastNameController.text,
+                  email: authController.user.value!.email!,
+                  profilePictureUrl: authController.user.value!.photoURL,
+                ),
+              );
               Get.snackbar("Sucesso", "Seu perfil foi atualizado com sucesso!");
             }
             isLoading.value = false;
@@ -213,7 +236,14 @@ class ProfileEditController extends GetxController {
               if (result) {
                 Get.snackbar(
                     "Email Atualizado", "Email atualizado com sucesso");
-                await userService.updateUser();
+                await userService.updateUser(
+                  User(
+                    id: authController.user.value!.uid,
+                    name: authController.user.value!.displayName,
+                    email: emailController.text,
+                    profilePictureUrl: authController.user.value!.photoURL,
+                  ),
+                );
               }
             }
             isLoading.value = false;
