@@ -6,15 +6,13 @@ Uma aplicação em Flutter para troca e doação de livros
 
 - [Github Releases]()
 
-## Como rodar em modo de desenvolvimento
-
 ### Instalando dependências
 
 ```bash
 flutter pub get
 ```
 
-### Rodando a aplicação
+## Rodar em modo de desenvolvimento
 
 ```bash
 flutter run
