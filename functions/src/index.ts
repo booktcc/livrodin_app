@@ -482,3 +482,29 @@ export const sendTransactionMessage = functions
 
     return { error: false, message: "Mensagem enviada com sucesso" };
   });
+
+export const onUserAuthWithGoogleCreated = functions
+  .region("southamerica-east1")
+  .auth.user()
+  .onCreate(async (user) => {
+    const db = admin.firestore();
+
+    const { email, displayName, photoURL, providerData } = user;
+
+    // check if user has logged with google
+    const hasGoogleProvider = providerData.some(
+      (provider) => provider.providerId === "google.com"
+    );
+
+    if (!hasGoogleProvider) return;
+
+    const userDoc = await db.collection("Users").doc(user.uid).get();
+
+    if (userDoc.exists) return;
+
+    await db.collection("Users").doc(user.uid).set({
+      email,
+      name: displayName,
+      profilePictureUrl: photoURL,
+    });
+  });
