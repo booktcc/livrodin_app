@@ -127,7 +127,7 @@ class Step1 extends StatelessWidget {
                   children: [
                     IconButton(
                       iconSize: 40,
-                      onPressed: () => registerController.registerWithGoogle(),
+                      onPressed: registerController.registerWithGoogle,
                       icon: const Icon(
                         Icons.facebook_rounded,
                         color: grey,

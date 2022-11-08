@@ -27,7 +27,6 @@ class LoginController extends GetxController {
     isLoading.value = false;
   }
 
-  // login with google
   Future<void> loginWithGoogle() async {
     isLoading.value = true;
     var result = await authController.loginGoogle();

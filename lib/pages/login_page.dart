@@ -189,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 GestureDetector(
-                                  onTap: () => authController.loginGoogle(),
+                                  onTap: loginController.loginWithGoogle,
                                   child: SvgPicture.asset(
                                     "assets/icons/google_logo.svg",
                                     height: 50,
