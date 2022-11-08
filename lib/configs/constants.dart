@@ -6,4 +6,5 @@ const collectionTransaction = 'Transaction';
 const collectionDiscussions = 'Discussions';
 const collectionReplies = 'Replies';
 const collectionInterestList = '"InterestList"';
+const collectionGenres = 'Genres';
 const storageUsers = 'Users';

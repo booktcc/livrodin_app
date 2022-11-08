@@ -4,6 +4,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/configs/constants.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
+import 'package:livrodin/models/Genrer.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/discussion.dart';
 import 'package:livrodin/models/interest.dart';
@@ -20,11 +21,18 @@ class BookService extends GetxService {
 
   BookService({required this.firestore});
 
-  Future<List<Book>> searchBooksOnGoogleApi(String query) async {
-    var results = await books_finder.queryBooks(query,
-        maxResults: 10,
-        langRestrict: "pt,en",
-        orderBy: books_finder.OrderBy.relevance);
+  Future<List<Book>> searchBooksOnGoogleApi(
+    String query, {
+    int maxResults = 10,
+    int startIndex = 0,
+  }) async {
+    var results = await books_finder.queryBooks(
+      query,
+      startIndex: startIndex,
+      maxResults: maxResults,
+      langRestrict: "pt,en",
+      orderBy: books_finder.OrderBy.relevance,
+    );
     return results.map(Book.fromApi).toList();
   }
 
@@ -32,6 +40,11 @@ class BookService extends GetxService {
     var result = await books_finder.getSpecificBook(bookId);
 
     return Book.fromApi(result);
+  }
+
+  Future<List<Genrer>> getGenres() async {
+    var result = await firestore.collection(collectionGenres).get();
+    return result.docs.map(Genrer.fromFirestore).toList();
   }
 
   Future<void> addBookAvailable(
@@ -393,6 +406,8 @@ class BookService extends GetxService {
             (element) => element.value == data["type"],
             orElse: () => TransactionType.trade,
           ),
+          user1Confirm: data["user1Confirm"],
+          user2Confirm: data["user2Confirm"],
         ),
       );
     }
@@ -418,6 +433,24 @@ class BookService extends GetxService {
     if (result.data["error"]) {
       throw result.data["message"];
     }
+  }
+
+  Future<String> completeTransaction(String transactionId) async {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    HttpsCallable callable =
+        FirebaseFunctions.instanceFor(region: 'southamerica-east1')
+            .httpsCallable('completeTransaction');
+    var request = <String, dynamic>{
+      "transactionId": transactionId,
+    };
+
+    var result = await callable.call<Map<String, dynamic>>(request);
+    if (result.data["error"]) {
+      throw result.data["message"];
+    }
+
+    return result.data["message"];
   }
 
   Future<void> cancelTransaction(String transactionId) async {
