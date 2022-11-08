@@ -260,7 +260,7 @@ class BookCardWithProfile extends StatelessWidget {
         Column(
           children: [
             GestureDetector(
-              onTap: book == null
+              onTap: book == null && !user.isMe
                   ? () async {
                       var result = await Get.dialog<Availability?>(
                         BookListAvailableFromUser(
