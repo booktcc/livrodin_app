@@ -1,8 +1,10 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/profile_icon.dart';
 import 'package:livrodin/configs/themes.dart';
 import 'package:livrodin/controllers/auth_controller.dart';
+import 'package:livrodin/controllers/notification_controller.dart';
 
 class BottomMenu extends StatefulWidget {
   BottomMenu({
@@ -20,6 +22,9 @@ class BottomMenu extends StatefulWidget {
 
 class _BottomMenuState extends State<BottomMenu> {
   final AuthController authController = Get.find<AuthController>();
+
+  final NotificationController _notificationController =
+      Get.find<NotificationController>();
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -124,12 +129,30 @@ class _BottomMenuState extends State<BottomMenu> {
                               child: SizedBox(
                                 width: 50,
                                 height: 50,
-                                child: Icon(
-                                  Icons.notifications_rounded,
-                                  size: 28,
-                                  color: widget._selectefIndex.value == 2
-                                      ? Colors.black
-                                      : grey,
+                                child: Obx(
+                                  () {
+                                    var count = _notificationController
+                                        .notifications.length;
+                                    return Badge(
+                                      showBadge: count > 0,
+                                      badgeColor: red,
+                                      badgeContent: Text(
+                                        count < 10 ? "0$count" : "$count",
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        Icons.notifications_rounded,
+                                        size: 28,
+                                        color: widget._selectefIndex.value == 2
+                                            ? Colors.black
+                                            : grey,
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ),
