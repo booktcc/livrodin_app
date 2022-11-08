@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -37,17 +36,6 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  FirebaseFirestore.instance.useFirestoreEmulator('10.0.2.2', 8080);
-  FirebaseFirestore.instance.settings = const Settings(
-    sslEnabled: false,
-    persistenceEnabled: false,
-  );
-
-  FirebaseAuth.instance.useAuthEmulator('10.0.2.2', 9099);
-
-  FirebaseFunctions.instanceFor(region: 'southamerica-east1')
-      .useFunctionsEmulator('10.0.2.2', 5001);
 
   runApp(const MyApp());
 }
