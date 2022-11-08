@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:livrodin/components/search_book_delegate.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/pages/home_page/genrer_view.dart';
@@ -25,7 +26,9 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {},
+            onPressed: () {
+              showSearch(context: context, delegate: SearchBookDelegate());
+            },
           ),
         ],
       ),
