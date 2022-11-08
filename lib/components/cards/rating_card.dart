@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:livrodin/components/profile_icon.dart';
 import 'package:livrodin/components/rating_info.dart';
+import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/rating.dart';
 
 class RatingCard extends StatelessWidget {
-  const RatingCard({super.key, required this.rating, this.margin});
+  const RatingCard({super.key, required this.rating, this.margin, this.book});
 
   final Rating rating;
   final EdgeInsetsGeometry? margin;
+  final Book? book;
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: margin,
       width: double.infinity,
-      height: 150,
+      constraints: const BoxConstraints(minHeight: 150),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: Colors.white,
@@ -35,6 +37,7 @@ class RatingCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                const SizedBox(height: 15),
                 ProfileIcon(
                   image: rating.user.profilePictureUrl,
                   size: ProfileSize.lg,
@@ -60,14 +63,31 @@ class RatingCard extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Text(
-                rating.comment,
-                style: const TextStyle(
-                  fontSize: 14,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                book != null
+                    ? Padding(
+                        padding:
+                            const EdgeInsets.only(top: 10, left: 10, right: 10),
+                        child: Text(
+                          book?.title ?? "",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Text(
+                    rating.comment,
+                    style: const TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ],
