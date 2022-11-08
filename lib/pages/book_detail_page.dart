@@ -17,6 +17,7 @@ import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/controllers/book_detail_controller.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/transaction.dart';
+import 'package:livrodin/utils/state_machine.dart';
 
 enum BookStatus { init, loading, loaded, error }
 
@@ -232,19 +233,37 @@ class _BookDetailPageState extends State<BookDetailPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ButtonAction(
-                          onPressed: () =>
-                              authController.user.value!.isAnonymous
+                        Obx(() {
+                          if (_bookDetailController
+                                  .userInterestFetchState.value ==
+                              FetchState.loading) {
+                            return const SizedBox.shrink();
+                          } else if (_bookDetailController
+                                  .userInterestFetchState.value ==
+                              FetchState.error) {
+                            return const SizedBox.shrink();
+                          } else {
+                            return ButtonAction(
+                              onPressed: () => authController
+                                      .user.value!.isAnonymous
                                   ? Get.offAllNamed("/login")
-                                  : null,
-                          color: Colors.white,
-                          icon: Icons.bookmark_add,
-                          iconSize: 24,
-                          radius: 360,
-                          minHeight: 40,
-                          minWidth: 40,
-                          textColor: grey,
-                        ),
+                                  : _bookDetailController
+                                          .isUserBookInterest.value
+                                      ? _bookDetailController.removeInterest()
+                                      : _bookDetailController.addInterest(),
+                              color: Colors.white,
+                              icon:
+                                  _bookDetailController.isUserBookInterest.value
+                                      ? Icons.bookmark_remove
+                                      : Icons.bookmark_add,
+                              iconSize: 24,
+                              radius: 360,
+                              minHeight: 40,
+                              minWidth: 40,
+                              textColor: grey,
+                            );
+                          }
+                        }),
                         Obx(
                           () {
                             var availabilityForTrade =

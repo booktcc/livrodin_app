@@ -3,12 +3,14 @@ import 'package:get/get.dart';
 import 'package:livrodin/components/dialogs/discussion_dialog.dart';
 import 'package:livrodin/components/dialogs/rate_dialog.dart';
 import 'package:livrodin/components/dialogs/reply_dialog.dart';
+import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_controller.dart';
 import 'package:livrodin/models/availability.dart';
 import 'package:livrodin/models/book.dart';
 import 'package:livrodin/models/discussion.dart';
 import 'package:livrodin/models/reply.dart';
 import 'package:livrodin/pages/book_detail_page.dart';
+import 'package:livrodin/utils/state_machine.dart';
 
 class BookDetailController extends GetxController {
   final PageController pageViewController = PageController();
@@ -20,8 +22,11 @@ class BookDetailController extends GetxController {
   final Rx<BookDiscussionStatus> bookDiscussionStatus =
       BookDiscussionStatus.init.obs;
   final RxList<Availability> bookAvailabilityList = <Availability>[].obs;
+  final Rx<FetchState> userInterestFetchState = FetchState.loading.obs;
+  final Rx<bool> isUserBookInterest = false.obs;
 
   final BookController _bookController = Get.find<BookController>();
+  final AuthController _authController = Get.find<AuthController>();
 
   Future fetchBook(String bookId) async {
     bookStatus.value = BookStatus.loading;
@@ -31,8 +36,36 @@ class BookDetailController extends GetxController {
       reloadBookDiscussions();
       reloadBookRating();
       reloadAvailableList();
+      reloadUserInterest();
     } catch (e) {
       bookStatus.value = BookStatus.error;
+    }
+  }
+
+  Future reloadUserInterest() async {
+    if (book == null) {
+      return;
+    }
+    userInterestFetchState.value = FetchState.loading;
+    try {
+      if (!_authController.user.value!.isAnonymous) {
+        isUserBookInterest.value =
+            await _bookController.isUserBookInterest(book!.id);
+      }
+      userInterestFetchState.value = FetchState.success;
+    } catch (e) {
+      userInterestFetchState.value = FetchState.error;
+    }
+  }
+
+  Future<void> addInterest() async {
+    userInterestFetchState.value = FetchState.loading;
+    try {
+      await _bookController.addBookInterest(book!);
+      userInterestFetchState.value = FetchState.success;
+      isUserBookInterest.value = true;
+    } catch (e) {
+      userInterestFetchState.value = FetchState.error;
     }
   }
 
@@ -62,6 +95,15 @@ class BookDetailController extends GetxController {
           await _bookController.getBookAvailabityById(book!.id);
     } catch (e) {
       bookAvailabilityList.value = <Availability>[];
+    }
+  }
+
+  Future<void> removeInterest() async {
+    try {
+      await _bookController.removeBookInterest(book!.id);
+      isUserBookInterest.value = false;
+    } catch (e) {
+      printError(info: e.toString());
     }
   }
 

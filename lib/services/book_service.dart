@@ -228,23 +228,23 @@ class BookService extends GetxService {
     if (authController.user.value == null) throw 'User not logged in';
 
     var result = await firestore
+        .collection(collectionUsers)
+        .doc(authController.user.value!.uid)
         .collection(collectionInterestList)
-        .where("idUser", isEqualTo: authController.user.value!.uid)
         .get();
 
-    return result.docs.map(
-      (e) {
-        var data = e.data();
-        return Interest(
-          id: e.id,
-          book: Book(
-            id: data["idBook"],
-            title: data["nameBook"],
-            coverUrl: data["coverUrl"],
+    return result.docs
+        .map(
+          (e) => Interest(
+            id: e.id,
+            book: Book(
+              id: e.id,
+              title: e.data()["name"],
+              coverUrl: e.data()["coverUrl"],
+            ),
           ),
-        );
-      },
-    ).toList();
+        )
+        .toList();
   }
 
   Future<List<User>> getUsersByIds(List<String> ids) async {
@@ -664,5 +664,39 @@ class BookService extends GetxService {
     }
 
     return availableBooks;
+  }
+
+  Future<bool> isUserBookInterest(String idBook) async {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    var result = await firestore
+        .collection(collectionUsers)
+        .doc(authController.user.value!.uid)
+        .collection(collectionInterestList)
+        .doc(idBook)
+        .get();
+    return result.exists;
+  }
+
+  Future<void> addBookToInterestList(Book book) async {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    await firestore
+        .collection(collectionUsers)
+        .doc(authController.user.value!.uid)
+        .collection(collectionInterestList)
+        .doc(book.id)
+        .set({"name": book.title, "coverUrl": book.coverUrl});
+  }
+
+  removeBookOfInterestList(String idBook) {
+    if (authController.user.value == null) throw 'User not logged in';
+
+    firestore
+        .collection(collectionUsers)
+        .doc(authController.user.value!.uid)
+        .collection(collectionInterestList)
+        .doc(idBook)
+        .delete();
   }
 }

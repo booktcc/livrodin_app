@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:livrodin/components/cards/book_card.dart';
 import 'package:livrodin/components/header.dart';
 import 'package:livrodin/components/layout.dart';
 import 'package:livrodin/configs/themes.dart';
@@ -40,17 +41,33 @@ class UserListInterestDialig extends StatelessWidget {
                     child: Text('Nenhum livro na lista de interesse'),
                   );
                 } else {
-                  return ListView.builder(
+                  return CustomScrollView(
                     physics: const BouncingScrollPhysics(),
-                    itemCount: interests.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(interests[index].book.title!),
-                        subtitle: Text(
-                          interests[index].book.coverUrl!,
+                    slivers: [
+                      SliverPadding(
+                        padding: const EdgeInsets.all(10),
+                        sliver: SliverGrid(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 10,
+                            childAspectRatio: 0.7,
+                          ),
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              return BookCard(
+                                book: interests[index].book,
+                                onTap: (_) => Get.toNamed(
+                                  "/book/detail/${interests[index].book.id}",
+                                ),
+                              );
+                            },
+                            childCount: interests.length,
+                          ),
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   );
                 }
               } else {
