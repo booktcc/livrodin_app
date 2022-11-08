@@ -171,7 +171,7 @@ class BookService extends GetxService {
         .get();
     List<Rating> ratings = List.empty(growable: true);
 
-    var users = await _getUsersByIds(
+    var users = await getUsersByIds(
         result.docs.map((e) => (e.data()["idUser"] as String)).toList());
 
     for (var doc in result.docs) {
@@ -232,7 +232,7 @@ class BookService extends GetxService {
     ).toList();
   }
 
-  Future<List<User>> _getUsersByIds(List<String> ids) async {
+  Future<List<User>> getUsersByIds(List<String> ids) async {
     if (ids.isEmpty) return [];
     var result = await firestore
         .collection(collectionUsers)
@@ -250,7 +250,7 @@ class BookService extends GetxService {
     }).toList();
   }
 
-  Future<List<Book>> _getBooksByIds(List<String> ids) async {
+  Future<List<Book>> getBooksByIds(List<String> ids) async {
     if (ids.isEmpty) return [];
     var result = await firestore
         .collection(collectionBooks)
@@ -276,7 +276,7 @@ class BookService extends GetxService {
 
     List<Availability> availabilities = List.empty(growable: true);
 
-    var users = await _getUsersByIds(
+    var users = await getUsersByIds(
         result.docs.map((e) => (e.data()["idUser"] as String)).toList());
 
     for (var doc in result.docs) {
@@ -355,10 +355,10 @@ class BookService extends GetxService {
     }
 
     // get all users from transactions
-    var users = await _getUsersByIds(usersIds.toSet().toList());
+    var users = await getUsersByIds(usersIds.toSet().toList());
 
     // get all books from transactions
-    var books = await _getBooksByIds(booksIds.toSet().toList());
+    var books = await getBooksByIds(booksIds.toSet().toList());
 
     for (var doc in resultTransactionsDocs) {
       var data = doc.data();
@@ -494,7 +494,7 @@ class BookService extends GetxService {
 
     List<Discussion> discussions = List.empty(growable: true);
 
-    var users = await _getUsersByIds(
+    var users = await getUsersByIds(
         result.docs.map((e) => (e.data()["idUser"] as String)).toList());
 
     for (var doc in result.docs) {
@@ -526,7 +526,7 @@ class BookService extends GetxService {
 
     List<Reply> replies = List.empty(growable: true);
 
-    var users = await _getUsersByIds(
+    var users = await getUsersByIds(
         result.docs.map((e) => (e.data()["idUser"] as String)).toList());
 
     for (var doc in result.docs) {
@@ -589,7 +589,7 @@ class BookService extends GetxService {
       bookIds.add(doc.data()["idBook"]);
     }
 
-    var books = await _getBooksByIds(bookIds);
+    var books = await getBooksByIds(bookIds);
 
     List<Availability> availableBooks = List.empty(growable: true);
 

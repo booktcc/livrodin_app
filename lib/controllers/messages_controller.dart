@@ -30,7 +30,7 @@ class MessagesController extends GetxController {
         .collection('Transaction')
         .doc(transaction.id)
         .collection('Messages')
-        .orderBy('createdAt', descending: false)
+        .orderBy('createdAt', descending: true)
         .snapshots()
         .listen((event) {
       messages.value = event.docs.map((e) {

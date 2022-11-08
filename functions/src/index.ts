@@ -9,6 +9,19 @@ type BookAvailable = {
   createdAt: Date;
 };
 
+type Notification = {
+  type: NotificationType;
+  transactionId: string;
+  createdAt: admin.firestore.FieldValue;
+  userId: string;
+  message: string;
+};
+
+enum NotificationType {
+  MESSAGE = "MESSAGE",
+  TRANSACTION = "TRANSACTION",
+}
+
 enum BookAvailableType {
   FOR_TRADE = "FOR_TRADE",
   FOR_DONATION = "FOR_DONATION",
@@ -448,6 +461,24 @@ export const sendTransactionMessage = functions
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       userId,
     });
+
+    // send notification to other user
+    const otherUserId =
+      transactionData.user1Id === userId
+        ? transactionData.user2Id
+        : transactionData.user1Id;
+
+    db.collection("Users")
+      .doc(otherUserId)
+      .collection("Notification")
+      .doc(`${NotificationType.MESSAGE}-${transactionId}`)
+      .set({
+        type: NotificationType.MESSAGE,
+        transactionId,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        userId,
+        message,
+      } as Notification);
 
     return { error: false, message: "Mensagem enviada com sucesso" };
   });
