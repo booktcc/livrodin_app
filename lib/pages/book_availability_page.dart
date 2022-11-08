@@ -87,7 +87,8 @@ class _BookAvailabilityPageState extends State<BookAvailabilityPage> {
                     );
                     if (result != null) {
                       _searchStatus.value = SearchStatus.loading;
-                      var books = await _bookController.searchBook(result);
+                      var books =
+                          await _bookController.searchBook("isbn:$result");
 
                       _searchedBooks.value = books;
 
