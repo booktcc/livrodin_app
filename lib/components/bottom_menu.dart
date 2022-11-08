@@ -13,6 +13,7 @@ class BottomMenu extends StatefulWidget {
 
   final PageController pageController;
   final Rx<int> _selectefIndex;
+  final AuthController authController = Get.find<AuthController>();
   @override
   State<BottomMenu> createState() => _BottomMenuState();
 }
@@ -139,7 +140,10 @@ class _BottomMenuState extends State<BottomMenu> {
                           Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              onTap: () => Get.toNamed("/profile"),
+                              onTap: () =>
+                                  authController.user.value!.isAnonymous
+                                      ? Get.offAllNamed('/login')
+                                      : Get.toNamed('/profile'),
                               borderRadius: BorderRadius.circular(90),
                               child: Padding(
                                 padding: const EdgeInsets.all(10),
@@ -166,7 +170,9 @@ class _BottomMenuState extends State<BottomMenu> {
             borderRadius: BorderRadius.circular(90),
             color: Colors.red,
             child: InkWell(
-              onTap: () => Get.toNamed("/book/availability"),
+              onTap: () => authController.user.value!.isAnonymous
+                  ? Get.offAllNamed('/login')
+                  : Get.toNamed("/book/availability"),
               borderRadius: BorderRadius.circular(90),
               child: const SizedBox(
                 width: 70,

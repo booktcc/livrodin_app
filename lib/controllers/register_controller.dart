@@ -121,6 +121,16 @@ class RegisterController extends GetxController {
     }
   }
 
+  Future<void> registerWithGoogle() async {
+    isLoading.value = true;
+    var result = await authController.loginGoogle();
+    if (result == null) {
+      isLoading.value = false;
+      return;
+    }
+    await Get.offAllNamed("/home");
+  }
+
   void previousStep() {
     nameController.clear();
     lastNameController.clear();

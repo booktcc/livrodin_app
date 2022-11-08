@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:livrodin/utils/alert.dart';
 import 'package:livrodin/utils/snackbar.dart';
 
@@ -115,6 +116,28 @@ class AuthController extends GetxController {
     } on FirebaseAuthException catch (e) {
       Snackbar.error(e.message);
       return false;
+    }
+  }
+
+  Future<void> loginAnonymous() {
+    return firebaseAuth.signInAnonymously();
+  }
+
+  Future<UserCredential?> loginGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      return await firebaseAuth.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      Snackbar.error(e.message);
+      return null;
     }
   }
 }

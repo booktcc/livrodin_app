@@ -4,13 +4,14 @@ import 'package:livrodin/components/button_action.dart';
 import 'package:livrodin/components/cards/discussions_card.dart';
 import 'package:livrodin/components/cards/reply_card.dart';
 import 'package:livrodin/configs/themes.dart';
+import 'package:livrodin/controllers/auth_controller.dart';
 import 'package:livrodin/controllers/book_detail_controller.dart';
 import 'package:livrodin/pages/book_detail_page.dart';
 
 class TabViewDiscussions extends StatelessWidget {
   final BookDetailController bookDetailController =
       Get.find<BookDetailController>();
-
+  final AuthController authController = Get.find<AuthController>();
   TabViewDiscussions({
     super.key,
     required this.scrollController,
@@ -60,7 +61,10 @@ class TabViewDiscussions extends StatelessWidget {
                           height: 10,
                         ),
                         ButtonAction(
-                          onPressed: _bookDetailController.addDiscussion,
+                          onPressed: () =>
+                              authController.user.value!.isAnonymous
+                                  ? Get.offAllNamed("/login")
+                                  : _bookDetailController.addDiscussion(),
                           label: "Criar Discussão",
                         ),
                       ],
@@ -92,6 +96,9 @@ class TabViewDiscussions extends StatelessWidget {
                             _bookDetailController.book!.discussions[index],
                         margin: const EdgeInsets.only(bottom: 10),
                         onTap: () {
+                          if (authController.user.value!.isAnonymous) {
+                            Get.offAllNamed("/login");
+                          }
                           _bookDetailController.selectedDiscussion.value =
                               _bookDetailController.book!.discussions[index];
                           _bookDetailController.fetchDiscussionReplies();
