@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:livrodin/components/button_action.dart';
 import 'package:livrodin/components/input.dart';
@@ -183,15 +184,16 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
+                            const SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                IconButton(
-                                  iconSize: 40,
-                                  onPressed: () => authController.loginGoogle(),
-                                  icon: const Icon(
-                                    Icons.facebook_rounded,
-                                    color: grey,
+                                GestureDetector(
+                                  onTap: () => authController.loginGoogle(),
+                                  child: SvgPicture.asset(
+                                    "assets/icons/google_logo.svg",
+                                    height: 50,
+                                    width: 50,
                                   ),
                                 ),
                               ],
