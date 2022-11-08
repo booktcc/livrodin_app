@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -21,12 +23,20 @@ class MessagesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _getMessages();
+    _listenMessages();
   }
 
-  void _getMessages() {
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _messagesStream;
+
+  @override
+  void onClose() {
+    _messagesStream?.cancel();
+    super.onClose();
+  }
+
+  void _listenMessages() {
     final users = [transaction.user1, transaction.user2];
-    firestore
+    _messagesStream = firestore
         .collection('Transaction')
         .doc(transaction.id)
         .collection('Messages')

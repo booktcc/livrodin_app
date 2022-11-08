@@ -36,6 +36,12 @@ class NotificationController extends GetxController {
     });
   }
 
+  @override
+  void onClose() {
+    _subscription?.cancel();
+    super.onClose();
+  }
+
   void _listenNotifications() {
     _subscription = firestore
         .collection(collectionUsers)

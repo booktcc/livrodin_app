@@ -71,6 +71,7 @@ class _TransactionChatState extends State<TransactionChat> {
                         padding: const EdgeInsets.only(top: 15),
                         child: Obx(
                           () => ListView.builder(
+                            physics: const BouncingScrollPhysics(),
                             itemCount: _messagesController.messages.length,
                             itemBuilder: (context, index) {
                               final message =
@@ -100,6 +101,10 @@ class _TransactionChatState extends State<TransactionChat> {
                                 child: Input(
                               controller:
                                   _messagesController.textInputController,
+                              onEditingComplete: (_) {
+                                _messagesController.sendMessage();
+                              },
+                              autofocus: true,
                             )),
                             IconButton(
                                 onPressed: _messagesController.sendMessage,

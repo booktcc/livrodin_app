@@ -1,16 +1,27 @@
-# app_flutter
+# Livrodin
 
-A new Flutter project.
+Uma aplicação em Flutter para troca e doação de livros
 
-## Getting Started
+## Downloads
 
-This project is a starting point for a Flutter application.
+- [Github Releases]()
 
-A few resources to get you started if this is your first Flutter project:
+## Como rodar em modo de desenvolvimento
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Instalando dependências
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+flutter pub get
+```
+
+### Rodando a aplicação
+
+```bash
+flutter run
+```
+
+## Como contribuir
+
+Abra um pull request com a sua contribuição.
+
+Para sugestões de melhorias, abra uma issue ou inicie uma discussão.

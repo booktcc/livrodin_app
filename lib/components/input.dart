@@ -11,6 +11,7 @@ class Input extends StatelessWidget {
     this.validator,
     this.autofillHints,
     this.obscureText = false,
+    this.autofocus = false,
     TextEditingController? controller,
   }) : _controller = controller ?? TextEditingController(text: text);
 
@@ -23,6 +24,7 @@ class Input extends StatelessWidget {
   final String? Function(String?)? validator;
   final Iterable<String>? autofillHints;
   final bool obscureText;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,9 @@ class Input extends StatelessWidget {
       autofillHints: autofillHints,
       obscureText: obscureText,
       onEditingComplete: () {
-        FocusManager.instance.primaryFocus?.unfocus();
+        if (!autofocus) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
         onEditingComplete?.call(_controller.text);
       },
       controller: _controller,
