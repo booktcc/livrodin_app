@@ -49,6 +49,7 @@ class UserListRatingDialig extends StatelessWidget {
                                 "/book/detail/${ratings[index].id}",
                               ),
                               child: RatingCard(
+                                book: ratings[index],
                                 margin: const EdgeInsets.only(bottom: 10),
                                 rating: ratings[index].ratings[0],
                               ),
